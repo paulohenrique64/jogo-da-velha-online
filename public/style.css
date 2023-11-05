@@ -1,0 +1,27 @@
+.jogoDaVelha {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    position: relative;
+    left: 40px;
+}
+
+.button1, .button2, .button3 { 
+    position: relative;
+    height: 80px;
+    width: 80px;
+}
+
+.button4, .button5, .button6 {
+    position: relative;
+    height: 80px;
+    width: 80px;
+    top: 90px;
+    left: -253px;
+}
+
+.button7, .button8, .button9 {
+    position: relative;
+    height: 80px;
+    width: 80px;
+    top: 180px;
+    left: -505px;
+}
