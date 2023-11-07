@@ -2,15 +2,18 @@
   "name": "routes.js",
   "version": "1.0.0",
   "description": "",
-  "main": "routes.js",
+  "main": "app.js",
   "scripts": {
-    "start": "nodemon --exec babel-node ./src/routes/routes.js"
+    "start": "nodemon --exec babel-node app.js"
   },
   "author": "Paulo Henrique Ribeiro Alves",
   "license": "ISC",
   "dependencies": {
     "babel": "^6.23.0",
-    "cors": "^2.8.5"
+    "cors": "^2.8.5",
+    "ejs": "^3.1.9",
+    "mongodb": "^6.2.0",
+    "mongoose": "^8.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.23.2",

@@ -3,25 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jogo da velha Online</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>Homepage</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1 class="jogoDaVelha">Jogo da Velha</h1>
-        <ul class="buttons">
-            <button class="button1" id="button1">1</button>
-            <button class="button2" id="button2">2</button>
-            <button class="button3" id="button3">3</button>
-            <button class="button4" id="button4">4</button>
-            <button class="button5" id="button5">5</button>
-            <button class="button6" id="button6">6</button>
-            <button class="button7" id="button7">7</button>
-            <button class="button8" id="button8">8</button>
-            <button class="button9" id="button9">9</button>
-        </ul>
-    </div>
+    <header>
+        <div class="container" id="container">
+            <h1>Jogo da velha online</h1>
+            <nav>
+                <ul>
+                    <form method="get" action="http://localhost:3000/auth/login" id="form1">
+                      <button name="login">Login</button>
+                    </form>  
+                    <form method="get" action="http://localhost:3000/auth/register" id="form2">
+                      <button name="register">register</button>
+                    </form>
+            </nav>
+        </div>
+    </header>
+    
+    <section class="content">
+        <div class="container">
+            <p>Bem-vindo ao jogo da velha online, crie uma conta ou faça login para começar.</p>
+        </div>
+    </section>
 
-    <script src="js/index.js"></script>
+    <script src="index.js"></script>
 </body>
 </html>

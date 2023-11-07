@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Página de Registro</title>
+    <style>
+      body {
+          font-family: Arial, sans-serif;
+          background-color: #f5f5f5;
+          margin: 0;
+          padding: 0;
+      }
+
+      .container {
+          position: relative;
+          max-width: 400px;
+          margin: 0 auto;
+          background-color: #fff;
+          padding: 20px;
+          border-radius: 5px;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          top: 70px;
+      }
+
+      h1 {
+          text-align: center;
+          color: #333;
+      }
+
+      form {
+          text-align: left;
+      }
+
+      label {
+          font-weight: bold;
+          display: block;
+          margin-top: 10px;
+      }
+
+      input {
+          width: 380px;
+          padding: 10px;
+          margin: 5px 0;
+          border: 1px solid #ccc;
+          border-radius: 3px;
+      }
+
+      button {
+          width: 100%;
+          background-color: #007bff;
+          color: #fff;
+          padding: 10px;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          transition: background-color 0.3s;
+      }
+
+      button:hover {
+          background-color: #0056b3;
+      }
+
+      .dialog {
+        position: relative;
+        height: 10px;
+        width: 300px;
+      }
+
+      .x {
+        position: relative;
+        height: 1px;
+        width: 1px;
+        left: 280px;
+        top: -60px;
+      }
+
+      .textDialog {
+        position: relative;
+        top: -20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" id="container">
+      <form action="http://localhost:3000/auth/register/user" id="form" method="post">
+        <h1>Registro de Usuário</h1>
+        <label for="name">Nome:</label>
+        <input type="text" name="name" required />
+
+        <label for="email">E-mail:</label>
+        <input type="email" name="email" required />
+
+        <label for="password">Senha:</label>
+        <input type="password" name="password" required />
+
+        <button type="submit" class="submit">
+          Confirmar Registro
+        </button>
+      </form>
+    </div>
+    <script>
+      document.querySelector('#form').addEventListener('submit', (event) => {
+      event.preventDefault()
+
+      const url = "http://localhost:3000/auth/register/user";
+
+      const formData = new FormData(document.getElementById('form'))
+      const user = {}
+      formData.forEach((value, key) => {
+        user[key] = value;
+      })
+
+      // Opções da solicitação (método, cabeçalhos, corpo)
+      const options = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json", // Especifica que você está enviando JSON
+        },
+        body: JSON.stringify(user), // Converte o objeto JSON em uma string JSON
+      }
+
+      console.log(user)
+      fetch(url, options).then((response) => {
+        response.json().then((responseJson) => {
+          console.log(responseJson.message)
+        })
+      }).catch((error) => {
+        console.log(error)
+      })
+
+    })
+    </script>
+  </body>
+</html>
