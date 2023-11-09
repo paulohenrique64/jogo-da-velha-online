@@ -111,13 +111,12 @@
       };
 
       console.log(user)
-      fetch(url, options).then((response) => {
-        response.json().then((responseJson) => {
-          console.log(responseJson.message)
-        })
-      }).catch((error) => {
+      fetch(url).then((response) => {
+        console.log('loading page...')
+
+      }).catch(error => {
         console.log(error)
-      })
+      }) 
     })
     </script>
   </body>

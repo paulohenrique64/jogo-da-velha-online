@@ -7,10 +7,10 @@ const getGamePage = (request, response) => {
   let finded = false
 
   onlineUsers.forEach((onlineUser) => {
-    if (onlineUser.token == request.params.token) {
+    if (onlineUser.token == request.body.token) {
       finded = true
-      const filePath = path.join(__dirname, '../view/game.html')
-      response.status(200).sendFile(filePath)
+      const filePath = path.join(__dirname, '../view/game')
+      response.status(200).render(filePath, {token: request.body.token})
     }
   })
 

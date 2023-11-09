@@ -1,5 +1,6 @@
 const User = require('../models/userSchema')
 const path = require('path')
+const crypto = require('crypto')
 
 const onlineUsers = []
 
@@ -11,6 +12,7 @@ const loginPage = (request, response) => {
 
 // faz o login se um usuario no site 
 const loginUser = (request, response) => {
+
   const user = {
     email: request.body.email,
     password: request.body.password,
@@ -20,24 +22,29 @@ const loginUser = (request, response) => {
     'email': user.email,
     'password': user.password,
   }).then((userFinded) => {
-    if (userFinded[0].password == request.body.password) {
 
-      let tk = 100
-
+    if (userFinded[0].password == user.password) {
+            
       const onlineUser = {
-        user: userFinded[0],    
-        token: tk,
+        user: userFinded[0],  // poderia ser user data   
+        token: crypto.randomBytes(64).toString('hex')
       }
 
       onlineUsers.push(onlineUser)
 
-      response.status(200).redirect('http://localhost:3000/game/' + tk)
+      const filePath = path.join(__dirname, '../view/game')
+      response.status(200).render(filePath, {token: onlineUser.token, nickname: onlineUser.user.nickname})
+
     } else {
-      response.status(404).redirect('/auth/login')
+      // login nao aceito
+      response.status(400).redirect('/auth/login')
     }
-  }).catch((error) => {
-    console.log(error)
-    response.status(404).redirect('/auth/login')
+
+  }).catch(() => {
+
+    // falha na requisição ao banco de dados
+    response.status(400).redirect('/auth/login')
+
   })
 }
 
@@ -51,6 +58,7 @@ const registerPage = (request, response) => {
 const registerUser = (request, response) => {
   const user = new User ({
     name: request.body.name,
+    nickname: request.body.nickname,
     email: request.body.email,
     password: request.body.password,
   })

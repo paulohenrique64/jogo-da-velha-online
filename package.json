@@ -4,16 +4,19 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon --exec babel-node app.js"
+    "start": "nodemon --exec babel-node server.js"
   },
   "author": "Paulo Henrique Ribeiro Alves",
   "license": "ISC",
   "dependencies": {
     "babel": "^6.23.0",
     "cors": "^2.8.5",
+    "crypto": "^1.0.1",
     "ejs": "^3.1.9",
+    "express-session": "^1.17.3",
     "mongodb": "^6.2.0",
-    "mongoose": "^8.0.0"
+    "mongoose": "^8.0.0",
+    "socket.io": "^4.7.2"
   },
   "devDependencies": {
     "@babel/core": "^7.23.2",
