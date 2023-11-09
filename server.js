@@ -1,98 +1,139 @@
-import express from 'express';
-import bodyParser from 'body-parser';
-import http from 'http';
-import socketIO from 'socket.io';
-import mongooseConnection from './src/database/mongodb';
-import authRoutes from './src/routes/authRoutes';
-import jogoDaVelha from './src/models/gameModel'
+import express from "express";
+import bodyParser from "body-parser";
+import http from "http";
+import socketIO from "socket.io";
+import mongooseConnection from "./src/database/mongodb";
+import authRoutes from "./src/routes/authRoutes";
+import jogoDaVelha from "./src/models/gameModel";
 
 const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
 
-app.engine('html', require('ejs').renderFile)
-app.set('view engine', 'html')
+app.engine("html", require("ejs").renderFile);
+app.set("view engine", "html");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // Conectar ao banco de dados
 mongooseConnection();
 
-app.use('/auth', authRoutes);
+app.use("/auth", authRoutes);
 
-var onlinePlayers = []
-var matches = []
+var activePlayers = [];
+var activeGames = [];
 
-io.on('connection', (socket) => {
-
+io.on("connection", (socket) => {
   // adiciona o usuario logado na lista de jogadores onlines
-  socket.on('addtoOnlinePlayers', (nickname) => {
-    onlinePlayers.push({
+  socket.on("activePlayer", (nickname) => {
+
+    activePlayers.push({
       nickname: nickname,
-      id: socket.id
-  })
-  
-    console.log('novo jogador online: ' + socket.id)
-    console.log(onlinePlayers)
+      id: socket.id,
+    });
+
+    console.log("novo jogador online: " + nickname);
   });
 
   // convida um jogador para um novo jogo caso o jogador esteja online
-  socket.on('invitePlayer', (nickname) => {
-    let guest
-    let creator
+  socket.on("invitePlayer", (nickname) => {
+    if (nickname) {
+      let guest;
+      let creator;
+      let alreadyPlaying = false;
 
-    onlinePlayers.forEach(player => {
-      if (player.nickname == nickname) {
-        guest = player
-      }
-
-      if (player.id == socket.id) {
-        creator = player
-      }
-    })
-
-    console.log(guest)
-    console.log(creator)
-
-    // caso o jogador esteja online
-    if (guest.nickname == nickname) {
-      const match = new jogoDaVelha(creator, guest)
-      matches.push(match)
-      io.to(creator.id).emit('gameStatus', match);
-      io.to(guest.id).emit('gameStatus', match);
-      console.log(matches)
-    }
-    })
-
-    // criada automaticamente
-    socket.on('disconnect', () => {
-      onlinePlayers.forEach((disconectedPlayer) => {
-        if (disconectedPlayer.id == socket.id) {
-          onlinePlayers = onlinePlayers.filter((player) => {player.id != disconectedPlayer.id})
-
-          console.log('player desconectado: ' + socket.id)
-          console.log(onlinePlayers)
+      // verificar se os dois usuarios estao online
+      activePlayers.forEach((player) => {
+        if (player.nickname == nickname) {
+          guest = player;
         }
-      })
+
+        if (player.id == socket.id) {
+          creator = player;
+        }
+      });
+
+      if (guest && creator) {
+        if (guest != creator) {
+          // verificar se o jogador convidado ou o criador já estão em partida
+          activeGames.forEach((game) => {
+            if (game.guest == guest || game.creator == creator) {
+              alreadyPlaying = true;
+              io.to(creator.id).emit("inviteError", {message: "player already playing"});
+            }
+          });
+  
+          if (!alreadyPlaying) {
+            const game = new jogoDaVelha(creator, guest);
+            activeGames.push(game);
+  
+            io.to(creator.id).emit("gameStart");
+            io.to(guest.id).emit("gameStart");
+            io.to(creator.id).emit("gameStatus", game);
+            io.to(guest.id).emit("gameStatus", game);
+            console.log('Novo jogo entre: ' + game.creator.nickname + ' e ' + game.guest.nickname);
+          }
+        } else {
+          io.to(creator.id).emit("inviteError", {message: "impossible invate yourself"});
+        } 
+      } else {
+        io.to(socket.id).emit("inviteError", {message: "player aren't online yet"});
+      }
+    }
+  });
+
+  // socket.on('playAgain', () => {
+  //   for (let i = 0; i < activeGames.length; i++) {
+  //     if (activeGames[i].creator.id == socket.id || activeGames[i].guest.id == socket.id) {
+  //       activeGames[i] = new jogoDaVelha(activeGames.creator, activeGames.guest)
+  //       io.to(activeGames[i].creator.id).emit("gameStart");
+  //       io.to(activeGames[i].guest.id).emit("gameStart");
+  //       io.to(activeGames[i].creator.id).emit("gameStatus", activeGames[i]);
+  //       io.to(activeGames[i].guest.id).emit("gameStatus", activeGames[i]);
+  //     }
+  //   }
+  // })
+
+  // marca um ponto no jogo da velha
+  socket.on("point", (row, col) => {
+    let player;
+
+    activePlayers.forEach((activePlayer) => {
+      if (socket.id == activePlayer.id) {
+        player = activePlayer;
+      }
     });
 
-    socket.on('point', (row, col) => {
-      let player
+    // verifica se o jogador esta online
+    if (player) {
+      activeGames.forEach((game) => {
+        if ((game.creator.id == socket.id || game.guest.id == socket.id) && game.currentPlayer == player) {
+          game.setPoint(player, row, col);
+          game.switchCurrentPlayer();
+          io.to(game.creator.id).emit("gameStatus", game);
+          io.to(game.guest.id).emit("gameStatus", game);
+        }
+      });
+    }
+  });
 
-      onlinePlayers.forEach(onlinePlayer => {
-        if (socket.id == onlinePlayer.id) {
-          player = onlinePlayer
-        }
-      })
+  // criada automaticamente
+  socket.on("disconnect", () => {
+    for (let i = 0; i < activePlayers.length; i++) {
+      if (activePlayers[i].id == socket.id) {
+        activePlayers[i].isClosed = true;
+        console.log('Jogador desconectado: ' + activePlayers[i].nickname);
+      }
+    }
+
+    for (let i = 0; i < activeGames.length; i++) {
+      if (activeGames[i].creator.id == socket.id || activeGames[i].guest.id == socket.id) {
+        activeGames[i].isClosed = true;
+        console.log('Jogo encerrado entre: ' + activeGames[i].creator.nickname + ' e ' + activeGames[i].guest.nickname);
+      }
+    }
+  })
     
-      matches.forEach(match => {
-        if (match.creator.id == socket.id || match.guest.id == socket.id) {
-          match.setPoint(player, row,col)
-          io.to(match.creator.id).emit('gameStatus', match);
-          io.to(match.guest.id).emit('gameStatus', match);
-        }
-      })
-    })
 });
 
 const port = 3000;

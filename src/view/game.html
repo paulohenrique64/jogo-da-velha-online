@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jogo da velha Online</title>
-    <!-- <link rel="stylesheet" type="text/css" href="style.css"> -->
     <style>
       .container {
         display: flex;
@@ -37,10 +36,10 @@
     <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
-    <div align="center">
+    <div align="center" id="div1">
       <h1 class="" id="token"><%= token %></h1>
       <h1 class="" id="nickname"><%= nickname %></h1>
-      <input class="input2" id="oponentNickname"></input>
+      <input class="input2" id="oponentNickname" placeholder="nome do oponente"></input>
       <button class="button13" id="Startgame">Start game</button>
     </div>
     <div class="container">
@@ -62,50 +61,95 @@
     </div>
     <script>
       function executar() {
-        const socket = io()
-        const buttons = Array.from(document.getElementsByClassName('cell'))
-        const inputOponentNickname = document.querySelector('#oponentNickname')
-        const startGameButton = document.querySelector('#Startgame')
+        const socket = io();
+        const startGameButton = document.querySelector('#Startgame');
+        const buttons = [];
+        const nickname = document.querySelector('#nickname').textContent;
 
-        socket.emit('addtoOnlinePlayers', document.querySelector('#nickname').textContent)
+        // deixa o usuario disponivel para ser convidado para alguma partida
+        socket.emit('activePlayer', nickname);
 
+        // colocando as funções nos botões do jogo da velha
+        for (let i = 0; i < 3; i++) {
+          buttons.push([]);
+          for (let j = 0; j < 3; j++) {
+            const buttonId = i * 3 + j;
+            const button = document.getElementById(buttonId);
+            buttons[i].push(button);
+
+            // envia uma soliticao de marcar um ponto para o servidor
+            // se existir um jogo rolando com o socket.id do usuario ele marca o ponto neste jogo
+            button.addEventListener('click', () => {
+              socket.emit('point', i, j); 
+            });
+          }
+        }
+
+        // inicia um novo joga com o jogador do nick passado caso ele esteja online
         startGameButton.addEventListener('click', () => {
-          console.log('startGame')
-          socket.emit('invitePlayer', inputOponentNickname.value)
-        })
-
-        buttons.forEach(element => {
-          element.addEventListener('click', () => {
-            const map = [[0, 0], [0, 1], [0, 2], [1, 0], [1, 1], [1, 2], [2, 0], [2, 1], [2, 2]]
-            console.log('linha: ' + map[element.id][0])
-            console.log('coluna: ' + map[element.id][1])
-            socket.emit('point', map[element.id][0], map[element.id][1])
-          })
+          socket.emit('invitePlayer', document.querySelector('#oponentNickname').value);
         });
 
-        socket.on('gameStatus', (match) => {
-          if (match.winner) {
-            console.log(match.winner)
-          } else if (match.tie) {
-            console.log('game tie')
-          } 
-
-          buttons[0].textContent = match.gameState[0][0]
-          buttons[1].textContent = match.gameState[0][1]
-          buttons[2].textContent = match.gameState[0][2]
-
-          buttons[3].textContent = match.gameState[1][0]
-          buttons[4].textContent = match.gameState[1][1]
-          buttons[5].textContent = match.gameState[1][2]
-
-          buttons[6].textContent = match.gameState[2][0]
-          buttons[7].textContent = match.gameState[2][1]
-          buttons[8].textContent = match.gameState[2][2]
-          
+        // caso o jogador atual ou online estejam em partida e o jogador atual fez uma solicitacao
+        socket.on('inviteError', (body) => {
+          document.querySelector('#oponentNickname').value = ''
+          document.querySelector('#oponentNickname').placeholder = body.message
         })
+
+        // reseta a cor do jogo quando o jogo inicia
+        socket.on('gameStart', () => {
+          for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+              buttons[i][j].style.backgroundColor = "yellow";
+            }
+          }
+        })
+
+        // recebe o estado do jogo da velha e atualiza o cliente
+        socket.on('gameStatus', (match) => {
+          let gameEnd = false;
+
+          if (match.winner) {
+            console.log('Vencedor: ' + match.winner);
+            gameEnd = true;
+          } else if (match.tie) {
+            console.log('Empate');
+            gameEnd = true;
+          }
+
+          for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+              buttons[i][j].textContent = match.gameState[i][j].point
+
+              let player = match.gameState[i][j].nickname
+              let point = match.gameState[i][j].point
+
+              // botao fica verde para quem marca e vermelho para o oponente
+              if (point == 'X' || point == 'O') {
+                if (player == nickname) {
+                  buttons[i][j].style.backgroundColor = "green";
+                } else {
+                  buttons[i][j].style.backgroundColor = "red";
+                }
+              } 
+
+            }
+          }
+
+          if (gameEnd) {
+            const playAgainButton = document.createElement('button')
+            playAgainButton.textContent = 'Play again!'
+            document.getElementById('div1').appendChild(playAgainButton)
+
+            playAgainButton.addEventListener('click', () => {
+              socket.emit('playAgain')
+              document.getElementById('div1').removeChild(playAgainButton)
+            })
+          }
+        });
       }
 
-      executar()
+      executar();
     </script>
 </body>
 </html>
