@@ -3,22 +3,31 @@ import bodyParser from "body-parser";
 import http from "http";
 import socketIO from "socket.io";
 import mongooseConnection from "./src/database/mongodb";
+import homeRoutes from "./src/routes/homeRoutes"
 import authRoutes from "./src/routes/authRoutes";
+import gameRoutes from "./src/routes/gameRoutes"
 import jogoDaVelha from "./src/models/gameModel";
 
+const path = require('path')
 const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
+const cors = require('cors');
 
-app.engine("html", require("ejs").renderFile);
-app.set("view engine", "html");
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors());
+app.engine("ejs", require("ejs").renderFile);
+app.set('views', path.join(__dirname, 'src', 'views'));
+app.set("view engine", "ejs");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // Conectar ao banco de dados
 mongooseConnection();
 
+app.use("/", homeRoutes);
 app.use("/auth", authRoutes);
+app.use("/game", gameRoutes);
 
 var activePlayers = [];
 var activeGames = [];

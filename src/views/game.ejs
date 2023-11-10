@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo da velha Online</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="/stylesheets/game.css">
+</head>
+<body>
+    <div align="center" id="div1">
+      <h1 class="" id="uid"><%= token %></h1>
+      <h1 class="" id="nickname"><%= userdata %></h1>
+      <input class="input2" id="oponentNickname" placeholder="nome do oponente"></input>
+      <button class="button13" id="Startgame">Start game</button>
+    </div>
+    <div class="container">
+      <div class="row">
+        <button class="cell" id="0"></button>
+        <button class="cell" id="1"></button>
+        <button class="cell" id="2"></button>
+      </div>
+      <div class="row">
+        <button class="cell" id="3"></button>
+        <button class="cell" id="4"></button>
+        <button class="cell" id="5"></button>
+      </div>
+      <div class="row">
+        <button class="cell" id="6"></button>
+        <button class="cell" id="7"></button>
+        <button class="cell" id="8"></button>
+      </div>
+    </div>
+    <script src="/javascript/game.js"></script>
+</body>
+</html>

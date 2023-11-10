@@ -1,79 +1,95 @@
-const User = require('../models/userSchema')
-const path = require('path')
-const crypto = require('crypto')
+const User = require('../models/userSchema');
+const path = require('path');
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+const authConfig = require('../config/auth')
 
-const onlineUsers = []
+const generateToken = params => {
+  return jwt.sign(params, 'sjbfjdsgjdghldrgblhrgh4353rtbihdyxyuvdgy848',
+    {
+      expiresIn: 86400,
+    },
+  );
+}
 
 // retorna pagina de login
 const loginPage = (request, response) => {
-  const filePath = path.join(__dirname, '../view/login.html')
-  response.status(200).sendFile(filePath)
+  const filePath = path.join(__dirname, '../views/login')
+  response.status(200).render(filePath, { error: request.error })
+  console.log(request.error)
 }
 
-// faz o login se um usuario no site 
+// faz o login se um usuario estiver cadastro valido no site 
 const loginUser = (request, response) => {
+  const {email, password} = request.body;
 
-  const user = {
-    email: request.body.email,
-    password: request.body.password,
-  }
+  User.findOne({email}).select('+password').then(user => {
+    if (user) {
+      bcrypt.compare(password, user.password).then(result => {
+        if (result) {
 
-  User.find({
-    'email': user.email,
-    'password': user.password,
-  }).then((userFinded) => {
+          // se usuario for logado: gera um token e redireciona para a pagina do jogo
+          // o token pode ser capturado pela pagina
+          const token = generateToken({uid: user.id})
+          const filePath = path.join(__dirname, '../views/game')
+          user.password = undefined
+          response.status(200).render(filePath, {userdata: user, token: token})
 
-    if (userFinded[0].password == user.password) {
-            
-      const onlineUser = {
-        user: userFinded[0],  // poderia ser user data   
-        token: crypto.randomBytes(64).toString('hex')
-      }
-
-      onlineUsers.push(onlineUser)
-
-      const filePath = path.join(__dirname, '../view/game')
-      response.status(200).render(filePath, {token: onlineUser.token, nickname: onlineUser.user.nickname})
-
+        } else {
+          request.error = 'invalid password'
+          response.status(400).redirect('/auth/login')
+        }
+      })
     } else {
-      // login nao aceito
+      request.error = 'Invalid email'
       response.status(400).redirect('/auth/login')
     }
 
-  }).catch(() => {
-
-    // falha na requisição ao banco de dados
-    response.status(400).redirect('/auth/login')
-
+  }).catch(error => {
+    console.error(error)
+    request.error = 'Internal server error'
+    response.status(500).redirect('/auth/login')
   })
 }
 
 // retorna a pagina de registro
 const registerPage = (request, response) => {
-  const filePath = path.join(__dirname, '../view/signup.html')
-  response.status(200).sendFile(filePath)
+  const filePath = path.join(__dirname, '../views/signup')
+  response.status(200).render(filePath)
 }
 
 // faz o registro de um usuario no site 
 const registerUser = (request, response) => {
-  const user = new User ({
-    name: request.body.name,
-    nickname: request.body.nickname,
-    email: request.body.email,
-    password: request.body.password,
-  })
+  const {name, nickname, email, password} = request.body;
 
-  user.save().then(() => {
-    console.log("user saved")
-    response.status(200).json({message: "User registred sucess!"})
-  }).catch(() => {
-    console.log("user not saved")
-    response.status(400).json({message: "Error! User not registred sucess!"})
-  })
-}
+  if (password.length < 8) {
+    response.status(400).send({error: 'Your password must be higher or equal than 8 caracters'})
+  }
 
-function getOnlineUsers() {
-  return onlineUsers
+  User.findOne({email}).then(userFoundByEmail => {
+    if (userFoundByEmail) {
+      response.status(400).send({error: 'Email already registred'});
+    } else {
+      User.findOne({nickname}).then(userFoundByNickname => {
+        if (userFoundByNickname) {
+          response.status(400).send({error: 'Nickname already registred'});
+        } else {
+          User.create({name, nickname, email, password}).then(userCreated => {
+            response.status(200).send({message: 'Usuário registrado com sucesso'});
+          }).catch(error => {
+            console.error('Erro ao salvar usuario: ', error);
+            response.status(400).send({error: 'Registration failed'});
+          })
+        }
+      }).catch(error => {
+        console.error('Erro ao consultar o banco de dados', error);
+        response.status(500).send({error: 'Registration failed'})
+      })
+    }
+  }).catch(error => {
+    console.error('Erro ao consultar o banco de dados', error);
+    response.status(500).send({error: 'Registration failed'})
+  })
 }
 
 module.exports = {
@@ -81,5 +97,4 @@ module.exports = {
   loginPage,
   registerPage,
   registerUser,
-  getOnlineUsers,
 }

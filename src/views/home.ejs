@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Homepage</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/stylesheets/home.css">
 </head>
 <body>
     <header>
@@ -12,12 +12,8 @@
             <h1>Jogo da velha online</h1>
             <nav>
                 <ul>
-                    <form method="get" action="http://localhost:3000/auth/login" id="form1">
-                      <button name="login">Login</button>
-                    </form>  
-                    <form method="get" action="http://localhost:3000/auth/register" id="form2">
-                      <button name="register">register</button>
-                    </form>
+                  <a href="http://localhost:3000/auth/register">Login</a><br>
+                  <a href="http://localhost:3000/auth/login">register</a>
             </nav>
         </div>
     </header>
@@ -27,7 +23,6 @@
             <p>Bem-vindo ao jogo da velha online, crie uma conta ou faça login para começar.</p>
         </div>
     </section>
-
-    <script src="index.js"></script>
+    <script src="/javascript/home.js"></script>
 </body>
 </html>
