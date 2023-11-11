@@ -1,7 +1,7 @@
+const url = "http://localhost:3000/register/user";
+
 document.querySelector('#form').addEventListener('submit', (event) => {
   event.preventDefault()
-
-  const url = "http://localhost:3000/auth/register/user";
 
   const formData = new FormData(document.getElementById('form'))
   const user = {}

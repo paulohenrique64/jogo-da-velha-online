@@ -11,6 +11,7 @@
   "dependencies": {
     "babel": "^6.23.0",
     "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "ejs": "^3.1.9",
@@ -18,6 +19,8 @@
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.2.0",
     "mongoose": "^8.0.0",
+    "nodemailer": "^6.9.7",
+    "nodemailer-express-handlebars": "^6.1.0",
     "socket.io": "^4.7.2"
   },
   "devDependencies": {

@@ -1,11 +1,8 @@
-const urlLogin = "http://localhost:3000/auth/login/user";
-const urlGamePage = "http://localhost:3000/game/";
+const urlLogin = "http://localhost:3000/login/user";
 
 document.getElementById('form').addEventListener('submit', handleFormSubmit)
 
-function handleFormSubmit(event) {
-  // event.preventDefault();
-
+function handleFormSubmit() {
   const formData = new FormData(document.getElementById('form'))
   const user = {};
   formData.forEach((value, key) => {

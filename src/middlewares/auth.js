@@ -1,35 +1,41 @@
 import jwt from 'jsonwebtoken'
 import authConfig from '../config/auth'
 
-const authMiddleware = (request, response, next) => {
-  const authHeader = request.headers.authorization;
+// verifica se o usario tem um token valido
+const authMiddleware = (req, res, next) => {
+  const token = req.cookies.token;
 
-  if (authHeader) {
-    const tokenData = authHeader.split(' ');
-
-    if (tokenData.length != 2) {
-      response.redirect('/auth/login')
-    }
-
-    const [scheme, token] = tokenData;
-    if (scheme.indexOf('Bearer') < 0) {
-      response.redirect('/auth/login')
-    }
-
+  if (token) {
     jwt.verify(token, 'sjbfjdsgjdghldrgblhrgh4353rtbihdyxyuvdgy848', (err, decoded) => {
       if (err) {
-        response.redirect('/auth/login')
+        res.redirect('/login')
       } else {
-        request.uid = decoded.uid;
         return next();
       }
     })
-
   } else {
-    response.redirect('/auth/login')
+    res.redirect('/login')
+  }
+}
+
+// verifica se o usuario nao tem um token válido
+const noAuthMiddleware = (req, res, next) => {
+  const token = req.cookies.token;
+
+  if (token) {
+    jwt.verify(token, 'sjbfjdsgjdghldrgblhrgh4353rtbihdyxyuvdgy848', (err, decoded) => {
+      if (err) {
+        return next();
+      } else {
+        return res.redirect('/game/')
+      }
+    })
+  } else {
+    return next();
   }
 }
 
 module.exports = {
   authMiddleware,
+  noAuthMiddleware
 }

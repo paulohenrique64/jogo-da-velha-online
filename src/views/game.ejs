@@ -9,10 +9,10 @@
 </head>
 <body>
     <div align="center" id="div1">
-      <h1 class="" id="uid"><%= token %></h1>
-      <h1 class="" id="nickname"><%= userdata %></h1>
+      <h1> Name: <%= userdata.name %> </h1>
+      <h1 id="nickname"><%= userdata.nickname %></h1>
       <input class="input2" id="oponentNickname" placeholder="nome do oponente"></input>
-      <button class="button13" id="Startgame">Start game</button>
+      <button class="button13" id="startgame">Start game</button>
     </div>
     <div class="container">
       <div class="row">
@@ -29,6 +29,11 @@
         <button class="cell" id="6"></button>
         <button class="cell" id="7"></button>
         <button class="cell" id="8"></button>
+      </div>
+      <div id="div2">
+        <form action="http://localhost:3000/logout" method="get" id="logoutForm">
+          <button>Logout</button>
+        </form>
       </div>
     </div>
     <script src="/javascript/game.js"></script>

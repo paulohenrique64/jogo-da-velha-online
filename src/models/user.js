@@ -22,12 +22,21 @@ const userSchema = new mongoose.Schema({
     required: true,
     select: false
   },
+  passwordResetToken: {
+    type: String,
+    select: false
+  },
+  passwordResetTokenExpiration: {
+    type: Date,
+    select: false
+  },
   createdAt: {
     type: Date,
     default: Date.now
-  }
+  },
 })
 
+// a senha sera salva no banco de dados encriptografada
 userSchema.pre('save', function(next) {
   bcrypt.hash(this.password, 10).then(hash => {
     this.password = hash;
