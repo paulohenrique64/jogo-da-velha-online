@@ -3,39 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jogo da velha Online</title>
+    <title>Jogo da Velha Online</title>
     <script src="/socket.io/socket.io.js"></script>
     <link rel="stylesheet" href="/stylesheets/game.css">
 </head>
 <body>
-    <div align="center" id="div1">
-      <h1> Name: <%= userdata.name %> </h1>
-      <h1 id="nickname"><%= userdata.nickname %></h1>
-      <input class="input2" id="oponentNickname" placeholder="nome do oponente"></input>
-      <button class="button13" id="startgame">Start game</button>
+  <script>
+    // Crie uma variável JavaScript para armazenar o valor de userdata.nickname
+    var userNickname = "<%= userdata.nickname %>";
+  </script>
+  <div>
+    <header>
+      <a href="http://localhost:3000/" id="contactLink">Home</a>
+      <a href="http://localhost:3000/logout" id="logoutButton">Sair</a>
+    </header>
+  </div>
+  <div class="lobby" id="lobby">
+    <div class="block">
+      <div class="player-list">
+        <h2>Jogadores Online</h2>
+        <ul id="player-list">
+      </div>
     </div>
+  </div>
+  <div class="all" id="all">
+    <div class="placar-container" id="placar-container"></div>
     <div class="container">
-      <div class="row">
-        <button class="cell" id="0"></button>
-        <button class="cell" id="1"></button>
-        <button class="cell" id="2"></button>
-      </div>
-      <div class="row">
-        <button class="cell" id="3"></button>
-        <button class="cell" id="4"></button>
-        <button class="cell" id="5"></button>
-      </div>
-      <div class="row">
-        <button class="cell" id="6"></button>
-        <button class="cell" id="7"></button>
-        <button class="cell" id="8"></button>
-      </div>
-      <div id="div2">
-        <form action="http://localhost:3000/logout" method="get" id="logoutForm">
-          <button>Logout</button>
-        </form>
-      </div>
+        <div id="game-container">
+            <div id="game-board">
+                <div class="row">
+                    <button class="cell" id="0"></button>
+                    <button class="cell" id="1"></button>
+                    <button class="cell" id="2"></button>
+                </div>
+                <div class="row">
+                    <button class="cell" id="3"></button>
+                    <button class="cell" id="4"></button>
+                    <button class="cell" id="5"></button>
+                </div>
+                <div class="row">
+                    <button class="cell" id="6"></button>
+                    <button class="cell" id="7"></button>
+                    <button class="cell" id="8"></button>
+                </div>
+            </div>
+        </div>
+        <div class="chat-container">
+            <div class="chat"></div>
+        </div>
     </div>
-    <script src="/javascript/game.js"></script>
+  </div>
+  <script src="/javascript/game.js"></script>
 </body>
 </html>

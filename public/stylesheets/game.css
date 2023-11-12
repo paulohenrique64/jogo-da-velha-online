@@ -1,8 +1,97 @@
+body {
+  font-family: 'Noto Sans', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.lobby {
+  display: flex;
+  justify-content: center;
+}
+
+.block {
+  position: fixed;
+  width: 55%;
+  height: 75vh;
+  display: flex;
+  background-color: #514869;
+  z-index: 1000;
+  margin: 3%;
+  border-radius: 10px;
+}
+
+.player-list {
+  color: #f0ffffde;
+  padding: 20px;
+  overflow: auto; /* Adiciona rolagem à lista */
+}
+
+.player-list h2 {
+  font-size: 24px;
+}
+
+.player-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.player-list li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.player-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.all {
+  margin: 2%;
+  display: none;
+}
+
 .container {
+  margin: -3%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+header {
+  max-width: 100%;
+  background-color: rgba(32, 27, 44, 0.9);
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: 0.5s;
+  z-index: 1000;
+}
+
+header a {
+  margin: 0 10px;
+  text-decoration: none;
+  color: #f0ffffde;
+  font-weight: bold;
+}
+
+header a:hover {
+  color: #00ff88;
+}
+
+#game-container {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
-  margin-top: 50px;
+  margin: 20px;
+}
+
+#game-board {
+  margin-bottom: 20px;
 }
 
 .row {
@@ -10,18 +99,115 @@
 }
 
 .cell {
-  width: 100px;
-  height: 100px;
-  font-size: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid #000;
+  flex: 1;
+  padding: 70px;
+  margin: 2px;
+  font-size: 10px;
+  background-color: #514869;
+  color: #f0ffffde;
+  border: none;
   cursor: pointer;
-  transition: background-color 0.3s;
+  border-radius: 5px;
 }
 
-.cell:hover {
-  background-color: lightgray;
+#logoutForm {
+  margin: 0;
 }
 
+.placar-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.placar {
+  display: flex;
+  flex-direction: row;
+  width: 930px;
+  height: 150px;
+  background-color: #514869;
+  margin: 50px;
+  border-radius: 10px;
+  justify-content: center; /* Centraliza os elementos no eixo principal */
+  align-items: center; /* Centraliza os elementos no eixo transversal */
+}
+
+.placar-point1,.placar-point2 {
+  margin: 0 20px;
+  font-size: 50px;
+  font-weight: 800;
+}
+
+.placar-profile-img {
+  max-width: 10%;
+  height: auto;
+}
+.placar-player-name {
+  font-size: 150%;
+}
+
+.end-placar {
+  display: flex;
+  flex-direction: column;
+  width: 930px;
+  height: 150px;
+  background-color: #514869;
+  margin: 50px;
+  border-radius: 10px;
+  justify-content: center; /* Centraliza os elementos no eixo principal */
+  align-items: center; /* Centraliza os elementos no eixo transversal */
+}
+
+.end-game-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+}
+
+.winner {
+  margin: 0px 10px 20px;
+}
+
+.end-game-button {
+  display: inline-block;
+  margin: 0px 10px 0px;
+  text-decoration: none;
+  color: #f0ffffde;
+  font-weight: bold;
+  width: 250px; /* Largura fixa para ambos os botões */
+  padding: 10px;
+  border-radius: 15px;
+  outline: none;
+  text-transform: uppercase;
+  font-size: 15pt;
+  background: #00ff88;
+  cursor: pointer;
+  box-shadow: 0px 10px 40px -12px #00ff8052;
+}
+
+.end-game-button :hover {
+  background: #77ffc0;
+  color: #201b2c;
+}
+
+
+
+
+
+
+
+
+
+
+.chat-container {
+}
+
+.chat {
+  width: 460px;
+  height: 430px;
+  background-color: #514869;
+  margin: 20px;
+  border-radius: 10px;
+}

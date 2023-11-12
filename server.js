@@ -12,6 +12,9 @@ const server = http.createServer(app);
 const io = socketIO(server);
 const cors = require('cors');
 const cookieParser = require('cookie-parser')
+const port = 3000;
+
+mongooseConnection(); // Conectar ao banco de dados
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser())
@@ -20,28 +23,19 @@ app.set('views', path.join(__dirname, 'src', 'views'));
 app.set("view engine", "ejs");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(
-  cors({
-    credentials: true,
-    methods: 'GET, PUT, POST, OPTIONS, DELETE',
-  })
-);
-
-// Conectar ao banco de dados
-mongooseConnection();
-
+app.use( cors({ credentials: true, methods: 'GET, PUT, POST, OPTIONS, DELETE' }) );
 app.use("/", routes);
+app.use((req, res, next) => { return res.status(404).redirect('/') });
+app.use((req, res, next) => { return res.status(404).redirect('/game/') });
 
-app.use((req, res, next) => {
-  return res.status(404).redirect('/');
+server.listen(port, () => {
+  console.log(`Servidor rodando no link http://localhost:${port}`);
 });
 
-app.use((req, res, next) => {
-  return res.status(404).redirect('/game/');
-});
+// online tic tac toe game with socket.io
 
-var activePlayers = []
-var activeGames = [];
+var activePlayers = [] // armazenar jogadores onlines
+var activeGames = [];  // armazenar as partidas que estão ocorrendo
 
 io.on("connection", (socket) => {
 
@@ -56,6 +50,7 @@ io.on("connection", (socket) => {
   socket.on("activePlayer", (nickname) => {
     activePlayers.push({nickname: nickname, id: socket.id});
     console.log("novo jogador online: " + nickname);
+    io.emit('onlinePlayersStatus', activePlayers);
   });
 
   // convida um jogador para um novo jogo caso o jogador esteja online
@@ -99,21 +94,28 @@ io.on("connection", (socket) => {
   });
 
   socket.on('playAgain', () => {
-    const creator = activePlayers.find(player => player.id == socket.id);
+    const playerWillStarterNow = activePlayers.find(player => player.id == socket.id);
 
-    if (creator) {
+    if (playerWillStarterNow) {
       for (let i = 0; i < activeGames.length; i++) {
-      
         const game = activeGames[i];
 
-        if (creator == game.creator) {
-          activeGames[i] = new jogoDaVelha(creator, game.guest);
+        if (playerWillStarterNow == game.creator || playerWillStarterNow == game.guest) {
+          activeGames[i].resetGame(playerWillStarterNow)
           sendGamestage(game.creator.id, game.guest.id, activeGames[i])
-        } else if (creator == game.guest) {
-          activeGames[i] = new jogoDaVelha(creator, game.creator);
-          sendGamestage(game.creator.id, game.guest.id, activeGames[i])
-        }
+        } 
       }
+    }
+  })
+
+  // Remove o jogo associado ao id do player que fez a solicitacao
+  socket.on('endGame', () => {
+    const gameIndex = activeGames.findIndex(game => game.creator.id === socket.id || game.guest.id === socket.id);
+    if (gameIndex !== -1) {
+      const disconnectedGame = activeGames.splice(gameIndex, 1)[0];
+      console.log('Jogo encerrado entre: ' + disconnectedGame.creator.nickname + ' e ' + disconnectedGame.guest.nickname);
+      io.to(disconnectedGame.creator.id).emit("backToLobby");
+      io.to(disconnectedGame.guest.id).emit("backToLobby");
     }
   })
 
@@ -135,10 +137,6 @@ io.on("connection", (socket) => {
     // // Emitir um evento para notificar outros jogadores ou partes interessadas
     // io.emit("playerDisconnected", { playerId: socket.id, nickname: disconnectedPlayer.nickname });
   });
-
 });
 
-const port = 3000;
-server.listen(port, () => {
-  console.log(`Servidor rodando no link http://localhost:${port}`);
-});
+

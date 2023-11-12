@@ -3,26 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Homepage</title>
+    <title>Super Tic Tac Toe</title>
     <link rel="stylesheet" href="/stylesheets/home.css">
 </head>
 <body>
     <header>
-        <div class="container" id="container">
-            <h1>Jogo da velha online</h1>
-            <nav>
-                <ul>
-                  <a href="http://localhost:3000/login">Login</a><br>
-                  <a href="http://localhost:3000/register">Register</a>
-            </nav>
-        </div>
+        <a href="http://localhost:3000/" id="contactLink">Home</a>
+        <a href="#" id="contactLink">Contact</a>
+        <a href="#about" id="aboutLink">About</a>
     </header>
-    
-    <section class="content">
-        <div class="container">
-            <p>Bem-vindo ao jogo da velha online, crie uma conta ou faça login para começar.</p>
+
+    <main>
+        <div class="logo">
+            <h1>Super <br> Tic Tac Toe</h1>
         </div>
-    </section>
+
+        <div class="buttons">
+            <a href="http://localhost:3000/login">Login</a>
+            <a href="http://localhost:3000/register">Register</a>
+        </div>
+
+        <div class="about" id="about">
+            <h2>About Super Tic Tac Toe</h2>
+            <p>This is a simple example of a Super Tic Tac Toe website.</p>
+        </div>
+    </main>
+
     <script src="/javascript/home.js"></script>
 </body>
 </html>

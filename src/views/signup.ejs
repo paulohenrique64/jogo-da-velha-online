@@ -3,29 +3,36 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Página de Registro</title>
+    <title>Register</title>
     <link rel="stylesheet" href="/stylesheets/signup.css">
   </head>
   <body>
-    <div class="container" id="container">
-      <form action="http://localhost:3000/register/user" id="form" method="post">
-        <h1>Registro de Usuário</h1>
-        <label for="name">Nome:</label>
-        <input type="text" name="name" required />
-
-        <label for="name">Nickname:</label>
-        <input type="text" name="nickname" required />
-
-        <label for="email">E-mail:</label>
-        <input type="email" name="email" required />
-
-        <label for="password">Senha:</label>
-        <input type="password" name="password" required />
-
-        <button type="submit" class="submit">
-          Confirmar Registro
-        </button>
-        <p>Já possui uma conta? <a href="http://localhost:3000/login">Faça login</a></p>
+    <header>
+      <a href="http://localhost:3000/" id="contactLink">Home</a>
+    </header>
+    <div class="main-register">
+      <div class="left-register">
+        <h1>Faça register<br>E comece a jogar</h1>
+      </div>
+      <form action="http://localhost:3000/register/user/" id="form" method="post">
+        <div class="right-register">
+          <div class="card-register">
+            <h1>register</h1>
+            <div class="text-field">
+              <label for="nickname">Nickname</label>
+              <input type="text" name="nickname" placeholder="nickname">
+            </div>
+            <div class="text-field">
+              <label for="email">Email</label>
+              <input type="text" name="email" placeholder="email">
+            </div>
+            <div class="text-field">
+              <label for="password">Senha</label>
+              <input type="password" name="password" placeholder="Senha">
+            </div>
+            <button type="submit" class="btn-register">register</button>
+          </div>
+        </div>
       </form>
     </div>
     <script src="/javascript/signup.js"></script>
