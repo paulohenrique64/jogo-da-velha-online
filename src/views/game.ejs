@@ -48,8 +48,20 @@
                 </div>
             </div>
         </div>
-        <div class="chat-container">
-            <div class="chat"></div>
+        <div class="chat">
+          <div class="box-questions">
+            <div class="header-chat">
+              <p>Chat</p>
+            </div>
+            <p id="status"></p>
+            <div id="history">
+              <!-- Aqui vai o chat gerado conforme as respostas -->
+            </div>
+            <div class="footer">
+              <input class="message-input" type="text" id="message-input" placeholder="Digite aqui">
+              <button class="btn-submit" id="btn-submit" onclick="sendMessage()">Enviar</button>
+            </div>
+          </div>
         </div>
     </div>
   </div>

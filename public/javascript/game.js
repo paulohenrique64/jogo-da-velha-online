@@ -34,10 +34,11 @@ socket.on('inviteError', res =>{
   // criar caixa de texto no site informando o erro
 })  
 
-// atualizar o jogo do cliente de acordo com o servidor
-socket.on('gameStatus', (match) => {
-  console.log(match)
+socket.on('startGameStatus', (match) => {
+  var historyBox = document.getElementById('history');
+  historyBox.innerHTML = '';
 
+  console.log('jogo começou')
   divLobby.style.display = 'none';
   divGame.style.display = 'block';
   divPlacar.innerHTML = `
@@ -49,8 +50,10 @@ socket.on('gameStatus', (match) => {
     <img src="/images/profilephoto.png" alt="Profile Photo" class="placar-profile-img">
     <h1  class="placar-player-name">${match.guest.nickname}</h1>
   </div> `;
+})
 
-  // continuacao
+// atualizar o jogo do cliente de acordo com o servidor
+socket.on('gameStatus', (match) => {
   for (let i = 0; i < 3; i++) {
     for (let j = 0; j < 3; j++) {
       if (match.gamestate[i][j]) {
@@ -68,33 +71,27 @@ socket.on('gameStatus', (match) => {
       }
     }
   }
-
-  if (match.winner) {
-    console.log('Vencedor: ' + match.winner);
-  } else if (match.tie) {
-    console.log('Empate');
-  }
-
-  if (match.winner || match.tie) {
-    divPlacar.innerHTML = `
-    <div class="end-placar-container">
-      <div class="end-placar">
-        <h1 class="winner">Jogador ${match.winner.nickname} venceu o jogo</h1>
-        <div class="end-game-buttons">
-          <button class="end-game-button" id="playAgain">Jogar novamente</button>
-          <button class="end-game-button" id="leaveParty">Sair da party</button>
-      </div>
-    </div>`;
-
-    const playAgainButton = document.querySelector('#playAgain').addEventListener('click', ( () => {
-      socket.emit('playAgain');
-    }))
-
-    const leavePartyButton = document.querySelector('#leaveParty').addEventListener('click', () => {
-      socket.emit('endGame')
-    })
-  }
 });
+
+socket.on('endGameStage', (match) => {
+  divPlacar.innerHTML = `
+  <div class="end-placar-container">
+    <div class="end-placar">
+      <h1 class="winner">Jogador ${match.winner.nickname} venceu o jogo</h1>
+      <div class="end-game-buttons">
+        <button class="end-game-button" id="playAgain">Jogar novamente</button>
+        <button class="end-game-button" id="leaveParty">Sair da party</button>
+    </div>
+  </div>`;
+
+  const playAgainButton = document.querySelector('#playAgain').addEventListener('click', ( () => {
+    socket.emit('playAgain');
+  }))
+
+  const leavePartyButton = document.querySelector('#leaveParty').addEventListener('click', () => {
+    socket.emit('endGame')
+  })
+})
 
 socket.on('backToLobby', () => {
   divLobby.style.display = 'flex';
@@ -103,7 +100,10 @@ socket.on('backToLobby', () => {
 
 function main() {
   socket.emit('activePlayer', userNickname);
-  document.querySelector('.all').classList.add('hidden');
+  divGame.style.display = 'none';
+
+  // divGame.style.display = 'block';
+  // divLobby.style.display = 'none';
 
   for (let i = 0; i < 3; i++) {
     buttons.push([]);
@@ -119,6 +119,51 @@ function main() {
 }
 
 main()
+
+// chat test
+function sendMessage() {
+  const inputMessage = document.querySelector('#message-input');
+  socket.emit('message', inputMessage.value);
+  inputMessage.value = '';
+}
+
+socket.on('updateMessage', (message, nick) => {
+  addMessage(message, nick);
+})
+
+function addMessage(message, nick) {
+  var historyBox = document.getElementById('history')
+
+  // My message
+  if (userNickname === nick) {
+    var boxMyMessage = document.createElement('div')
+    boxMyMessage.className = 'box-my-message'
+
+    var myMessage = document.createElement('p')
+    myMessage.className = 'my-message'
+    myMessage.innerHTML = message
+
+    boxMyMessage.appendChild(myMessage)
+
+    historyBox.appendChild(boxMyMessage)
+  } else {
+    // Response message
+    var boxResponseMessage = document.createElement('div')
+    boxResponseMessage.className = 'box-response-message'
+
+    var chatResponse = document.createElement('p')
+    chatResponse.className = 'response-message'
+    chatResponse.innerHTML = message
+
+    boxResponseMessage.appendChild(chatResponse)
+
+    historyBox.appendChild(boxResponseMessage)
+  }
+
+  // Levar scroll para o final
+  historyBox.scrollTop = historyBox.scrollHeight
+}
+
 
 
 
