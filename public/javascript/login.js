@@ -1,9 +1,10 @@
 const urlLogin = "http://localhost:3000/login/user";
+const form = document.getElementById('form');
+const spans  = document.querySelectorAll('.span-required');
+const campos = document.querySelectorAll('.required');
 
-document.getElementById('form').addEventListener('submit', handleFormSubmit)
-
-function handleFormSubmit() {
-  const formData = new FormData(document.getElementById('form'))
+form.addEventListener('submit', () => {
+  const formData = new FormData(form)
   const user = {};
   formData.forEach((value, key) => {
     user[key] = value;
@@ -19,14 +20,14 @@ function handleFormSubmit() {
 
   fetch(urlLogin, optionsForLogin)
     .then(response => {
-      response.json()
-        .then(responseJson => {
-          let token = responseJson.token;
-          console.log(token)
-        })
+      console.log(response.status)
     })
     .catch(error => {
       console.log(error)
-    })
-}
+  })
+})
+
+
+
+
 

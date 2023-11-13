@@ -42,13 +42,26 @@ socket.on('startGameStatus', (match) => {
   divLobby.style.display = 'none';
   divGame.style.display = 'block';
   divPlacar.innerHTML = `
-  <div class="placar">
-    <h1 class="placar-player-name">${match.creator.nickname}</h1>
-    <img src="/images/profilephoto.png" alt="Profile Photo" class="placar-profile-img">
-    <h1 class="placar-point1">${match.creator.points}</h1>
-    <h1 class="placar-point2">${match.guest.points}</h1>
-    <img src="/images/profilephoto.png" alt="Profile Photo" class="placar-profile-img">
-    <h1  class="placar-player-name">${match.guest.nickname}</h1>
+  <div class="placar1">
+
+    <img src="/images/comp-cat1.jpg" alt="Profile Photo" class="placar-profile-img">
+    <div class="placar-data">
+      <h1>CompCat 1</h1>
+      <h1 class="placar-player-name1">${match.creator.nickname}</h1>
+      <h1 class="placar-point1">Score: ${match.creator.points}</h1>
+    </div>
+
+  </div>
+
+  <div class="placar2">
+  
+    <div class="placar-data">
+      <h1 class="player2">CompCat 2</h1>
+      <h1 class="placar-player-name2">${match.guest.nickname}</h1>
+      <h1 class="placar-point2">Score: ${match.guest.points}</h1>
+    </div>
+    <img src="/images/comp-cat2.jpg" alt="Profile Photo" class="placar-profile-img">
+
   </div> `;
 })
 

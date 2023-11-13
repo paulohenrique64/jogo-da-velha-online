@@ -25,37 +25,39 @@ const loginPage = (req, res) => {
 const loginUser = (req, res) => {
   const {email, password} = req.body;
 
-  User.findOne({email}).select('+password').then(user => {
-    if (user) {
-      bcrypt.compare(password, user.password).then(result => {
-        if (result) {
-
-          // se usuario for logado: gera um token e redireciona para a pagina do jogo
-          // o token pode ser capturado pela pagina
-          const token = generateToken({uid: user.id})
-          const filePath = path.join(__dirname, '../views/game')
-          user.password = undefined
-
-          // envia o token como cookie para nao precisar fazer login depois
-          res.cookie('token', token, { maxAge: 3600000, httpOnly: true, secure: false});
-          req.error = 'teste';
-
-          return res.redirect('/game')
-        } else {
-          req.error = 'invalid password'
-          return res.status(400).redirect('/login')
-        }
-      })
-    } else {
-      req.error = 'Invalid email'
-      return res.status(400).redirect('/login')
-    }
-
-  }).catch(error => {
-    console.error(error)
-    req.error = 'Internal server error'
-    return res.status(500).redirect('/login')
-  })
+  if (email && password) {
+    User.findOne({email}).select('+password').then(user => {
+      if (user) {
+        bcrypt.compare(password, user.password).then(result => {
+          if (result) {
+  
+            // se usuario for logado: gera um token e redireciona para a pagina do jogo
+            // o token pode ser capturado pela pagina
+            const token = generateToken({uid: user.id})
+            const filePath = path.join(__dirname, '../views/game')
+            user.password = undefined
+  
+            // envia o token como cookie para nao precisar fazer login depois
+            res.cookie('token', token, { maxAge: 3600000, httpOnly: true, secure: false});
+            return res.status(201).redirect('/game')
+          } else {
+            // password invalida
+            return res.redirect('/login')
+          }
+        })
+      } else {
+        // email invalido
+        return res.redirect('/login')
+      }
+    }).catch(error => {
+      // internal server error
+      console.error(error)
+      return res.redirect('/login')
+    })
+  } else {
+    // solicitacao invalida, sem email e senha
+    return res.redirect('/login')
+  }
 }
 
 // retorna a pagina de registro
@@ -66,26 +68,30 @@ const registerPage = (req, res) => {
 
 // faz o registro de um usuario no site 
 const registerUser = (req, res) => {
-  const {name, nickname, email, password} = req.body;
+  const {nickname, email, password} = req.body;
+
+  if (nickname.length < 3) {
+    return res.status(401).send({error: 'Your nickname must be higher or equal than 3 caracters'})
+  }
 
   if (password.length < 8) {
-    return res.status(400).send({error: 'Your password must be higher or equal than 8 caracters'})
+    return res.status(401).send({error: 'Your password must be higher or equal than 8 caracters'})
   }
 
   User.findOne({email}).then(userFoundByEmail => {
     if (userFoundByEmail) {
-      return res.status(400).send({error: 'Email already registred'});
+      return res.status(401).send({error: 'Email already registred'});
     } else {
       User.findOne({nickname}).then(userFoundByNickname => {
 
         if (userFoundByNickname) {
-          return res.status(400).send({error: 'Nickname already registred'});
+          return res.status(401).send({error: 'Nickname already registred'});
         } else {
-          User.create({name, nickname, email, password}).then(userCreated => {
-            return res.status(200).send({message: 'Usuário registrado com sucesso'});
+          User.create({nickname, email, password}).then(userCreated => {
+            return res.status(201).send({message: 'Usuário registrado com sucesso'});
           }).catch(error => {
             console.error('Erro ao salvar usuario: ', error);
-            return res.status(400).send({error: 'Registration failed'});
+            return res.status(401).send({error: 'Registration failed'});
           })
         }
 

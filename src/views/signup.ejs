@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Register</title>
-    <link rel="stylesheet" href="/stylesheets/signup.css">
+    <link rel="stylesheet" href="/stylesheets/signup.css" />
   </head>
   <body>
     <header>
@@ -12,25 +12,36 @@
     </header>
     <div class="main-register">
       <div class="left-register">
-        <h1>Faça register<br>E comece a jogar</h1>
+        <h1>Crie uma conta<br />e comece a jogar</h1>
       </div>
-      <form action="http://localhost:3000/register/user/" id="form" method="post">
+      <form
+        action="http://localhost:3000/register/user/"
+        id="form"
+        method="post"
+      >
         <div class="right-register">
           <div class="card-register">
-            <h1>register</h1>
+            <h1>Register</h1>
             <div class="text-field">
               <label for="nickname">Nickname</label>
-              <input type="text" name="nickname" placeholder="nickname">
+              <input class="required" type="text" name="nickname" placeholder="nickname" />
+              <span class="span-required span-required-error">Nickname deve ter no mínimo 3 caracteres</span>
             </div>
             <div class="text-field">
               <label for="email">Email</label>
-              <input type="text" name="email" placeholder="email">
+              <input class="required" type="text" name="email" placeholder="email" />
+              <span class="span-required span-required-error">Digite um email válido</span>
             </div>
             <div class="text-field">
               <label for="password">Senha</label>
-              <input type="password" name="password" placeholder="Senha">
+              <input class="required" type="password" name="password" placeholder="Senha" />
+              <span class="span-required span-required-error">Senha deve ter no mínimo 8 caracteres</span>
             </div>
             <button type="submit" class="btn-register">register</button>
+            <p>
+              Já possui uma conta?
+              <a href="http://localhost:3000/login/">Faça login</a>
+            </p>
           </div>
         </div>
       </form>
