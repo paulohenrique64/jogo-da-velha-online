@@ -17,13 +17,14 @@ socket.on('onlinePlayersStatus', activePlayers => {
       const li = document.createElement('li')
       const invitePlayerButton = document.createElement('button');
       invitePlayerButton.textContent = 'Invite Player';
-      invitePlayerButton.className = player.nickname;
+      invitePlayerButton.id = player.nickname;
+      invitePlayerButton.className = 'invite-player-button'
       li.textContent = player.nickname;
       li.appendChild(invitePlayerButton);
       ul.appendChild(li);
 
       invitePlayerButton.addEventListener('click', () =>{
-        socket.emit('invitePlayer', invitePlayerButton.className)
+        socket.emit('invitePlayer', invitePlayerButton.id)
       })
     }
   });
@@ -38,30 +39,38 @@ socket.on('startGameStatus', (match) => {
   var historyBox = document.getElementById('history');
   historyBox.innerHTML = '';
 
-  console.log('jogo começou')
+  socket.removeAllListeners('updateMessage');
+
+  socket.on('updateMessage', (message, nick) => {
+    addMessage(message, nick);
+  })
+
+  if (userNickname === match.creator.nickname) {
+    var user = { points: match.creator.points, point: match.creator.point }
+    var oponnent = { nickname: match.guest.nickname, points: match.guest.points, point: match.guest.point }
+  } else {
+    var user = { points: match.guest.points, point: match.guest.point }
+    var oponnent = { nickname: match.creator.nickname, points: match.creator.points, point: match.creator.point }
+  }
+
   divLobby.style.display = 'none';
   divGame.style.display = 'block';
   divPlacar.innerHTML = `
   <div class="placar1">
-
     <img src="/images/comp-cat1.jpg" alt="Profile Photo" class="placar-profile-img">
-    <div class="placar-data">
-      <h1>CompCat 1</h1>
-      <h1 class="placar-player-name1">${match.creator.nickname}</h1>
-      <h1 class="placar-point1">Score: ${match.creator.points}</h1>
+    <div class="placar-data1">
+      <h1>CompCat ${user.point} (You)</h1>
+      <h1 class="placar-player-name1">${userNickname}</h1>
+      <h1 class="placar-point1">Score: ${user.points}</h1>
     </div>
-
   </div>
-
   <div class="placar2">
-  
-    <div class="placar-data">
-      <h1 class="player2">CompCat 2</h1>
-      <h1 class="placar-player-name2">${match.guest.nickname}</h1>
-      <h1 class="placar-point2">Score: ${match.guest.points}</h1>
+    <div class="placar-data2">
+      <h1 class="player2">CompCat ${oponnent.point}</h1>
+      <h1 class="placar-player-name2">${oponnent.nickname}</h1>
+      <h1 class="placar-point2">Score: ${oponnent.points}</h1>
     </div>
     <img src="/images/comp-cat2.jpg" alt="Profile Photo" class="placar-profile-img">
-
   </div> `;
 })
 
@@ -70,19 +79,25 @@ socket.on('gameStatus', (match) => {
   for (let i = 0; i < 3; i++) {
     for (let j = 0; j < 3; j++) {
       if (match.gamestate[i][j]) {
-        buttons[i][j].textContent = match.gamestate[i][j].point;
-
-        // botao fica verde para quem marca e vermelho para o oponente
-        if (userNickname == match.gamestate[i][j].nickname) {
-          buttons[i][j].style.backgroundColor = "green";
-        } else {
-          buttons[i][j].style.backgroundColor = "red";
-        }
+        buttons[i][j].innerHTML = match.gamestate[i][j].point;
       } else {
-        buttons[i][j].textContent = '';
-        buttons[i][j].style.backgroundColor = "gray";
+        buttons[i][j].innerHTML = '';
       }
     }
+  }
+
+  if  (userNickname === match.currentPlayer.nickname) {
+    document.querySelector('.placar1').style.backgroundColor = '#00ff88'; // azul claro
+    document.querySelector('.placar2').style.backgroundColor = '#201b2c'; 
+
+    document.querySelector('.placar-data1').style.color = '#201b2c'
+    document.querySelector('.placar-data2').style.color = '#cccccc'
+  } else {
+    document.querySelector('.placar1').style.backgroundColor = '#201b2c'; // azul escuro
+    document.querySelector('.placar2').style.backgroundColor = '#00ff88'; 
+
+    document.querySelector('.placar-data1').style.color = '#cccccc'
+    document.querySelector('.placar-data2').style.color = '#201b2c'
   }
 });
 
@@ -90,7 +105,7 @@ socket.on('endGameStage', (match) => {
   divPlacar.innerHTML = `
   <div class="end-placar-container">
     <div class="end-placar">
-      <h1 class="winner">Jogador ${match.winner.nickname} venceu o jogo</h1>
+      <h1 class="winner">${match.winner.nickname} venceu o jogo!</h1>
       <div class="end-game-buttons">
         <button class="end-game-button" id="playAgain">Jogar novamente</button>
         <button class="end-game-button" id="leaveParty">Sair da party</button>
@@ -139,10 +154,6 @@ function sendMessage() {
   socket.emit('message', inputMessage.value);
   inputMessage.value = '';
 }
-
-socket.on('updateMessage', (message, nick) => {
-  addMessage(message, nick);
-})
 
 function addMessage(message, nick) {
   var historyBox = document.getElementById('history')

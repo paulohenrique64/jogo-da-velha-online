@@ -9,6 +9,33 @@ body {
   justify-content: center;
 }
 
+.invite-player-button {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  display: inline-block;
+  margin: 0px 10px 0px;
+  text-decoration: none;
+  color: #f0ffffde;
+  font-weight: bold;
+  width: 250px; /* Largura fixa para ambos os botões */
+  padding: 10px;
+  border-radius: 15px;
+  outline: none;
+  text-transform: uppercase;
+  font-size: 15pt;
+  background: #00ff88;
+  cursor: pointer;
+  box-shadow: 0px 10px 40px -12px #00ff8052;
+}
+
+.invite-player-button:hover {
+  background: #77ffc0;
+  color: #201b2c;
+}
+
 .block {
   position: fixed;
   width: 55%;
@@ -100,14 +127,16 @@ header a:hover {
 
 .cell {
   flex: 1;
-  padding: 70px;
+  width: 140px;
+  height: 140px;
   margin: 2px;
-  font-size: 10px;
+  font-size: 120px;
   background-color: #201b2c;
   color: #f0ffffde;
   border: none;
   cursor: pointer;
   border-radius: 5px;
+  box-shadow: 0px -5px 15px 0px rgba(0, 0, 0, 0.5);
 }
 
 #logoutForm {
@@ -132,6 +161,7 @@ header a:hover {
   justify-content: left;
   margin-bottom: 3%;
   margin-right: 0%;
+  box-shadow: 0px -5px 15px 0px rgba(0, 0, 0, 0.5);
 }
 
 .placar2 {
@@ -146,15 +176,23 @@ header a:hover {
   justify-content: right;
   margin-bottom: 3%;
   margin-left: 1%;
+  box-shadow: 0px -5px 15px 0px rgba(0, 0, 0, 0.5);
 }
 
-.placar-data {
-  margin: 2%
-}
-
-.placar-data > * {
-  margin: 0;
+.placar-data1 { 
+  margin: 2%;
   color: #cccccc;
+  font-size: 15px;
+}
+
+.placar-data2 {
+  margin: 2%;
+  color: #cccccc;
+  font-size: 15px;
+}
+
+.placar-data1 > *, .placar-data2 > * {
+  margin: 0;
 }
 
 .player2, .placar-player-name2, .placar-point2 {
@@ -185,6 +223,8 @@ header a:hover {
   border-radius: 10px;
   justify-content: center; /* Centraliza os elementos no eixo principal */
   align-items: center; /* Centraliza os elementos no eixo transversal */
+  color: #cccccc;
+  box-shadow: 0px -5px 15px 0px rgba(0, 0, 0, 0.5);
 }
 
 .end-game-buttons {
@@ -251,6 +291,7 @@ header a:hover {
   width: 500px;
   border-radius: 10px;
   text-align: center;
+  box-shadow: 0px -5px 15px 0px rgba(0, 0, 0, 0.5);
 }
 
 .header-chat{
