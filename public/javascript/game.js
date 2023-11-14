@@ -8,49 +8,51 @@ const buttons = [];
 
 playAgainButton.textContent = 'Play Again'; 
 
-socket.on('onlinePlayersStatus', activePlayers => {
-  // update players online list
-  ul.innerHTML = '';
+// socket.on('onlinePlayerList', activePlayers => {
+//   // update players online list
+//   ul.innerHTML = '';
 
-  activePlayers.forEach(player => {
-    if (player.nickname !== userNickname) {
-      const li = document.createElement('li')
-      const invitePlayerButton = document.createElement('button');
-      invitePlayerButton.textContent = 'Invite Player';
-      invitePlayerButton.id = player.nickname;
-      invitePlayerButton.className = 'invite-player-button'
-      li.textContent = player.nickname;
-      li.appendChild(invitePlayerButton);
-      ul.appendChild(li);
+//   activePlayers.forEach(player => {
+//     if (player.nickname !== userNickname) {
+//       const li = document.createElement('li')
+//       const invitePlayerButton = document.createElement('button');
+//       invitePlayerButton.textContent = 'Invite Player';
+//       invitePlayerButton.id = player.nickname;
+//       invitePlayerButton.className = 'invite-player-button'
+//       li.textContent = player.nickname;
+//       li.appendChild(invitePlayerButton);
+//       ul.appendChild(li);
 
-      invitePlayerButton.addEventListener('click', () =>{
-        socket.emit('invitePlayer', invitePlayerButton.id)
-      })
-    }
-  });
-})
+//       invitePlayerButton.addEventListener('click', () =>{
+//         socket.emit('createParty', invitePlayerButton.id)
+//         var historyBox = document.getElementById('history');
+//         historyBox.innerHTML = '';
+//       })
+//     }
+//   });
+// })
 
 socket.on('inviteError', res =>{
   // inputopponentNickname.placeholder = res.message;
   // criar caixa de texto no site informando o erro
 })  
 
-socket.on('startGameStatus', (match) => {
-  var historyBox = document.getElementById('history');
-  historyBox.innerHTML = '';
+socket.on('startGameStatus', (match, creatorPlayerData, guestPlayerData) => {
 
   socket.removeAllListeners('updateMessage');
-
   socket.on('updateMessage', (message, nick) => {
     addMessage(message, nick);
   })
 
+  console.log(creatorPlayerData)
+  console.log(guestPlayerData)
+
   if (userNickname === match.creator.nickname) {
-    var user = { points: match.creator.points, point: match.creator.point }
-    var oponnent = { nickname: match.guest.nickname, points: match.guest.points, point: match.guest.point }
+    var user = { points: match.creator.points, point: match.creator.point, wins: creatorPlayerData.wins }
+    var oponnent = { nickname: match.guest.nickname, points: match.guest.points, point: match.guest.point, wins: guestPlayerData.wins }
   } else {
-    var user = { points: match.guest.points, point: match.guest.point }
-    var oponnent = { nickname: match.creator.nickname, points: match.creator.points, point: match.creator.point }
+    var user = { points: match.guest.points, point: match.guest.point, wins: guestPlayerData.wins }
+    var oponnent = { nickname: match.creator.nickname, points: match.creator.points, point: match.creator.point, wins: creatorPlayerData.wins }
   }
 
   divLobby.style.display = 'none';
@@ -60,15 +62,17 @@ socket.on('startGameStatus', (match) => {
     <img src="/images/comp-cat1.jpg" alt="Profile Photo" class="placar-profile-img">
     <div class="placar-data1">
       <h1>CompCat ${user.point} (You)</h1>
-      <h1 class="placar-player-name1">${userNickname}</h1>
-      <h1 class="placar-point1">Score: ${user.points}</h1>
+      <h1>${userNickname}</h1>
+      <h1>Score: ${user.points}</h1>
+      <h1>Wins: ${user.wins}</h1>
     </div>
   </div>
   <div class="placar2">
     <div class="placar-data2">
-      <h1 class="player2">CompCat ${oponnent.point}</h1>
-      <h1 class="placar-player-name2">${oponnent.nickname}</h1>
-      <h1 class="placar-point2">Score: ${oponnent.points}</h1>
+      <h1>CompCat ${oponnent.point}</h1>
+      <h1>${oponnent.nickname}</h1>
+      <h1>Score: ${oponnent.points}</h1>
+      <h1>Wins: ${oponnent.wins}</h1>
     </div>
     <img src="/images/comp-cat2.jpg" alt="Profile Photo" class="placar-profile-img">
   </div> `;
@@ -86,18 +90,27 @@ socket.on('gameStatus', (match) => {
     }
   }
 
-  if  (userNickname === match.currentPlayer.nickname) {
-    document.querySelector('.placar1').style.backgroundColor = '#00ff88'; // azul claro
-    document.querySelector('.placar2').style.backgroundColor = '#201b2c'; 
+  const placar1 = document.querySelector('.placar1');
+  const placar2 = document.querySelector('.placar2');
+  const placarData1 = document.querySelector('.placar-data1');
+  const placarData2 = document.querySelector('.placar-data2');
 
-    document.querySelector('.placar-data1').style.color = '#201b2c'
-    document.querySelector('.placar-data2').style.color = '#cccccc'
+
+  if (placar1 && placar2 && placarData1 && placarData2) {
+    if  (userNickname === match.currentPlayer.nickname) {
+      placar1.style.backgroundColor = '#00ff88'; // azul claro
+      placar2.style.backgroundColor = '#201b2c'; 
+      placarData1.style.color = '#201b2c'
+      placarData2.style.color = '#cccccc'
+    } else {
+      placar1.style.backgroundColor = '#201b2c'; // azul escuro
+      placar2.style.backgroundColor = '#00ff88'; 
+
+      placarData1.style.color = '#cccccc'
+      placarData2.style.color = '#201b2c'
+    }
   } else {
-    document.querySelector('.placar1').style.backgroundColor = '#201b2c'; // azul escuro
-    document.querySelector('.placar2').style.backgroundColor = '#00ff88'; 
-
-    document.querySelector('.placar-data1').style.color = '#cccccc'
-    document.querySelector('.placar-data2').style.color = '#201b2c'
+    console.log('placars are not in the DOM yet')
   }
 });
 
@@ -127,7 +140,7 @@ socket.on('backToLobby', () => {
 })
 
 function main() {
-  socket.emit('activePlayer', userNickname);
+  socket.emit('newOnlinePlayer', userNickname);
   divGame.style.display = 'none';
 
   // divGame.style.display = 'block';

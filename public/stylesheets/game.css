@@ -1,12 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap');
+
 body {
   font-family: 'Noto Sans', sans-serif;
   margin: 0;
   padding: 0;
-}
-
-.lobby {
-  display: flex;
-  justify-content: center;
 }
 
 .invite-player-button {
@@ -18,14 +15,14 @@ body {
   display: inline-block;
   margin: 0px 10px 0px;
   text-decoration: none;
-  color: #f0ffffde;
+  color: #201b2c;
   font-weight: bold;
-  width: 250px; /* Largura fixa para ambos os botões */
+  width: 200px; 
   padding: 10px;
   border-radius: 15px;
   outline: none;
   text-transform: uppercase;
-  font-size: 15pt;
+  font-size: 10pt;
   background: #00ff88;
   cursor: pointer;
   box-shadow: 0px 10px 40px -12px #00ff8052;
@@ -36,18 +33,79 @@ body {
   color: #201b2c;
 }
 
-.block {
-  position: fixed;
-  width: 55%;
-  height: 75vh;
+.lobby {
   display: flex;
-  background-color: #201b2c;
-  z-index: 1000;
-  margin: 3%;
+  justify-content: center;
+  flex-direction: row;
+  background: #def4fa;
+  height: 100%;
+  width: 100%;
+}
+
+.block {
+  margin-top: 5%;
+  background: url(/images/card2.jpg);
+  background-size: 130%;
+  background-position: center;
+  color: var(--dark);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 400px;
+  height: 600px;
   border-radius: 10px;
+  text-align: center;
+  box-shadow: 0px -5px 15px 0px rgba(0, 0, 0, 0.5);
+  margin-left: 2%;
+}
+
+.header-block {
+  /* background-color: var(--purple);  */
+  margin-top: 80%;
+  color: var(--white);
+  border-radius: 0 0 0 0;
+  font-size: 0.8rem;
+  height: 7%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.header-block input {
+  margin-top: 10%;
+  width: 73%;
+  padding: 2.5%;
+  font-size: 25px;
+  text-align: center;
+  border-radius: 10px;
+  background: #ade4f3;
+  box-shadow: 0px 10px 40px -12px #00ff8052;
+  letter-spacing: 2.5px;
+  font-family: 'Noto Sans', sans-serif;
+  font-weight: 800;
+  border: none;
+}
+
+.header-block button {
+  margin-top: 10%;
+  width: 80%;
+  padding: 2%;
+  outline: none;
+  font-size: 30px;
+  font-weight: 800;
+  border-radius: 10px;
+  font-family: 'Noto Sans', sans-serif;
+  background: #ade4f3;
+  box-shadow: 0px 10px 40px -12px #00ff8052;
+  cursor: pointer;
+  color: #2b134b;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  border: none;
 }
 
 .player-list {
+  margin-top: 2%;
   color: #f0ffffde;
   padding: 20px;
   overflow: auto; /* Adiciona rolagem à lista */
@@ -182,20 +240,19 @@ header a:hover {
 .placar-data1 { 
   margin: 2%;
   color: #cccccc;
-  font-size: 15px;
 }
 
 .placar-data2 {
   margin: 2%;
   color: #cccccc;
-  font-size: 15px;
 }
 
 .placar-data1 > *, .placar-data2 > * {
   margin: 0;
+  font-size: 22px;
 }
 
-.player2, .placar-player-name2, .placar-point2 {
+.placar-data2 > * {
   text-align: right;
 }
 

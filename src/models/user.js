@@ -30,6 +30,10 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
+  wins: {
+    type: Number,
+    default: 0
+  }
 })
 
 // a senha sera salva no banco de dados encriptografada

@@ -9,7 +9,6 @@
 </head>
 <body>
   <script>
-    // Crie uma variável JavaScript para armazenar o valor de userdata.nickname
     var userNickname = "<%= userdata.nickname %>";
   </script>
   <div>
@@ -20,9 +19,10 @@
   </div>
   <div class="lobby" id="lobby">
     <div class="block">
-      <div class="player-list">
-        <h2>Jogadores Online</h2>
-        <ul id="player-list">
+      <div class="header-block">
+        <input placeholder="FRIEND NICKNAME" type="text">
+        <button>start game</button>
+      </div>
       </div>
     </div>
   </div>
@@ -55,7 +55,6 @@
             </div>
             <p id="status"></p>
             <div id="history">
-              <!-- Aqui vai o chat gerado conforme as respostas -->
             </div>
             <div class="footer">
               <input class="message-input" type="text" id="message-input" placeholder="Digite aqui">

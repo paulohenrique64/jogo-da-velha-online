@@ -13,7 +13,7 @@ import { getGamePage } from '../controllers/game'
 import { authMiddleware } from "../middlewares/auth";
 import { noAuthMiddleware } from "../middlewares/auth";
 
-router.get("/", getHomepage)                     // get home page
+router.get("/", getHomepage)                                       // get home page
 router.get("/login", noAuthMiddleware, loginPage);                 // get login page
 router.get("/register", registerPage);                             // get register page
 router.get("/game", authMiddleware, getGamePage);                  // get game page
