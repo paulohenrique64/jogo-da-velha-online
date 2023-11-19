@@ -64,6 +64,7 @@ socket.on('startGameStatus', (match, creatorPlayerData, guestPlayerData) => {
 
   divLobby.style.display = 'none';
   divGame.style.display = 'flex';
+  divPlacar.style.display = 'flex';
   divPlacar.innerHTML = `
   <div class="placar1">
     <img src="/images/comp-cat1.jpg" alt="Profile Photo" class="placar-profile-img">
@@ -140,6 +141,7 @@ socket.on('endGameStage', (match) => {
 socket.on('backToLobby', () => {
   divLobby.style.display = 'flex';
   divGame.style.display = 'none';
+  divPlacar.style.display = 'none';
 })
 
 function main() {

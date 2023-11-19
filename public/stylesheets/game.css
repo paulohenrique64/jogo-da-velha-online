@@ -4,42 +4,17 @@ body {
   font-family: 'Noto Sans', sans-serif;
   margin: 0;
   padding: 0;
-}
-
-.invite-player-button {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  margin: 0;
-  display: inline-block;
-  margin: 0px 10px 0px;
-  text-decoration: none;
-  color: #201b2c;
-  font-weight: bold;
-  width: 200px; 
-  padding: 10px;
-  border-radius: 15px;
-  outline: none;
-  text-transform: uppercase;
-  font-size: 10pt;
-  background: #00ff88;
-  cursor: pointer;
-  box-shadow: 0px 10px 40px -12px #00ff8052;
-}
-
-.invite-player-button:hover {
-  background: #77ffc0;
-  color: #201b2c;
+  min-width: 100vh;
 }
 
 .lobby {
   display: flex;
   justify-content: center;
+  align-items: center;
   flex-direction: row;
   background: #def4fa;
-  min-height: 94.1vh;
-  min-width: 100vh;
+  min-height: 94vh;
+  width: 100%;
 }
 
 .block {
@@ -212,7 +187,7 @@ body {
 }
 
 header {
-  min-width: 100vh;
+  max-width: 100%;
   background-color: #201b2c; 
   padding: 15px;
   display: flex;
@@ -280,7 +255,7 @@ header a:hover {
   display: flex;
   flex-direction: row;
   margin: 0;
-  min-width: 100vh;
+  min-width: 50%;
   height: 90px;
   background-color: #201b2c;
   align-items: center;
@@ -292,7 +267,7 @@ header a:hover {
   display: flex;
   flex-direction: row;
   margin: 0;
-  min-width: 100vh;
+  min-width: 50%;
   height: 90px;
   background-color: #201b2c;
   align-items: center;
@@ -320,7 +295,8 @@ header a:hover {
 }
 
 .placar-profile-img {
-  max-width: 9%;
+  width: 80px;
+  height: 80px;
   height: auto;
   border-radius: 10%; 
 }
@@ -519,9 +495,42 @@ header a:hover {
   .message-input {
     width: 78%;
   }
+
+  .block, .online-players {
+    width: 320px;
+    height: 480px;
+  }
+
+  .online-players > h1, .block > h1 {
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+  }
+
+  .header-block > input {
+    font-size: 16px;
+  } 
+
+  .header-block > button {
+    font-size: 25px;
+  }
+
+  .player-box {
+    font-size: 1.2rem;
+  }
+
 }
 
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 960px) {
+  header {
+    justify-content: center;
+  }
+
+  header a {
+    margin: 0 50px;
+  }
+}
+
+@media screen and (max-width: 850px) {
   .lobby {
     flex-direction: column;
   }
@@ -537,19 +546,24 @@ header a:hover {
   .message-input {
     width: 78%;
   }
-
-  .placar1 {
-    min-width: 50vh;
-  }
-  
-  .placar2 {
-    min-width: 50vh;
-  }
 }
 
 @media screen and (max-width: 600px) {
+  header a {
+    margin: 0 30px;
+  }
+
+  .placar1, .placar2 {
+    height: 70px;
+  }
+
   .placar-data1 > *, .placar-data2 > * {
     font-size: 15px;
+  }
+
+  .placar-profile-img {
+    width: 60px;
+    height: 60px;
   }
 
   .cell {
@@ -565,6 +579,28 @@ header a:hover {
 
   .message-input {
     width: 65%;
+  }
+
+  .block, .online-players {
+    width: 256px;
+    height: 384px;
+  }
+
+  .online-players > h1, .block > h1 {
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+  }
+
+  .header-block > input {
+    font-size: 12px;
+  } 
+
+  .header-block > button {
+    font-size: 20px;
+  }
+
+  .player-box {
+    font-size: 0.9rem;
   }
 }
 
