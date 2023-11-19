@@ -8,13 +8,15 @@
     <link rel="stylesheet" href="/stylesheets/game.css">
 </head>
 <body>
+
   <script>
     var userNickname = "<%= userdata.nickname %>";
   </script>
+
   <div>
     <header>
       <a href="http://localhost:3000/">Menu</a>
-      <a href="http://localhost:3000/game">Jogo</a>
+      <a href="http://localhost:3000/game">Lobby</a>
       <a href="http://localhost:3000/settings">Configurações</a>
       <a href="http://localhost:3000/logout" id="logoutButton">Sair</a>
     </header>
@@ -28,55 +30,53 @@
       </div>
     </div>
     <div class="online-players">
-      <h1>Jogadores online</h1>
-      <!-- <h2>Não há nenhum jogador online no momento.</h2> -->
+      <h1>Jogadores no lobby</h1>
       <div id="players">
-        <div class="player-box">
-          <img src="/images/comp-cat1.jpg" alt="Profile Photo">
-          <p>joao</p>
-        </div>
       </div>
     </div>
   </div>
-  <div class="all" id="all">
-    <div class="placar-container" id="placar-container">
-    </div>
-    <div class="container">
-        <div id="game-container">
-            <div id="game-board">
-                <div class="row">
-                    <button class="cell" id="0"></button>
-                    <button class="cell" id="1"></button>
-                    <button class="cell" id="2"></button>
-                </div>
-                <div class="row">
-                    <button class="cell" id="3"></button>
-                    <button class="cell" id="4"></button>
-                    <button class="cell" id="5"></button>
-                </div>
-                <div class="row">
-                    <button class="cell" id="6"></button>
-                    <button class="cell" id="7"></button>
-                    <button class="cell" id="8"></button>
-                </div>
-            </div>
-        </div>
-        <div class="chat">
-          <div class="box-questions">
-            <div class="header-chat">
-              <p>Chat</p>
-            </div>
-            <p id="status"></p>
-            <div id="history">
-            </div>
-            <div class="footer">
-              <input class="message-input" type="text" id="message-input" placeholder="Digite aqui">
-              <button class="btn-submit" id="btn-submit" onclick="sendMessage()">Enviar</button>
-            </div>
+
+  <div class="placar-container" id="placar-container">
+  </div>
+
+  <div class="container">
+      <div id="game-container">
+          <div id="game-board">
+              <div class="row">
+                  <button class="cell" id="0"></button>
+                  <button class="cell" id="1"></button>
+                  <button class="cell" id="2"></button>
+              </div>
+              <div class="row">
+                  <button class="cell" id="3"></button>
+                  <button class="cell" id="4"></button>
+                  <button class="cell" id="5"></button>
+              </div>
+              <div class="row">
+                  <button class="cell" id="6"></button>
+                  <button class="cell" id="7"></button>
+                  <button class="cell" id="8"></button>
+              </div>
+          </div>
+      </div>
+      <div class="chat">
+        <div class="box-questions">
+          <div class="header-chat">
+            <p>Chat</p>
+          </div>
+          <p id="status"></p>
+          <div id="history">
+          </div>
+          <div class="footer">
+            <input class="message-input" type="text" id="message-input" placeholder="Digite aqui">
+            <button class="btn-submit" id="btn-submit" onclick="sendMessage()">Enviar</button>
           </div>
         </div>
-    </div>
+      </div>
   </div>
+
+
+
   <script src="/javascript/game.js"></script>
 </body>
 </html>

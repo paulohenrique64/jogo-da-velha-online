@@ -84,6 +84,27 @@ const getUsers = (req, res) => {
     })
 }
 
+const getUser = (req, res) => {
+  const token = req.cookies.token;
+
+  if (!token) return res.status(401).send({error: "not authorized"});
+
+  jwt.verify(token, "sjbfjdsgjdghldrgblhrgh4353rtbihdyxyuvdgy848", (err, decoded) => {
+    if (err) return res.status(500).send({error: "internal server error"});
+
+    User.findById(decoded.uid)
+      .then(user => {
+        if (user) return res.status(200).send({user});
+        else return res.status(401).send({error: "not authorized"});
+      })
+      .catch(error => {
+        console.log(error);
+        return res.status(500).send({error: "internal server error"});
+      })
+  })
+    
+}
+
 // faz o login se um usuario estiver cadastro valido no site
 const loginUser = (req, res) => {
   const { email, password } = req.body;
@@ -327,5 +348,6 @@ module.exports = {
   deleteUser,
   editUser,
   getSettingsPage,
-  getUsers
+  getUsers,
+  getUser
 };

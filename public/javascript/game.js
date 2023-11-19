@@ -1,7 +1,8 @@
 const socket = io();
 const ul = document.querySelector('#player-list');
-const divLobby = document.querySelector('#lobby')
-const divGame = document.querySelector('#all')
+const divLobby = document.querySelector('#lobby');
+const divOnlinePlayersList = document.querySelector('#players');
+const divGame = document.querySelector('.container')
 const divPlacar = document.querySelector('#placar-container');
 const playAgainButton = document.createElement('button');
 const buttons = [];
@@ -10,29 +11,26 @@ const inputFriendName = document.getElementById('inputFriendName');
 
 playAgainButton.textContent = 'Play Again'; 
 
-// socket.on('onlinePlayerList', activePlayers => {
-//   // update players online list
-//   ul.innerHTML = '';
+socket.on('onlinePlayerList', activePlayers => {
+  // update players online list
+  divOnlinePlayersList.innerHTML = '';
 
-//   activePlayers.forEach(player => {
-//     if (player.nickname !== userNickname) {
-//       const li = document.createElement('li')
-//       const invitePlayerButton = document.createElement('button');
-//       invitePlayerButton.textContent = 'Invite Player';
-//       invitePlayerButton.id = player.nickname;
-//       invitePlayerButton.className = 'invite-player-button'
-//       li.textContent = player.nickname;
-//       li.appendChild(invitePlayerButton);
-//       ul.appendChild(li);
-
-//       invitePlayerButton.addEventListener('click', () =>{
-//         socket.emit('createParty', invitePlayerButton.id)
-//         var historyBox = document.getElementById('history');
-//         historyBox.innerHTML = '';
-//       })
-//     }
-//   });
-// })
+  activePlayers.forEach(player => {
+    if (player.nickname !== userNickname) {
+      // <div class="player-box">
+      //     <img src="/images/comp-cat1.jpg" alt="Profile Photo">
+      //     <p>joao</p>
+      //   </div>
+      const playerBox = document.createElement('div');
+      playerBox.className = "player-box";
+      playerBox.innerHTML = `
+        <img src="/images/comp-cat1.jpg" alt="Profile Photo">
+        <p>${player.nickname}</p>
+      `;
+      divOnlinePlayersList.appendChild(playerBox);
+    }
+  });
+})
 
 startGameButton.addEventListener('click', () => {
   const friendName = inputFriendName.value;
@@ -65,23 +63,21 @@ socket.on('startGameStatus', (match, creatorPlayerData, guestPlayerData) => {
   }
 
   divLobby.style.display = 'none';
-  divGame.style.display = 'block';
+  divGame.style.display = 'flex';
   divPlacar.innerHTML = `
   <div class="placar1">
     <img src="/images/comp-cat1.jpg" alt="Profile Photo" class="placar-profile-img">
     <div class="placar-data1">
-      <h1>CompCat ${user.point} (You)</h1>
-      <h1>${userNickname}</h1>
-      <h1>Score: ${user.points}</h1>
-      <h1>Wins: ${user.wins}</h1>
+      <h1>Jogador ${user.point} - ${userNickname} </h1>
+      <h1>Pontos: ${user.points}</h1>
+      <h1>Vitórias: ${user.wins}</h1>
     </div>
   </div>
   <div class="placar2">
     <div class="placar-data2">
-      <h1>CompCat ${oponnent.point}</h1>
-      <h1>${oponnent.nickname}</h1>
-      <h1>Score: ${oponnent.points}</h1>
-      <h1>Wins: ${oponnent.wins}</h1>
+      <h1>Jogador ${oponnent.point} - ${oponnent.nickname}</h1>
+      <h1>Pontos: ${oponnent.points}</h1>
+      <h1>Vitórias: ${oponnent.wins}</h1>
     </div>
     <img src="/images/comp-cat2.jpg" alt="Profile Photo" class="placar-profile-img">
   </div> `;
@@ -125,14 +121,12 @@ socket.on('gameStatus', (match) => {
 
 socket.on('endGameStage', (match) => {
   divPlacar.innerHTML = `
-  <div class="end-placar-container">
     <div class="end-placar">
-      <h1 class="winner">${match.winner.nickname} venceu o jogo!</h1>
+      <h1>${match.winner.nickname} venceu o jogo!</h1>
       <div class="end-game-buttons">
-        <button class="end-game-button" id="playAgain">Jogar novamente</button>
-        <button class="end-game-button" id="leaveParty">Sair da party</button>
-    </div>
-  </div>`;
+        <button id="playAgain">Jogar novamente</button>
+        <button id="leaveParty">Sair da party</button>
+    </div>`;
 
   const playAgainButton = document.querySelector('#playAgain').addEventListener('click', ( () => {
     socket.emit('playAgain');

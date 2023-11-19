@@ -1,0 +1,128 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap');
+
+body {
+  font-family: 'Noto Sans', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  max-width: 100%;
+  background-color: #201b2c; 
+  padding: 15px;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  transition: 0.5s;
+  z-index: 1000;
+}
+
+header a {
+  margin: 0 10px;
+  text-decoration: none;
+  color: #f0ffffde;
+  font-weight: bold;
+}
+
+header a:hover {
+  color: #00ff88;
+}
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.all {
+  background-color: #f5f5f5;
+  display: flex;
+  justify-content: center;
+  align-items: top; 
+  min-height: 100vh;
+}
+
+.headers{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #201b2c;
+  color: #fff;
+  padding: 16px 30px;
+}
+
+.player-table{
+  max-width: 800px;
+  padding: 20px 25px;
+  background-color: #fff;
+  margin: 30px 0;
+  border-radius: 3px;
+  box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+}
+
+.add{
+  background-color: #5cb85c;
+  color: white;
+}
+
+th{
+  text-align: center;
+  color: #566787;
+}
+
+.btn{
+  padding: 3px 20px;
+  min-width: 90px;
+}
+
+.btn-primary{
+  color: #fff;
+  background-color: #337ab7;
+  border-color: #2e6da4;
+}
+
+.form-wrapper{
+  display: none;
+}
+.form-wrapper.active {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: rgba(0,0,0,0.6);
+  z-index: 100;
+}
+
+.playerForm{
+  background-color: white;
+  width: 600px;
+  padding: 20px 50px;
+  border-radius: 5px;
+}
+
+
+.form-control{
+  width: 90%;
+}
+
+.group{
+  display: flex;
+  margin: 15px 0;
+}
+
+.group label{
+  width: 130px;
+  line-height: 40px;
+  height: 40px;
+}
+
+.action{
+  display: flex;
+  justify-content: center;
+  gap: 100px;
+  margin: 20px;
+}

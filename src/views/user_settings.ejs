@@ -1,11 +1,66 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  <h1>User settings</h1>
-</body>
+<html lang="pt-BR">
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jogo da Velha Online</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous" />
+    <link rel="stylesheet" href="/stylesheets/user_settings.css" />
+  </head>
+
+  <body>
+    <header>
+      <a href="http://localhost:3000/">Menu</a>
+      <a href="http://localhost:3000/game">Lobby</a>
+      <a href="http://localhost:3000/settings">Configurações</a>
+      <a href="http://localhost:3000/logout" id="logoutButton">Sair</a>
+    </header>
+
+    <div class="all">
+      <div class="container player-table">
+        <div class="headers">
+          <h2 class="table-title">Gerenciar conta</h2>
+        </div>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Nickname</th>
+              <th>Email</th>
+              <th>Vitórias</th>
+              <th></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody class="text-center"></tbody>
+        </table>
+      </div>
+
+      <div class="form-wrapper">
+        <div class="playerForm">
+          <div class="group">
+            <label for="player">Nickname</label>
+            <input type="text" class="form-control" id="nickname" required minlength="3" />
+          </div>
+          <div class="group">
+            <label for="email">Email</label>
+            <input type="text" class="form-control" id="email" />
+          </div>
+          <div class="group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" required min="8" />
+          </div>
+
+          <div class="action">
+            <button class="btn btn-primary save">Salvar</button>
+            <button class="btn btn-danger cancel">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="/javascript/user_settings.js"></script>
+  </body>
+
 </html>

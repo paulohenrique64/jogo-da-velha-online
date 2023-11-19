@@ -15,7 +15,8 @@ import {
   editUser,
   forgotPassword,
   resetPassword,
-  getUsers
+  getUsers,
+  getUser
 } from "../controllers/auth";
 
 // pages
@@ -31,7 +32,7 @@ router.post("/register", registerUser);                   // register user
 router.get("/logout", onlyAuth, logoutUser);              // logout user
 
 // melhorar
-// router.get("/user", onlyAuth, getUser);
+router.get("/user", onlyAuth, getUser);
 router.get("/users", onlyAdmin, getUsers);
 router.delete("/user/:id", onlyAuth, deleteUser);              // delete user
 router.patch("/user", onlyAuth, editUser);                 // edit user
