@@ -1,7 +1,5 @@
-const urlLogin = "http://localhost:3000/login/user";
+const urlLogin = "http://localhost:3000/login";
 const form = document.getElementById('form');
-const spans  = document.querySelectorAll('.span-required');
-const campos = document.querySelectorAll('.required');
 
 form.addEventListener('submit', () => {
   const formData = new FormData(form)

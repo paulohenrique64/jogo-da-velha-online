@@ -33,6 +33,10 @@ const userSchema = new mongoose.Schema({
   wins: {
     type: Number,
     default: 0
+  },
+  isAdmin: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -45,7 +49,6 @@ userSchema.pre('save', function(next) {
     console.error('Error hashing password', error);
   })
 })
-
 
 const User = mongoose.model('User', userSchema)
 

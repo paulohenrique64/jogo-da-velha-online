@@ -1,8 +1,9 @@
 import jwt from 'jsonwebtoken'
+const User = require("../models/user");
 import authConfig from '../config/auth'
 
 // verifica se o usario tem um token valido
-const authMiddleware = (req, res, next) => {
+const onlyAuth = (req, res, next) => {
   const token = req.cookies.token;
 
   if (token) {
@@ -19,7 +20,7 @@ const authMiddleware = (req, res, next) => {
 }
 
 // verifica se o usuario nao tem um token válido
-const noAuthMiddleware = (req, res, next) => {
+const onlyGuest = (req, res, next) => {
   const token = req.cookies.token;
 
   if (token) {
@@ -35,7 +36,42 @@ const noAuthMiddleware = (req, res, next) => {
   }
 }
 
+// verifica se o usuario é um admin
+const onlyAdmin = (req, res, next) => {
+  const token = req.cookies.token;
+
+  if (!token) return res.redirect('/login');
+
+  jwt.verify(
+    token,
+    "sjbfjdsgjdghldrgblhrgh4353rtbihdyxyuvdgy848",
+    (err, decoded) => {
+      if (err) {
+        return res.redirect('/game');
+      } else {
+        User.findById(decoded.uid)
+          .then((user) => {
+            if (user) {
+              if (user.isAdmin) {
+                return next();
+              } else {
+                return res.redirect('/game');
+              }
+            } else {
+              return res.redirect('/game');
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+            return res.redirect('/game');
+          });
+      }
+    }
+  );
+}
+
 module.exports = {
-  authMiddleware,
-  noAuthMiddleware
+  onlyAuth,
+  onlyGuest,
+  onlyAdmin
 }

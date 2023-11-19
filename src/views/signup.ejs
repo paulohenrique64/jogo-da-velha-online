@@ -1,27 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Register</title>
+    <title>Jogo da Velha Online</title>
     <link rel="stylesheet" href="/stylesheets/signup.css" />
   </head>
   <body>
     <header>
-      <a href="http://localhost:3000/" id="contactLink">Home</a>
+      <a href="http://localhost:3000/" id="contactLink">Menu</a>
     </header>
     <div class="main-register">
       <div class="left-register">
         <h1>Crie uma conta<br />e comece a jogar</h1>
       </div>
       <form
-        action="http://localhost:3000/register/user/"
+        action="http://localhost:3000/register"
         id="form"
         method="post"
       >
         <div class="right-register">
           <div class="card-register">
-            <h1>Register</h1>
+            <h1>Registro</h1>
             <div class="text-field">
               <label for="nickname">Nickname</label>
               <input class="required" type="text" name="nickname" placeholder="nickname" />
@@ -37,7 +37,7 @@
               <input class="required" type="password" name="password" placeholder="Senha" />
               <span class="span-required span-required-error">Senha deve ter no mínimo 8 caracteres</span>
             </div>
-            <button type="submit" class="btn-register">register</button>
+            <button type="submit" class="btn-register">registrar</button>
             <p>
               Já possui uma conta?
               <a href="http://localhost:3000/login/">Faça login</a>

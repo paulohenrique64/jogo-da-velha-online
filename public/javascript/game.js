@@ -5,6 +5,8 @@ const divGame = document.querySelector('#all')
 const divPlacar = document.querySelector('#placar-container');
 const playAgainButton = document.createElement('button');
 const buttons = [];
+const startGameButton = document.getElementById('startGameButton');
+const inputFriendName = document.getElementById('inputFriendName');
 
 playAgainButton.textContent = 'Play Again'; 
 
@@ -31,6 +33,13 @@ playAgainButton.textContent = 'Play Again';
 //     }
 //   });
 // })
+
+startGameButton.addEventListener('click', () => {
+  const friendName = inputFriendName.value;
+  socket.emit('createParty', friendName)
+  var historyBox = document.getElementById('history');
+  historyBox.innerHTML = '';
+})
 
 socket.on('inviteError', res =>{
   // inputopponentNickname.placeholder = res.message;

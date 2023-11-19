@@ -1,23 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Página de Login</title>
+    <title>Jogo da Velha Online</title>
     <link rel="stylesheet" href="/stylesheets/login.css">
   </head>
   <body>
     <header>
-      <a href="http://localhost:3000/" id="contactLink">Home</a>
+      <a href="http://localhost:3000/" id="contactLink">Menu</a>
     </header>
     <div class="main-login">
       <div class="left-login">
-        <h1>Faça login<br>E comece a jogar</h1>
+        <h1>Entre<br>E comece a jogar</h1>
       </div>
-      <form action="http://localhost:3000/login/user" id="form" method="post">
+      <form action="http://localhost:3000/login" id="form" method="post">
         <div class="right-login">
           <div class="card-login">
-            <h1>Login</h1>
+            <h1>Entrar</h1>
             <div class="text-field">
               <label for="email">Email</label>
               <input type="text" name="email" placeholder="Email">
@@ -26,8 +26,8 @@
               <label for="password">Senha</label>
               <input type="password" name="password" placeholder="Senha">
             </div>
-              <button class="submit" type="submit">Login</button>    
-              <p>Não possui uma conta? <a href="http://localhost:3000/register/">Registre-se</a></p> 
+              <button class="submit" type="submit">Entrar</button>    
+              <p>Não possui uma conta? <a href="http://localhost:3000/register">Registre-se</a></p> 
           </div>
         </div>
       </form> 

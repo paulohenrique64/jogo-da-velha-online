@@ -1,41 +1,41 @@
 const express = require("express");
 const router = express.Router();
 
-import { loginPage } from "../controllers/auth";
-import { loginUser } from "../controllers/auth";
-import { registerPage } from "../controllers/auth";
-import { registerUser } from "../controllers/auth";
-import { logoutUser } from "../controllers/auth";
-import { forgotPassword } from "../controllers/auth";
-import { resetPassword } from "../controllers/auth";
-import { getHomepage } from '../controllers/home'
-import { getGamePage } from '../controllers/game'
-import { authMiddleware } from "../middlewares/auth";
-import { noAuthMiddleware } from "../middlewares/auth";
+import { onlyAuth, onlyGuest, onlyAdmin } from "../middlewares/auth";
+import { getHomepage } from "../controllers/home";
+import { getGamePage } from "../controllers/game";
+import {
+  registerPage,
+  loginPage,
+  getSettingsPage,
+  loginUser,
+  registerUser,
+  logoutUser,
+  deleteUser,
+  editUser,
+  forgotPassword,
+  resetPassword,
+  getUsers
+} from "../controllers/auth";
 
-router.get("/", getHomepage)                                       // get home page
-router.get("/login", noAuthMiddleware, loginPage);                 // get login page
-router.get("/register", registerPage);                             // get register page
-router.get("/game", authMiddleware, getGamePage);                  // get game page
-router.get("/logout", authMiddleware, logoutUser);                 // logout 
-router.post("/login/user", noAuthMiddleware, loginUser);           // login 
-router.post("/register/user", registerUser);                       // register                                                
-router.post("/forgot-password", noAuthMiddleware, forgotPassword); // forgot pasowrd
-router.post("/reset-password", noAuthMiddleware, resetPassword);   // reset password
+// pages
+router.get("/", getHomepage);                             // home page
+router.get("/register", registerPage);                    // register page
+router.get("/login", onlyGuest, loginPage);               // login page
+router.get("/game", onlyAuth, getGamePage);               // game page
+router.get("/settings", onlyAuth, getSettingsPage);       // settings page
+
+// auth rotes
+router.post("/login", onlyGuest, loginUser);              // login user
+router.post("/register", registerUser);                   // register user
+router.get("/logout", onlyAuth, logoutUser);              // logout user
+
+// melhorar
+// router.get("/user", onlyAuth, getUser);
+router.get("/users", onlyAdmin, getUsers);
+router.delete("/user/:id", onlyAuth, deleteUser);              // delete user
+router.patch("/user", onlyAuth, editUser);                 // edit user
+router.post("/user/forgot-password", forgotPassword);      // generate token: forgot pasoword
+router.post("/user/password", resetPassword);              // reset password (with a  forgot pasoword token)
 
 module.exports = router;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,21 +13,34 @@
   </script>
   <div>
     <header>
-      <a href="http://localhost:3000/" id="contactLink">Home</a>
+      <a href="http://localhost:3000/">Menu</a>
+      <a href="http://localhost:3000/game">Jogo</a>
+      <a href="http://localhost:3000/settings">Configurações</a>
       <a href="http://localhost:3000/logout" id="logoutButton">Sair</a>
     </header>
   </div>
   <div class="lobby" id="lobby">
     <div class="block">
+      <h1><%= userdata.nickname %><br>▼</h1>
       <div class="header-block">
-        <input placeholder="FRIEND NICKNAME" type="text">
-        <button>start game</button>
+        <input placeholder="FRIEND NICKNAME" type="text" id="inputFriendName">
+        <button id="startGameButton">iniciar partida</button>
       </div>
+    </div>
+    <div class="online-players">
+      <h1>Jogadores online</h1>
+      <!-- <h2>Não há nenhum jogador online no momento.</h2> -->
+      <div id="players">
+        <div class="player-box">
+          <img src="/images/comp-cat1.jpg" alt="Profile Photo">
+          <p>joao</p>
+        </div>
       </div>
     </div>
   </div>
   <div class="all" id="all">
-    <div class="placar-container" id="placar-container"></div>
+    <div class="placar-container" id="placar-container">
+    </div>
     <div class="container">
         <div id="game-container">
             <div id="game-board">

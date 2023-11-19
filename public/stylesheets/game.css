@@ -57,6 +57,17 @@ body {
   text-align: center;
   box-shadow: 0px -5px 15px 0px rgba(0, 0, 0, 0.5);
   margin-left: 2%;
+  align-items: center;
+}
+
+.block h1 {
+  margin: 0;
+  margin-top: 20px;
+  position: absolute;
+  letter-spacing: 2.5px;
+  font-family: 'Noto Sans', sans-serif;
+  font-weight: 800;
+  color: #ade4f3;
 }
 
 .header-block {
@@ -104,26 +115,86 @@ body {
   border: none;
 }
 
-.player-list {
-  margin-top: 2%;
-  color: #f0ffffde;
-  padding: 20px;
-  overflow: auto; /* Adiciona rolagem à lista */
-}
-
-.player-list h2 {
-  font-size: 24px;
-}
-
-.player-list ul {
-  list-style: none;
-  padding: 0;
-}
-
-.player-list li {
+.online-players {
+  margin-top: 5%;
+  background: url(/images/card3.jpg);
+  background-size: 130%;
+  background-position: center;
+  color: var(--dark);
   display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 400px;
+  height: 600px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0px -5px 15px 0px rgba(0, 0, 0, 0.5);
+  margin-left: 2%;
   align-items: center;
-  margin-bottom: 10px;
+}
+
+.online-players > h1 {
+  color: var(--white);
+  font-size: 1.9rem;
+  letter-spacing: 3px;
+  margin-bottom: 3%;
+}
+
+.online-players > h2 {
+  color: var(--white);
+  letter-spacing: 3px;
+  margin-bottom: 3%;
+}
+
+#players {
+  width: 90%;
+  padding: 1rem;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 85%;
+}
+
+#players::-webkit-scrollbar {
+  width: 20px;
+}
+
+#players::-webkit-scrollbar-thumb {
+  background: #ade4f3;
+  border-radius: 10px;
+}
+
+#players::-webkit-scrollbar-track {
+  background-color: #201b2c;  /* Cor do fundo da barra de rolagem */
+}
+
+#players::-webkit-scrollbar-thumb:hover {
+  background-color: #297d94; /* Cor do indicador ao passar o mouse sobre ele */
+}
+
+.player-box {
+  font-family: 'Noto Sans', sans-serif;
+  background: #ade4f3;
+  border-radius: 10px;
+  width: 100%;
+  height: 10%;
+  font-size: 1.5rem;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  letter-spacing: 3px;
+}
+
+.player-box > p {
+  margin: 10px;
+}
+
+.player-box > img {
+  max-width: 10%;
+  height: auto;
+  border-radius: 25%; 
+  margin: 5px;
 }
 
 .player-avatar {
