@@ -16,7 +16,9 @@ import {
   forgotPassword,
   resetPassword,
   getUsers,
-  getUser
+  getUser,
+  forgotPasswordPage,
+  resetPasswordPage
 } from "../controllers/auth";
 
 // pages
@@ -25,6 +27,8 @@ router.get("/register", registerPage);                    // register page
 router.get("/login", onlyGuest, loginPage);               // login page
 router.get("/game", onlyAuth, getGamePage);               // game page
 router.get("/settings", onlyAuth, getSettingsPage);       // settings page
+router.get("/forgot-password", onlyGuest, forgotPasswordPage) // forgot-password page
+router.get("/reset-password/:token", onlyGuest, resetPasswordPage) // forgot-password page
 
 // auth rotes
 router.post("/login", onlyGuest, loginUser);              // login user
@@ -36,7 +40,7 @@ router.get("/user", onlyAuth, getUser);
 router.get("/users", onlyAdmin, getUsers);
 router.delete("/user/:id", onlyAuth, deleteUser);              // delete user
 router.patch("/user", onlyAuth, editUser);                 // edit user
-router.post("/user/forgot-password", forgotPassword);      // generate token: forgot pasoword
-router.post("/user/password", resetPassword);              // reset password (with a  forgot pasoword token)
+router.post("/user/forgot-password", onlyGuest, forgotPassword);      // generate token: forgot pasoword
+router.post("/user/password/:token", onlyGuest, resetPassword);              // reset password (with a  forgot pasoword token)
 
 module.exports = router;

@@ -18,7 +18,7 @@ body {
 }
 
 .block {
-  margin-top: 5%;
+  margin-top: 2%;
   background: url(/images/card2.jpg);
   background-size: 130%;
   background-position: center;
@@ -91,7 +91,7 @@ body {
 }
 
 .online-players {
-  margin-top: 5%;
+  margin-top: 2%;
   background: url(/images/card3.jpg);
   background-size: 130%;
   background-position: center;
@@ -482,6 +482,8 @@ header a:hover {
   text-align: left;
   background-color: var(--gray2);
 }
+
+/* deixar a pagina do jogo responsiva */
 
 @media screen and (max-width: 1366px) {
   .container {

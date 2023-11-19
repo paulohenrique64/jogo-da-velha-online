@@ -20,18 +20,18 @@
             <h1>Entrar</h1>
             <div class="text-field">
               <label for="email">Email</label>
-              <input type="text" name="email" placeholder="Email">
+              <input type="text" id="email" name="email" placeholder="Email" autocomplete="email">
             </div>
             <div class="text-field">
               <label for="password">Senha</label>
-              <input type="password" name="password" placeholder="Senha">
+              <input type="password" id="password" name="password" placeholder="Senha" autocomplete="current-password">
             </div>
               <button class="submit" type="submit">Entrar</button>    
-              <p>Não possui uma conta? <a href="http://localhost:3000/register">Registre-se</a></p> 
+              <p>Esqueceu sua senha? <a href="http://localhost:3000/forgot-password">Clique aqui</a></p> 
           </div>
         </div>
       </form> 
     </div>
-    <script src="/public/javascript/login.js"></script>
+    <script src="/javascript/login.js"></script>
   </body>
 </html>

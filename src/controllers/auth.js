@@ -27,6 +27,20 @@ const registerPage = (req, res) => {
   return res.status(200).render(filePath);
 };
 
+const forgotPasswordPage = (req, res) => {
+  const filePath = path.join(__dirname, "../views/forgotPassword");
+  return res.status(200).render(filePath);
+}
+
+const resetPasswordPage = (req, res) => {
+  const resetPasswordToken = req.params.token;
+  
+  if (!resetPasswordToken) return res.redirect("/");
+
+  const filePath = path.join(__dirname, "../views/resetPassword");
+  return res.render(filePath, {resetPasswordToken});
+}
+
 // realiza o logout do usuario
 const logoutUser = (req, res) => {
   res.clearCookie("token"); // limpa o campo token dos cookies do cliente
@@ -34,11 +48,6 @@ const logoutUser = (req, res) => {
 };
 
 const getSettingsPage = (req, res) => {
-  // verificar se o usuario é admin ou nao
-  // só chegou ate aqui quem esta logado
-  // capturar o token, decodificar, encontrar o usuario com o id decodificado na base da dados
-  // se o usuario for admin:  exibir pagina com toda a lista de usuarios do banco de dados
-  // caso nao for admin: exibir pagina somente com os dados do usuario
   const token = req.cookies.token;
 
   if (!token) return res.status(401).send({ error: "acess denied" });
@@ -200,6 +209,8 @@ const registerUser = (req, res) => {
 const forgotPassword = (req, res) => {
   const { email } = req.body;
 
+  if (!email) return res.status(401).send({error: "you must be inform a email"});
+
   // procurar usuario com o email no banco de dados
   User.findOne({ email })
     .then((user) => {
@@ -209,7 +220,7 @@ const forgotPassword = (req, res) => {
         const token = crypto.randomBytes(20).toString("hex");
         const expiration = new Date();
         expiration.setHours(new Date().getHours() + 1); // 1 hora de validade
-
+ 
         // procura o usuario para salvar o token de recuperacao no banco de dados
         User.findByIdAndUpdate(user.id, {
           $set: {
@@ -228,7 +239,7 @@ const forgotPassword = (req, res) => {
               })
               .then(() => {
                 // email enviado
-                return res.status(200).send({ message: "email send to email" });
+                return res.status(200).send({ message: "verify your email box" });
               })
               .catch((error) => {
                 // email nao enviado
@@ -253,17 +264,17 @@ const forgotPassword = (req, res) => {
 
 // rota para resetar a senha do usuario caso tenha um token valido
 const resetPassword = (req, res) => {
-  const { email, token, newPassword } = req.body;
+  const token = req.params.token;
+  const newPassword = req.body.password;
 
-  User.findOne({ email })
+  if (!token || !newPassword) return res.status(401).send({error: "you must be inform a token and password"})
+
+  User.findOne({ passwordResetToken: token })
     .select("+passwordResetToken passwordResetTokenExpiration")
     .then((user) => {
       if (user) {
-        if (
-          token != user.passwordResetToken ||
-          new Date().now > user.passwordResetTokenExpiration
-        ) {
-          return res.status(400).send({ error: "Ivalid token" });
+        if (new Date().now > user.passwordResetTokenExpiration) {
+          return res.status(400).send({ error: "Invalid token" });
         } else {
           user.passwordResetToken = undefined;
           user.passwordResetTokenExpiration = undefined;
@@ -280,6 +291,8 @@ const resetPassword = (req, res) => {
                 .send({ error: "erro ao salvar senha do usuario" });
             });
         }
+      } else {
+        return res.status(400).send({ error: "Invalid token" });
       }
     })
     .catch((error) => {
@@ -349,5 +362,7 @@ module.exports = {
   editUser,
   getSettingsPage,
   getUsers,
-  getUser
+  getUser,
+  forgotPasswordPage,
+  resetPasswordPage
 };
