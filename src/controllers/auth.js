@@ -235,6 +235,7 @@ const forgotPassword = (req, res) => {
                 to: email,
                 from: "jogodavelhaonline@express.com",
                 template: "auth/forgotPassword",
+                subject: "Recuperação de senha",
                 context: { token },
               })
               .then(() => {
