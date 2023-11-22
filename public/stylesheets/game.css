@@ -1,10 +1,38 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 body {
   font-family: 'Noto Sans', sans-serif;
   margin: 0;
   padding: 0;
   min-width: 100vh;
+  background-color: #bed5f9;
+}
+
+.all {
+  min-height: 100vh;
+}
+
+header {
+  max-width: 100%;
+  background-color: rgba(9,17,51,255);
+  padding: 15px;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  transition: 0.5s;
+  z-index: 1000;
+}
+
+header a {
+  margin: 0 10px;
+  text-decoration: none;
+  color: #f0ffffde;
+  font-weight: bold;
+}
+
+header a:hover {
+  color: #045ab0;
 }
 
 .lobby {
@@ -12,14 +40,14 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: row;
-  background: #def4fa;
-  min-height: 94vh;
+  min-height: 88vh;
   width: 100%;
 }
 
 .block {
   margin-top: 2%;
-  background: url(/images/card2.jpg);
+  background: url(/images/comp-cat-card.png);
+  background-color: #091133;
   background-size: 130%;
   background-position: center;
   color: var(--dark);
@@ -42,11 +70,10 @@ body {
   letter-spacing: 2.5px;
   font-family: 'Noto Sans', sans-serif;
   font-weight: 800;
-  color: #ade4f3;
+  color: #fff;
 }
 
 .header-block {
-  /* background-color: var(--purple);  */
   margin-top: 80%;
   color: var(--white);
   border-radius: 0 0 0 0;
@@ -64,12 +91,16 @@ body {
   font-size: 25px;
   text-align: center;
   border-radius: 10px;
-  background: #ade4f3;
+  background: #bed5f9;
   box-shadow: 0px 10px 40px -12px #00ff8052;
   letter-spacing: 2.5px;
   font-family: 'Noto Sans', sans-serif;
   font-weight: 800;
   border: none;
+}
+
+.header-block input::placeholder {
+  color: #545b72;
 }
 
 .header-block button {
@@ -81,18 +112,22 @@ body {
   font-weight: 800;
   border-radius: 10px;
   font-family: 'Noto Sans', sans-serif;
-  background: #ade4f3;
+  color: #fff;
   box-shadow: 0px 10px 40px -12px #00ff8052;
   cursor: pointer;
-  color: #2b134b;
+  background: #0284ff;
   letter-spacing: 3px;
   text-transform: uppercase;
   border: none;
 }
 
+.header-block button:hover {
+  background-color: #045ab0;
+}
+
 .online-players {
   margin-top: 2%;
-  background: url(/images/card3.jpg);
+  background-color: #091133;
   background-size: 130%;
   background-position: center;
   color: var(--dark);
@@ -141,16 +176,15 @@ body {
 }
 
 #players::-webkit-scrollbar-track {
-  background-color: #201b2c;  /* Cor do fundo da barra de rolagem */
+  background-color: #091133; 
 }
 
 #players::-webkit-scrollbar-thumb:hover {
-  background-color: #297d94; /* Cor do indicador ao passar o mouse sobre ele */
+  background-color: #297d94; 
 }
 
 .player-box {
   font-family: 'Noto Sans', sans-serif;
-  background: #ade4f3;
   border-radius: 10px;
   width: 100%;
   height: 10%;
@@ -159,6 +193,8 @@ body {
   justify-content: left;
   align-items: center;
   letter-spacing: 3px;
+  color: #fff;
+  background-color: #0284ff;
 }
 
 .player-box > p {
@@ -186,28 +222,6 @@ body {
   align-items: center;
 }
 
-header {
-  max-width: 100%;
-  background-color: #201b2c; 
-  padding: 15px;
-  display: flex;
-  justify-content: left;
-  align-items: center;
-  transition: 0.5s;
-  z-index: 1000;
-}
-
-header a {
-  margin: 0 10px;
-  text-decoration: none;
-  color: #f0ffffde;
-  font-weight: bold;
-}
-
-header a:hover {
-  color: #00ff88;
-}
-
 #game-container {
   display: flex;
   flex-direction: column;
@@ -230,12 +244,16 @@ header a:hover {
   height: 137px;
   margin: 1.5%;
   font-size: 120px;
-  background-color: #201b2c;
+  background-color: #091133;
   color: #f0ffffde;
   border: none;
   cursor: pointer;
   border-radius: 5px;
   box-shadow: 0px -5px 15px 0px rgba(0, 0, 0, 0.5);
+}
+
+.cell:hover {
+  background-color: #0284ff;
 }
 
 #logoutForm {
@@ -249,6 +267,8 @@ header a:hover {
   min-width: 100vh;
   margin: 0;
   margin-bottom: 5%;
+  text-transform: uppercase;
+  letter-spacing: 2px;
 }
 
 .placar1 {
@@ -257,10 +277,11 @@ header a:hover {
   margin: 0;
   min-width: 50%;
   height: 90px;
-  background-color: #201b2c;
+  background-color: #091133;
   align-items: center;
   justify-content: right;
   box-shadow: 0px -5px 15px 0px rgba(0, 0, 0, 0.5);
+  font-family: 'Press Start 2P';
 }
 
 .placar2 {
@@ -269,10 +290,11 @@ header a:hover {
   margin: 0;
   min-width: 50%;
   height: 90px;
-  background-color: #201b2c;
+  background-color: #091133;
   align-items: center;
   justify-content: left;
   box-shadow: 0px -5px 15px 0px rgba(0, 0, 0, 0.5);
+  font-family: 'Press Start 2P';
 }
 
 .placar-data1 { 
@@ -286,8 +308,8 @@ header a:hover {
 }
 
 .placar-data1 > *, .placar-data2 > * {
-  margin: 0;
-  font-size: 20px;
+  margin: 3px 0 0;
+  font-size: 15px;
 }
 
 .placar-data2 > * {
@@ -315,7 +337,7 @@ header a:hover {
   flex-direction: column;
   width: 100%;
   height: 90px;
-  background-color: #201b2c;
+  background-color: #091133;
   justify-content: center; 
   align-items: center;
   color: #cccccc;
@@ -331,30 +353,34 @@ header a:hover {
 }
 
 .end-placar > h1 {
-  font-size: 20px;
+  font-size: 15px;
   margin: 0px 10px 14px;
+  font-family: 'Press Start 2P';
+  letter-spacing: 3px;
+  font-weight: 700;
 }
 
 .end-game-buttons > button {
   display: inline-block;
   margin: 0px 10px 0px;
   text-decoration: none;
-  color: #201b2c;
-  font-weight: bold;
-  width: 250px; /* Largura fixa para ambos os botões */
+  color: #fff;
+  font-weight: 500;
+  width: 270px;
   padding: 7px;
   border-radius: 15px;
   outline: none;
   text-transform: uppercase;
   font-size: 10pt;
-  background: #00ff88;
+  background: #0284ff;
   cursor: pointer;
   box-shadow: 0px 10px 40px -12px #00ff8052;
+  font-family: 'Press Start 2P';
+  letter-spacing: 2px;
 }
 
 .end-game-buttons > button:hover {
-  background: #77ffc0;
-  color: #201b2c;
+  background: #045ab0;
 }
 
 /* chat */
@@ -362,7 +388,7 @@ header a:hover {
 :root{
   --dark: #0c0c0c;
   --white: #fff;
-  --purple: #201b2c;
+  --purple: #091133;
   --gray: #949494;
   --gray2: #cccccc;
 }
@@ -378,7 +404,7 @@ header a:hover {
 }
 
 .box-questions{
-  background-color: #201b2c; 
+  background-color: #091133; 
   color: var(--dark);
   display: flex;
   flex-direction: column;
@@ -398,7 +424,7 @@ header a:hover {
   max-height: 5%;
 }
 
-.footer{
+.footer {
   background-color: var(--purple);
   border-radius: 0 0 10px 10px;
   padding: 1rem;
@@ -414,16 +440,18 @@ header a:hover {
 }
 
 .btn-submit {
+  color: #fff;
   border: none;
   border-radius: 5px;
   padding: 10px;
   font-size: 1rem;
+  background-color: #0284ff;
 }
 
 .btn-submit:hover {
+  background-color: #045ab0;
   cursor: pointer;
   transition: .4s;
-  background-color: var(--gray);
 }
 
 #history{
@@ -442,16 +470,16 @@ header a:hover {
 }
 
 #history::-webkit-scrollbar-thumb {
-  background-color: #00ff88; /* Cor do indicador da barra de rolagem */
+  background-color: #0284ff;
   border-radius: 10px;
 }
 
 #history::-webkit-scrollbar-track {
-  background-color: #201b2c;  /* Cor do fundo da barra de rolagem */
+  background-color: #091133; 
 }
 
 #history::-webkit-scrollbar-thumb:hover {
-  background-color: #77ffc0; /* Cor do indicador ao passar o mouse sobre ele */
+  background-color: #045ab0; 
 }
 
 .box-my-message{
@@ -483,7 +511,19 @@ header a:hover {
   background-color: var(--gray2);
 }
 
-/* deixar a pagina do jogo responsiva */
+footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  color: #fff;
+  height: 100px;
+  background-color: #091133;
+  font-size: 17px;
+  letter-spacing: 2px;
+}
+
+/* responsividade */
 
 @media screen and (max-width: 1366px) {
   .container {
@@ -520,6 +560,10 @@ header a:hover {
     font-size: 1.2rem;
   }
 
+  footer {
+    margin-top: 10%;
+  }
+
 }
 
 @media screen and (max-width: 960px) {
@@ -530,17 +574,30 @@ header a:hover {
   header a {
     margin: 0 50px;
   }
+
+  .placar-data1 > *, .placar-data2 > * {
+    font-size: 13px;
+  }
 }
 
 @media screen and (max-width: 850px) {
   .lobby {
     flex-direction: column;
   }
-  
-  .placar-data1 > *, .placar-data2 > * {
-    font-size: 20px;
+
+  .placar1, .placar2 {
+    height: 70px;
   }
 
+  .placar-data1 > *, .placar-data2 > * {
+    font-size: 8px;
+  }
+
+  .placar-profile-img {
+    width: 60px;
+    height: 60px;
+  }
+  
   .box-questions {
     width: 440px;
   }
@@ -555,17 +612,8 @@ header a:hover {
     margin: 0 30px;
   }
 
-  .placar1, .placar2 {
-    height: 70px;
-  }
-
   .placar-data1 > *, .placar-data2 > * {
-    font-size: 15px;
-  }
-
-  .placar-profile-img {
-    width: 60px;
-    height: 60px;
+    font-size: 8px;
   }
 
   .cell {
@@ -603,6 +651,15 @@ header a:hover {
 
   .player-box {
     font-size: 0.9rem;
+  }
+  
+  .end-placar > h1 {
+    font-size: 13px;
+  }
+  
+  .end-game-buttons > button {
+    font-size: 8pt;
+    width: 210px;
   }
 }
 

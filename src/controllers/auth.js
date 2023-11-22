@@ -157,9 +157,9 @@ const registerUser = (req, res) => {
 
   if (!nickname || !email || !password) return res.status(401).send({ error: "You must be inform nickname, email and password for register" });
 
-  if (nickname.length < 3) {
+  if (nickname.length < 3 || nickname.length > 15) {
     return res.status(401).send({
-      error: "Your nickname must be higher or equal than 3 caracters",
+      error: "Your nickname must be higher than 3 caracters and less 15 caracters",
     });
   }
 

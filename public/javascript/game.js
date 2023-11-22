@@ -69,16 +69,18 @@ socket.on('startGameStatus', (match, creatorPlayerData, guestPlayerData) => {
   <div class="placar1">
     <img src="/images/comp-cat1.jpg" alt="Profile Photo" class="placar-profile-img">
     <div class="placar-data1">
-      <h1>Jogador ${user.point} - ${userNickname} </h1>
+      <h1>Jogador ${user.point}ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ</h1>
+      <h1>${userNickname}</h1>
       <h1>Pontos: ${user.points}</h1>
       <h1>Vitórias: ${user.wins}</h1>
     </div>
   </div>
   <div class="placar2">
     <div class="placar-data2">
-      <h1>Jogador ${oponnent.point} - ${oponnent.nickname}</h1>
-      <h1>Pontos: ${oponnent.points}</h1>
-      <h1>Vitórias: ${oponnent.wins}</h1>
+      <h1>ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤJogador ${oponnent.point}</h1>
+      <h1>${oponnent.nickname}</h1>
+      <h1>Pontos: ${user.points}</h1>
+      <h1>Vitórias: ${user.wins}</h1>
     </div>
     <img src="/images/comp-cat2.jpg" alt="Profile Photo" class="placar-profile-img">
   </div> `;
@@ -104,13 +106,13 @@ socket.on('gameStatus', (match) => {
 
   if (placar1 && placar2 && placarData1 && placarData2) {
     if  (userNickname === match.currentPlayer.nickname) {
-      placar1.style.backgroundColor = '#00ff88'; // azul claro
-      placar2.style.backgroundColor = '#201b2c'; 
+      placar1.style.backgroundColor = '#0284ff'; // azul claro
+      placar2.style.backgroundColor = '#091133'; 
       placarData1.style.color = '#201b2c'
       placarData2.style.color = '#cccccc'
     } else {
-      placar1.style.backgroundColor = '#201b2c'; // azul escuro
-      placar2.style.backgroundColor = '#00ff88'; 
+      placar1.style.backgroundColor = '#091133'; // azul escuro
+      placar2.style.backgroundColor = '#0284ff'; 
 
       placarData1.style.color = '#cccccc'
       placarData2.style.color = '#201b2c'

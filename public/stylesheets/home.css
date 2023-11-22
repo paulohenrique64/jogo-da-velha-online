@@ -2,9 +2,10 @@
 
 body {
   margin: 0;
+  height: 100%;
   font-family: 'Noto Sans', sans-serif;
-  background-color: #201b2c;
-  color: #f0ffffde;
+  background-color: #091133;
+  color: #fff;
 }
 
 header {
@@ -12,7 +13,7 @@ header {
   top: 0;
   left: 0;
   width: 100%;
-  background-color: rgba(32, 27, 44, 0.9);
+  background-color: rgba(9,17,51,0.8);
   padding: 15px;
   display: flex;
   justify-content: flex-start;
@@ -21,65 +22,75 @@ header {
   z-index: 1000;
 }
 
-header.hidden {
-  transform: translateY(-100%);
-}
-
-header a {
+header > a {
   margin: 0 10px;
   text-decoration: none;
-  color: #f0ffffde;
+  color: #fff;
   font-weight: bold;
 }
 
-header a:hover {
-  color: #00ff88;
+header > a:hover {
+  color: #045ab0;
 }
 
-main {
-  margin-top: 80px; /* Ajuste para posicionar mais abaixo */
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+}
+
+.home {
+  display: flex;
+  flex-direction: column;
   text-align: center;
-  padding: 40px; /* Ajuste para garantir que o conteúdo não seja obscurecido pelo cabeçalho fixo */
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
 }
 
 .logo {
   font-size: 50px;
-  margin: 20px 0; /* Ajuste na margem superior */
-  color: #77ffc0;
+  color: #fff;
+}
+
+.logo h1 {
+  margin: 0;
 }
 
 .buttons {
-  margin-top: 10%;
+  margin-top: 5%;
 }
 
-.buttons a {
+.buttons > a {
   display: inline-block;
   margin: 0 10px;
   text-decoration: none;
-  color: #f0ffffde;
+  color: #fff;
   font-weight: bold;
-  width: 150px; /* Largura fixa para ambos os botões */
+  width: 160px;
   padding: 20px;
   border-radius: 15px;
   outline: none;
   text-transform: uppercase;
   font-size: 15pt;
-  background: #00ff88;
+  background: #0284ff;
   cursor: pointer;
   box-shadow: 0px 10px 40px -12px #00ff8052;
+  letter-spacing: 2px;
 }
 
-.buttons a:hover {
-  background: #77ffc0;
-  color: #201b2c;
+.buttons > a:hover {
+  background: #045ab0;
 }
 
 /* about */
 
 .about {
-  margin: 30% 15% 20%;
-  width: 70%;
-  height: 80vh;
+  margin: 0;
+  width: 100%;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -88,11 +99,11 @@ main {
 
 .container {
   display: flex;
-  justify-content: center;
   flex-direction: row;
+  justify-content: center;
+  align-items: top;
   width: 100%;
-  height: 43%;
-  margin-top: 20%;
+  height: auto;
 }
 
 .portfolio {
@@ -100,24 +111,23 @@ main {
   justify-content: top;
   align-items: center;
   flex-direction: column;
-  width: 30%;
-  height: 50vh;
-  margin-right: 2%;
+  width: 25%;
+  height: auto;
 }
 
 .portfolio > img {
   border-radius: 100%;
   width: 30vh;
-  height: auto;
   box-shadow: 0px 10px 40px -12px rgba(0, 0, 0, 0.322);
 }
 
 .text-content {
   width: 45%;
+  height: auto;
 }
 
-
 .text-content > h1 {
+  margin: 0;
   text-align: left;
   font-weight: 500;
   letter-spacing: 2px;
@@ -133,13 +143,13 @@ main {
 
 .comp-junior {
   text-decoration: none; 
-  color: #00ff88;
+  color: #fff;
 }
+
+/* icons and social buttons  */
 
 .buttons-and-icons {
   display: flex;
-  /* justify-content: center;
-  align-items: left; */
   flex-direction: row;
   width: 100%;
 }
@@ -147,8 +157,7 @@ main {
 .icons {
   display: flex;
   flex-direction: row;
-  justify-content: right;
-  margin-left: 7%;
+  margin-left: 5%;
 }
 
 .icons > img {
@@ -157,14 +166,12 @@ main {
   width: 43px;
 }
 
-/* links redes sociais */
+.socialbtns {
+  width: 49%;
+}
 
 a, a:hover {
 	text-decoration: none;
-}
-
-.socialbtns {
-  width: 49%;
 }
 
 .socialbtns, .socialbtns ul, .socialbtns li {
@@ -173,6 +180,7 @@ a, a:hover {
 }
 
 .socialbtns ul {
+  margin-left: 10%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -188,7 +196,7 @@ a, a:hover {
 	width: 40px;
   height: 28px;
 	color: #000;
-	background-color: #FFF;
+	background-color: #fff;
 	border: 1px solid #000;
 	padding-top: 12px;
 	border-radius: 22px;
@@ -198,24 +206,75 @@ a, a:hover {
 }
 
 .socialbtns .fa:hover {
-	color: #FFF;
-	background-color: #000;
+	color: #fff;
+	background-color: #045ab0;
 	border: 1px solid #000;
 }
 
-@media screen and (max-width: 1000px) {
+footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100px;
+  background-color: #040714;
+  font-size: 17px;
+  letter-spacing: 2px;
+}
 
-  
+/* responsividade  */
+
+@media screen and (max-width: 1000px) {
   .container {
     flex-direction: column-reverse; 
+    align-items: center;
+  }
+
+  .text-content {
+    width: 70%;
+  }
+
+  .buttons-and-icons {
+    flex-direction: column;
+  }
+
+  .socialbtns {
+    width: 100%;
+  }
+
+  .socialbtns ul {
+    margin: 0;
   }
 
   .icons {
     display: none;
   }
+}
 
-  .socialbtns > ul {
+@media screen and (max-width: 450px)  {
+  .logo {
+    font-size: 30px;
+  }
+
+  .buttons {
+    display: flex;
     flex-direction: column;
-    margin-left: 70%;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .buttons > a {
+    margin-bottom: 5%;
+    width: 150px;
+    padding: 10px;
+    font-size: 12pt;
+  }
+
+  .text-content {
+    font-size: 12px;
+  }
+
+  .portfolio {
+    margin-top: 7%;
   }
 }
