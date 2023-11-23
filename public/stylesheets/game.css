@@ -243,13 +243,13 @@ header a:hover {
   width: 150px;
   height: 137px;
   margin: 1.5%;
-  font-size: 120px;
   background-color: #091133;
   color: #f0ffffde;
   border: none;
   cursor: pointer;
   border-radius: 5px;
   box-shadow: 0px -5px 15px 0px rgba(0, 0, 0, 0.5);
+  font-size: 120px;
 }
 
 .cell:hover {

@@ -143,3 +143,16 @@ header a:hover {
 .span-required-error {
   color: red; /* Ou qualquer outra cor desejada */
 }
+
+.card-register p {
+  color: #fff;
+}
+
+.card-register p > a {
+  text-decoration: none;
+  color: #0284ff;
+}
+
+.card-register p > a:hover {
+  color: #045ab0;
+}

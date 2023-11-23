@@ -137,3 +137,18 @@ header a:hover {
   background-color: #045ab0;
 }
 
+.card-login p {
+  color: #fff;
+}
+
+.card-login p > a {
+  text-decoration: none;
+  color: #0284ff;
+}
+
+.card-login p > a:hover {
+  color: #045ab0;
+}
+
+
+

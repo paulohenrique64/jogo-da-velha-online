@@ -1,14 +1,13 @@
-class jogoDaVelha {
-
-  // constructor
+export default class jogoDaVelha {
+  //construtor
   constructor(creator, guest) {
-    this.creator = creator
-    this.guest = guest
-    this.creator.point = 'X'
-    this.guest.point = 'O'
+    this.creator = creator;
+    this.creator.point = 'X';
     this.creator.points = 0;
+    this.guest = guest;
+    this.guest.point = 'O';
     this.guest.points = 0;
-    this.resetGame(creator)
+    this.resetGame(creator);
   }
 
   // reseta o jogo atual
@@ -21,101 +20,75 @@ class jogoDaVelha {
 
   // marcar um ponto no jogo da velha
   setPoint(player, row, col) {
-    if (!this.winner && !this.tie && !this.gamestate[row][col] && this.currentPlayer == player) {
+    if (!this.end() && !this.gamestate[row][col] && this.currentPlayer === player) {
       this.gamestate[row][col] = player;
       this.switchCurrentPlayer();
-      this.verifyTie();
       this.verifyWinner();
+      this.verifyTie();
       return true;
     }
+
+    // caso o ponto não seja marcado
     return false;
   }
 
   // troca o jogador atual
   switchCurrentPlayer() {
-    if (this.currentPlayer == this.creator) 
-      this.currentPlayer = this.guest;
-    else 
-      this.currentPlayer = this.creator;
+    if (this.currentPlayer == this.creator) this.currentPlayer = this.guest;  
+    else this.currentPlayer = this.creator;
+  }
+
+  // verifica se existe um ganhador
+  verifyWinner() {
+    // se o jogo tiver empatado, não verifica se existe um ganhador
+    if (this.end()) return; 
+
+    for (let j = 0; j < 3; j++) {
+      // verifica se o creator ganhou o jogo
+      if ( (this.gamestate[j][0] == this.creator & this.gamestate[j][1] == this.creator & this.gamestate[j][2] == this.creator)    // linhas
+        || (this.gamestate[0][j] == this.creator & this.gamestate[1][j] == this.creator & this.gamestate[2][j] == this.creator)    // colunas
+        || (this.gamestate[0][0] == this.creator & this.gamestate[1][1] == this.creator & this.gamestate[2][2] == this.creator)    // diagonal principal
+        || (this.gamestate[0][2] == this.creator & this.gamestate[1][1] == this.creator & this.gamestate[2][0] == this.creator)) { // diagonal secundária
+        return this.setWinner(this.creator);
+      }
+
+      // verifica se o guest ganhou o jogo
+      if  ((this.gamestate[j][0] == this.guest & this.gamestate[j][1] == this.guest & this.gamestate[j][2] == this.guest)    // linhas
+        || (this.gamestate[0][j] == this.guest & this.gamestate[1][j] == this.guest & this.gamestate[2][j] == this.guest)    // colunas
+        || (this.gamestate[0][0] == this.guest & this.gamestate[1][1] == this.guest & this.gamestate[2][2] == this.guest)    // diagonal principal
+        || (this.gamestate[0][2] == this.guest & this.gamestate[1][1] == this.guest & this.gamestate[2][0] == this.guest)) { // diagonal secundária
+        return this.setWinner(this.guest);
+      }
+    }
+  }
+  
+  // seta um novo ganhador ao jogo
+  setWinner(winner) {
+    this.winner = winner;
+    this.winner.points++;
   }
 
   // verifica se o jogo acabou
   end() {
-    if (this.winner || this.tie)  
-      return true;
-    else  
-      return false;
+    if (this.winner || this.tie) return true;
+    else return false;
   }
 
   // verifica se o jogo empatou
   verifyTie() {
-    let points = 0;
-  
+    // se o jogo tiver um ganhador, não verifica se empatou
+    if (this.end()) return;
+
     for (let i = 0; i < 3; i++) {
       for (let j = 0; j < 3; j++) {
-        if (this.gamestate[i][j]) {
-          points++;
+        if (!this.gamestate[i][j]) {
+          // ainda há uma posição vazia
+          return;
         }
       }
     }
-    
-    if (points == 9) {
-      this.tie = true;
-    }
-  }
 
-  // adiciona um ponto para o ganhador do jogo
-  addPointForWinner() {
-    if (this.winner) 
-      this.winner.points++;
-  }
-
-  // se existe um ganhador do jogo da velha, seta ao atribuito winner
-  verifyWinner() {
-    for (let j = 0; j < 3; j = j + 1) {
-      // verifica se o creator ganhou o jogo pelas lihas
-      if (this.gamestate[j][0] == this.creator & this.gamestate[j][1] == this.creator & this.gamestate[j][2] == this.creator) {
-        this.winner = this.creator
-        this.addPointForWinner()
-        return;
-      }
-
-      // verifica se o guest ganhou o jogo pelas lihas
-      if (this.gamestate[j][0] == this.guest & this.gamestate[j][1] == this.guest & this.gamestate[j][2] == this.guest) {
-        this.winner = this.guest
-        this.addPointForWinner()
-        return;
-      }
-
-      // verifica se o creator ganhou o jogo pelas colunas
-      if (this.gamestate[0][j] == this.creator & this.gamestate[1][j] == this.creator & this.gamestate[2][j] == this.creator) {
-        this.winner = this.creator
-        this.addPointForWinner()
-        return;
-      }
-
-      // verifica se o guest ganhou o jogo pelas colunas
-      if (this.gamestate[0][j] == this.guest & this.gamestate[1][j] == this.guest & this.gamestate[2][j] == this.guest) {
-        this.winner = this.guest
-        this.addPointForWinner()
-        return;
-      }
-    }
-
-    // verifica se o creator ganhou o jogo pelas diagonais
-    if (this.gamestate[0][0] == this.creator & this.gamestate[1][1] == this.creator & this.gamestate[2][2] == this.creator) {
-      this.winner = this.creator
-      this.addPointForWinner()
-      return;
-    }
-
-    // verifica se o guest ganhou o jogo pelas diagonais
-    if (this.gamestate[0][0] == this.guest & this.gamestate[1][1] == this.guest & this.gamestate[2][2] == this.guest) {
-      this.winner = this.guest
-      this.addPointForWinner()
-      return;
-    }
+    // se chegar até aqui --> não há ganhador nem posições vazias
+    this.tie = true;
   }
 }
-
-export default jogoDaVelha;

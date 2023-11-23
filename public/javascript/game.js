@@ -79,8 +79,8 @@ socket.on('startGameStatus', (match, creatorPlayerData, guestPlayerData) => {
     <div class="placar-data2">
       <h1>ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤJogador ${oponnent.point}</h1>
       <h1>${oponnent.nickname}</h1>
-      <h1>Pontos: ${user.points}</h1>
-      <h1>Vitórias: ${user.wins}</h1>
+      <h1>Pontos: ${oponnent.points}</h1>
+      <h1>Vitórias: ${oponnent.wins}</h1>
     </div>
     <img src="/images/comp-cat2.jpg" alt="Profile Photo" class="placar-profile-img">
   </div> `;
@@ -103,7 +103,6 @@ socket.on('gameStatus', (match) => {
   const placarData1 = document.querySelector('.placar-data1');
   const placarData2 = document.querySelector('.placar-data2');
 
-
   if (placar1 && placar2 && placarData1 && placarData2) {
     if  (userNickname === match.currentPlayer.nickname) {
       placar1.style.backgroundColor = '#0284ff'; // azul claro
@@ -123,6 +122,8 @@ socket.on('gameStatus', (match) => {
 });
 
 socket.on('endGameStage', (match) => {
+  if (match.winner) {
+  // existe um ganhador
   divPlacar.innerHTML = `
     <div class="end-placar">
       <h1>${match.winner.nickname} venceu o jogo!</h1>
@@ -130,6 +131,16 @@ socket.on('endGameStage', (match) => {
         <button id="playAgain">Jogar novamente</button>
         <button id="leaveParty">Sair da party</button>
     </div>`;
+  } else {
+    // jogo empatou
+    divPlacar.innerHTML = `
+    <div class="end-placar">
+      <h1>O Jogo empatou!</h1>
+      <div class="end-game-buttons">
+        <button id="playAgain">Jogar novamente</button>
+        <button id="leaveParty">Sair da party</button>
+    </div>`;
+  }
 
   const playAgainButton = document.querySelector('#playAgain').addEventListener('click', ( () => {
     socket.emit('playAgain');
