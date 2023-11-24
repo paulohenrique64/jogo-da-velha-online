@@ -9,6 +9,7 @@
   <body>
     <header>
       <a href="http://localhost:3000/" id="contactLink">Menu</a>
+      <a href="http://localhost:3000/login" id="contactLink">Entrar</a>
       <a href="http://localhost:3000/register" id="contactLink">Registre-se</a>
     </header>
     <div class="main-login">
@@ -21,11 +22,13 @@
             <h1>Entrar</h1>
             <div class="text-field">
               <label for="email">Email</label>
-              <input type="text" id="email" name="email" placeholder="Email" autocomplete="email">
+              <input class="required" type="text" id="email" name="email" placeholder="Email" autocomplete="email">
+              <span class="span-required span-required-error">Digite um email válido</span>
             </div>
             <div class="text-field">
               <label for="password">Senha</label>
-              <input type="password" id="password" name="password" placeholder="Senha" autocomplete="current-password">
+              <input class="required" type="password" id="password" name="password" placeholder="Senha" autocomplete="current-password">
+              <span class="span-required span-required-error">Senha deve ter no mínimo 8 caracteres</span>
             </div>
               <button class="submit" type="submit">Entrar</button>    
               <p>Esqueceu sua senha? <a href="http://localhost:3000/forgot-password">Clique aqui</a></p> 

@@ -1,21 +1,23 @@
+/* 
+  Jogo da velha online com socket.io
+*/
+
 import mongooseConnection from "./src/database/mongodb";
-import routes from "./src/routes/routes"
-import express from "express";
-import bodyParser from "body-parser";
-import http from "http";
-import socketIO from "socket.io";
 import jogoDaVelha from "./src/models/game";
+import bodyParser from "body-parser";
+import socketIO from "socket.io";
+import express from "express";
+import routes from "./src/routes/routes"
+import http from "http";
 import chat from "./src/models/chat";
 
-mongooseConnection(); // Conectar ao banco de dados
-
+const cookieParser = require('cookie-parser');
 const User = require('./src/models/user');
 const path = require('path')
 const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
 const cors = require('cors');
-const cookieParser = require('cookie-parser')
 const port = 3000;
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -25,20 +27,13 @@ app.set('views', path.join(__dirname, 'src', 'views'));
 app.set("view engine", "ejs");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use( cors({ credentials: true, methods: 'GET, PUT, POST, OPTIONS, DELETE' }) );
+app.use( cors({ credentials: true, methods: 'GET, PUT, POST, OPTIONS, DELETE, PATCH' }) );
 app.use("/", routes);
-app.use((req, res, next) => { return res.status(404).redirect('/') });
-app.use((req, res, next) => { return res.status(404).redirect('/game/') });
+app.use((req, res) => {return res.status(404).redirect('/')});
+app.use((req, res) => {return res.status(404).redirect('/game')});
 
-server.listen(port, () => {
-  console.log(`Servidor rodando no link http://localhost:${port}`);
-});
-
-/* 
-
-  jogo da velha online - socket.io
-
-*/
+// Conectar ao banco de dados
+mongooseConnection(); 
 
 var activePlayers = []; 
 var activeGames = [];   
@@ -211,4 +206,8 @@ io.on("connection", (socket) => {
     io.emit('onlinePlayerList', activePlayers);
   });
 
+});
+
+server.listen(port, () => {
+  console.log(`Servidor rodando no link http://localhost:${port}`);
 });

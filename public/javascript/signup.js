@@ -6,14 +6,19 @@ const emailRegex = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
 
 form.addEventListener('submit', (event) => {
   event.preventDefault()
-  
-  const formData = new FormData(form)
-  const user = {};
-  formData.forEach((value, key) => {
-    user[key] = value;
-  });
 
-  if (validarEmail() && validarNome() && validarSenha()) {
+  const validacaoNickname = validarNickname();
+  const validacaoEmail = validarEmail();
+  const validacaoSenha = validarSenha();
+
+  if (validacaoNickname && validacaoEmail && validacaoSenha) {
+  
+    const formData = new FormData(form)
+    const user = {};
+    formData.forEach((value, key) => {
+      user[key] = value;
+    });
+
     console.log(user)
     // Opções da solicitação (método, cabeçalhos, corpo)
     const options = {
@@ -25,19 +30,19 @@ form.addEventListener('submit', (event) => {
     }
 
     fetch(url, options).then((response) => {
-      response.json().then((responseJson) => {
-        if (responseJson.message)
-          alert(responseJson.message);
-        else if (responseJson.error)
-          alert(responseJson.error);
-      })
+    response.json().then((responseJson) => {
+      if (responseJson.message)
+        alert(responseJson.message);
+      else if (responseJson.error)
+        alert(responseJson.error);
+    })
     }).catch((error) => {
       console.log(error)
     })
   }
 })
 
-function validarNome() {
+function validarNickname() {
   if(campos[0].value.length < 3) {
     setError(0);
     return false;

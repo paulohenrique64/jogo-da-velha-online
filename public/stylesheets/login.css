@@ -150,5 +150,17 @@ header a:hover {
   color: #045ab0;
 }
 
+.span-required{
+  font-size: 12px;
+  margin: 3px 0 0 1px;
+  color: var(--color-red);
+  display: none;
+}
+
+.span-required-error {
+  color: red; /* Ou qualquer outra cor desejada */
+}
+
+
 
 

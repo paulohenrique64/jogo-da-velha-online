@@ -2,36 +2,43 @@ import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import mailer from "../models/mailer";
 import jwt from "jsonwebtoken";
-import { response } from "express";
+import {response} from "express";
+import authConfig from '../config/auth';
 
 const User = require("../models/user");
 const path = require("path");
-const authConfig = require("../config/auth");
 
-// gera um token de autenticação aleatório
-const generateToken = (params) => {
-  return jwt.sign(params, "sjbfjdsgjdghldrgblhrgh4353rtbihdyxyuvdgy848", {
+// gera um token de autenticação 
+const generateAuthToken = (params) => {
+  return jwt.sign(params, authConfig.secret, {
     expiresIn: 86400,
   });
 };
 
-// retorna pagina de login
+// gera um token para resetar a senha
+const generateResetPasswordToken = () => {
+  return crypto.randomBytes(20).toString("hex");
+}
+
+// renderiza a pagina de login
 const loginPage = (req, res) => {
   const filePath = path.join(__dirname, "../views/login");
   return res.status(200).render(filePath, { error: req.error });
 };
 
-// retorna a pagina de registro
+// renderiza a pagina de registro
 const registerPage = (req, res) => {
   const filePath = path.join(__dirname, "../views/signup");
   return res.status(200).render(filePath);
 };
 
+// renderiza a pagina de esqueceu a senha
 const forgotPasswordPage = (req, res) => {
   const filePath = path.join(__dirname, "../views/forgotPassword");
   return res.status(200).render(filePath);
 }
 
+// renderiza a pagina para troca se senha
 const resetPasswordPage = (req, res) => {
   const resetPasswordToken = req.params.token;
   
@@ -41,12 +48,7 @@ const resetPasswordPage = (req, res) => {
   return res.render(filePath, {resetPasswordToken});
 }
 
-// realiza o logout do usuario
-const logoutUser = (req, res) => {
-  res.clearCookie("token"); // limpa o campo token dos cookies do cliente
-  return res.redirect("/"); // direciona o cliente para a homepage
-};
-
+// renderiza a pagina de configurações 
 const getSettingsPage = (req, res) => {
   const token = req.cookies.token;
 
@@ -54,7 +56,7 @@ const getSettingsPage = (req, res) => {
 
   jwt.verify(
     token,
-    "sjbfjdsgjdghldrgblhrgh4353rtbihdyxyuvdgy848",
+    authConfig.secret,
     (err, decoded) => {
       if (err) {
         return res.status(500).send({ error: "internal server error" });
@@ -82,6 +84,7 @@ const getSettingsPage = (req, res) => {
   );
 };
 
+// retorna todos os usuarios do banco de dados
 const getUsers = (req, res) => {
   User.find({})
     .then(users => {
@@ -93,12 +96,13 @@ const getUsers = (req, res) => {
     })
 }
 
+// recebe um token de autenticação e retorna os dados do dono do token
 const getUser = (req, res) => {
   const token = req.cookies.token;
 
   if (!token) return res.status(401).send({error: "not authorized"});
 
-  jwt.verify(token, "sjbfjdsgjdghldrgblhrgh4353rtbihdyxyuvdgy848", (err, decoded) => {
+  jwt.verify(token, authConfig.secret, (err, decoded) => {
     if (err) return res.status(500).send({error: "internal server error"});
 
     User.findById(decoded.uid)
@@ -114,22 +118,24 @@ const getUser = (req, res) => {
     
 }
 
-// faz o login se um usuario estiver cadastro valido no site
+// faz o login de um usuario
 const loginUser = (req, res) => {
   const { email, password } = req.body;
-  if (!email || !password) return res.redirect("/login");
+
+  if (!email || !password) return res.status(401).send({error: "You must be inform a email and password for login"})
 
   User.findOne({ email })
     .select("+password")
     .then((user) => {
-      if (!user) return res.redirect("/login");
+
+      if (!user) return res.status(401).send({error: "Invalid email"});
 
       bcrypt.compare(password, user.password).then((result) => {
-        if (!result) return res.redirect("/login");
+        if (!result) return res.status(401).send({error: "Invalid password"});
 
-        // se usuario for logado: gera um token e redireciona para a pagina do jogo
-        // o token pode ser capturado pela pagina
-        const token = generateToken({ uid: user.id });
+        // se usuario for logado: gera um token de autenticação
+        const token = generateAuthToken({ uid: user.id });
+
         // envia o token como cookie para nao precisar fazer login depois
         res.cookie("token", token, {
           maxAge: 3600000,
@@ -137,21 +143,29 @@ const loginUser = (req, res) => {
           secure: false,
         });
 
-        return res.status(201).redirect("/game");
+        // retorna status 201
+        return res.status(201).send();
       })
       .catch(error => {
         console.log(error);
-        return res.redirect("/login");
+        return res.status(500).send({error: "Internal server error"});
       })
     })
     .catch((error) => {
-      // internal server error
-      console.error(error);
-      return res.redirect("/login");
+      console.log(error);
+      return res.status(500).send({error: "Internal server error"});
     });
 };
 
-// faz o registro de um usuario no site
+// realiza o logout do usuario
+const logoutUser = (req, res) => {
+  /* limpa o campo token dos cookies do navegador do cliente
+    e direciona o cliente para a homepage */
+  res.clearCookie("token"); 
+  return res.redirect("/");
+};
+
+// faz o registro de um usuario 
 const registerUser = (req, res) => {
   const { nickname, email, password } = req.body;
 
@@ -205,9 +219,9 @@ const registerUser = (req, res) => {
     });
 };
 
-// criar token de atualização de senha
+// criar token para reset de senha
 const forgotPassword = (req, res) => {
-  const { email } = req.body;
+  const {email} = req.body;
 
   if (!email) return res.status(401).send({error: "you must be inform a email"});
 
@@ -217,7 +231,7 @@ const forgotPassword = (req, res) => {
       // caso o usuario seja encontrado
       if (user) {
         // cria um token de recuperacao de senha com data de expiração
-        const token = crypto.randomBytes(20).toString("hex");
+        const token = generateResetPasswordToken();
         const expiration = new Date();
         expiration.setHours(new Date().getHours() + 1); // 1 hora de validade
  
@@ -230,13 +244,12 @@ const forgotPassword = (req, res) => {
         })
           .then(() => {
             // usuario quer trocar a senha
-            mailer
-              .sendMail({
+            mailer.sendMail({
                 to: email,
                 from: "jogodavelhaonline@express.com",
                 template: "auth/forgotPassword",
                 subject: "Recuperação de senha",
-                context: { token },
+                context: {token}
               })
               .then(() => {
                 // email enviado
@@ -263,7 +276,7 @@ const forgotPassword = (req, res) => {
     });
 };
 
-// rota para resetar a senha do usuario caso tenha um token valido
+// rota para resetar a senha do usuario caso tenha um token de reset de senha valido
 const resetPassword = (req, res) => {
   const token = req.params.token;
   const newPassword = req.body.password;
@@ -321,7 +334,7 @@ const deleteUser = (req, res) => {
     });
 };
 
-// editar usuario (só pode ser utilizada pelo admin)
+// editar usuario
 const editUser = (req, res) => {
   const { id, nickname, email, password } = req.body;
 

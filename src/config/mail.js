@@ -1,7 +1,3 @@
-// host: mailConfig.host,
-// port: mailConfig.port,
-// auth: mailConfig.auth,
-
 const mailConfig = {
   host: "sandbox.smtp.mailtrap.io",
   port: 2525,

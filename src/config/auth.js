@@ -1,3 +1,5 @@
-export default {
-  secret: 'sjbfjdsgjdghldrgblhrgh4353rtbihdyxyuvdgy848',
-};
+const authConfig = {
+  secret: "sjbfjdsgjdghldrgblhrgh4353rtbihdyxyuvdgy848"
+}
+
+export default authConfig;

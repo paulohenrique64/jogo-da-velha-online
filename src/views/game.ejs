@@ -8,13 +8,7 @@
     <link rel="stylesheet" href="/stylesheets/game.css">
 </head>
 <body>
-
-  <script>
-    var userNickname = "<%= userdata.nickname %>";
-  </script>
-
   <div class="all">
-
     <div>
       <header>
         <a href="http://localhost:3000/">Menu</a>
@@ -25,7 +19,7 @@
     </div>
     <div class="lobby" id="lobby">
       <div class="block">
-        <h1><%= userdata.nickname %><br>▼</h1>
+        <h1 class="nickname"></h1>
         <div class="header-block">
           <input placeholder="FRIEND NICKNAME" type="text" id="inputFriendName">
           <button id="startGameButton">iniciar partida</button>
@@ -77,11 +71,9 @@
         </div>
     </div>
   </div>
-
   <footer>
     <p>Criado por Paulo Henrique 💙💙💙</p>
   </footer>
-
   <script src="/javascript/game.js"></script>
 </body>
 </html>

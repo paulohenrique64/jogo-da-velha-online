@@ -1,26 +1,23 @@
 const socket = io();
-const ul = document.querySelector('#player-list');
 const divLobby = document.querySelector('#lobby');
+const ul = document.querySelector('#player-list');
 const divOnlinePlayersList = document.querySelector('#players');
 const divGame = document.querySelector('.container')
 const divPlacar = document.querySelector('#placar-container');
 const playAgainButton = document.createElement('button');
-const buttons = [];
 const startGameButton = document.getElementById('startGameButton');
 const inputFriendName = document.getElementById('inputFriendName');
+const buttons = [];
 
-playAgainButton.textContent = 'Play Again'; 
+var userData;
 
+// atualiza a lista de jogadores onlines do lobby
 socket.on('onlinePlayerList', activePlayers => {
-  // update players online list
   divOnlinePlayersList.innerHTML = '';
 
   activePlayers.forEach(player => {
-    if (player.nickname !== userNickname) {
-      // <div class="player-box">
-      //     <img src="/images/comp-cat1.jpg" alt="Profile Photo">
-      //     <p>joao</p>
-      //   </div>
+
+    if (player.id !== socket.id) {
       const playerBox = document.createElement('div');
       playerBox.className = "player-box";
       playerBox.innerHTML = `
@@ -29,21 +26,11 @@ socket.on('onlinePlayerList', activePlayers => {
       `;
       divOnlinePlayersList.appendChild(playerBox);
     }
+
   });
 })
 
-startGameButton.addEventListener('click', () => {
-  const friendName = inputFriendName.value;
-  socket.emit('createParty', friendName)
-  var historyBox = document.getElementById('history');
-  historyBox.innerHTML = '';
-})
-
-socket.on('inviteError', res =>{
-  // inputopponentNickname.placeholder = res.message;
-  // criar caixa de texto no site informando o erro
-})  
-
+// atualiza o jogo no começo da partida
 socket.on('startGameStatus', (match, creatorPlayerData, guestPlayerData) => {
 
   socket.removeAllListeners('updateMessage');
@@ -54,11 +41,11 @@ socket.on('startGameStatus', (match, creatorPlayerData, guestPlayerData) => {
   console.log(creatorPlayerData)
   console.log(guestPlayerData)
 
-  if (userNickname === match.creator.nickname) {
-    var user = { points: match.creator.points, point: match.creator.point, wins: creatorPlayerData.wins }
+  if (userData.nickname === match.creator.nickname) {
+    var user = { nickname: match.creator.nickname, points: match.creator.points, point: match.creator.point, wins: creatorPlayerData.wins }
     var oponnent = { nickname: match.guest.nickname, points: match.guest.points, point: match.guest.point, wins: guestPlayerData.wins }
   } else {
-    var user = { points: match.guest.points, point: match.guest.point, wins: guestPlayerData.wins }
+    var user = { nickname: match.creator.nickname, points: match.guest.points, point: match.guest.point, wins: guestPlayerData.wins }
     var oponnent = { nickname: match.creator.nickname, points: match.creator.points, point: match.creator.point, wins: creatorPlayerData.wins }
   }
 
@@ -70,7 +57,7 @@ socket.on('startGameStatus', (match, creatorPlayerData, guestPlayerData) => {
     <img src="/images/comp-cat1.jpg" alt="Profile Photo" class="placar-profile-img">
     <div class="placar-data1">
       <h1>Jogador ${user.point}ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ</h1>
-      <h1>${userNickname}</h1>
+      <h1>${user.nickname}</h1>
       <h1>Pontos: ${user.points}</h1>
       <h1>Vitórias: ${user.wins}</h1>
     </div>
@@ -86,7 +73,7 @@ socket.on('startGameStatus', (match, creatorPlayerData, guestPlayerData) => {
   </div> `;
 })
 
-// atualizar o jogo do cliente de acordo com o servidor
+// atualiza o jogo durante a partida
 socket.on('gameStatus', (match) => {
   for (let i = 0; i < 3; i++) {
     for (let j = 0; j < 3; j++) {
@@ -104,7 +91,7 @@ socket.on('gameStatus', (match) => {
   const placarData2 = document.querySelector('.placar-data2');
 
   if (placar1 && placar2 && placarData1 && placarData2) {
-    if  (userNickname === match.currentPlayer.nickname) {
+    if  (userData.nickname === match.currentPlayer.nickname) {
       placar1.style.backgroundColor = '#0284ff'; // azul claro
       placar2.style.backgroundColor = '#091133'; 
       placarData1.style.color = '#201b2c'
@@ -117,10 +104,11 @@ socket.on('gameStatus', (match) => {
       placarData2.style.color = '#201b2c'
     }
   } else {
-    console.log('placars are not in the DOM yet')
+    console.log('placar error')
   }
 });
 
+// atualiza o jogo ao chegar ao final da partida
 socket.on('endGameStage', (match) => {
   if (match.winner) {
   // existe um ganhador
@@ -151,46 +139,26 @@ socket.on('endGameStage', (match) => {
   })
 })
 
+// esconde o jogo e exibe o lobby
 socket.on('backToLobby', () => {
   divLobby.style.display = 'flex';
   divGame.style.display = 'none';
   divPlacar.style.display = 'none';
 })
 
-function main() {
-  socket.emit('newOnlinePlayer', userNickname);
-  divGame.style.display = 'none';
-
-  // divGame.style.display = 'block';
-  // divLobby.style.display = 'none';
-
-  for (let i = 0; i < 3; i++) {
-    buttons.push([]);
-    for (let j = 0; j < 3; j++) {
-      const buttonId = i * 3 + j;
-      const button = document.getElementById(buttonId);
-      buttons[i].push(button);
-      button.addEventListener('click', () => {
-        socket.emit('point', i, j); 
-      });
-    }
-  }
-}
-
-main()
-
-// chat test
+// enviar uma mensagem
 function sendMessage() {
   const inputMessage = document.querySelector('#message-input');
   socket.emit('message', inputMessage.value);
   inputMessage.value = '';
 }
 
+// exibir a mensagem no chat
 function addMessage(message, nick) {
   var historyBox = document.getElementById('history')
 
-  // My message
-  if (userNickname === nick) {
+  // mensagem do usuario atual
+  if (userData.nickname === nick) {
     var boxMyMessage = document.createElement('div')
     boxMyMessage.className = 'box-my-message'
 
@@ -202,7 +170,7 @@ function addMessage(message, nick) {
 
     historyBox.appendChild(boxMyMessage)
   } else {
-    // Response message
+    // mensagem do oponente
     var boxResponseMessage = document.createElement('div')
     boxResponseMessage.className = 'box-response-message'
 
@@ -215,9 +183,55 @@ function addMessage(message, nick) {
     historyBox.appendChild(boxResponseMessage)
   }
 
-  // Levar scroll para o final
+  // levar scroll para o final
   historyBox.scrollTop = historyBox.scrollHeight
 }
+
+function main() {
+  const url = "http://localhost:3000/user";
+
+  fetch(url)
+    .then(response => {
+      response.json()
+        .then(responseJson => {
+          userData = responseJson.user;
+          socket.emit('newOnlinePlayer', userData.nickname);
+          document.querySelector(".nickname").innerHTML = `${userData.nickname}<br>▼`;
+        })
+        .catch(error => {
+          console.log(error);
+        })
+    })
+    .catch(error => {
+      console.log(error);
+    })
+
+  // adiciona funcao aos botoes do jogo da velha
+  for (let i = 0; i < 3; i++) {
+    buttons.push([]);
+    for (let j = 0; j < 3; j++) {
+      const buttonId = i * 3 + j;
+      const button = document.getElementById(buttonId);
+      buttons[i].push(button);
+      button.addEventListener('click', () => {
+        socket.emit('point', i, j); 
+      });
+    }
+  }
+
+  // adiciona funcao ao botao de start game do lobby
+  startGameButton.addEventListener('click', () => {
+    const friendName = inputFriendName.value;
+    socket.emit('createParty', friendName)
+    var historyBox = document.getElementById('history');
+    historyBox.innerHTML = '';
+  })
+
+  playAgainButton.textContent = 'Play Again'; 
+  divGame.style.display = 'none';
+}
+
+main()
 
 
 
