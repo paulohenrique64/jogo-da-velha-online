@@ -7,43 +7,43 @@ let nickname = document.querySelector("#nickname");
 let email = document.querySelector("#email");
 let password = document.querySelector("#password");
 let wins = document.querySelector("#wins");
+let groupNickname = document.querySelector(".group-nickname");
+let groupEmail =  document.querySelector(".group-email");
+let groupPassword = document.querySelector(".group-password");
 
 let id = null;
-let httpm = null;
 let users = [];
 
 addBtn.onclick = function () {
-  httpm = "POST";
-  clearForm();
-  form.classList.add("active");
+  registerUser();
 };
 
 cancelBtn.onclick = function () {
-  form.classList.remove("active");
+  hiddenForm();
 };
 
 saveBtn.onclick = function () {
-  // salva os dados do form no banco de dados com post ou put
-  const user = {
-    nickname: nickname.value,
-    email: email.value,
-    password: password.value
-  }
+  // registro
+  if (nickname.value && email.value && password.value)
+    return saveUser("http://localhost:3000/register", {nickname: nickname.value, email: email.value, password: password.value}); 
 
-  let url;
+  // editar nickname
+  if (nickname.value)
+    return saveUser("http://localhost:3000/user/nickname", {id, nickname: nickname.value}); 
 
-  if (httpm === 'POST') {
-    url = "http://localhost:3000/register";
-  } else {
-    url = "http://localhost:3000/user";
-    user.id = id;
-  }
+  // editar email
+  if (email.value)
+  return saveUser("http://localhost:3000/user/email", {id, email: email.value}); 
 
-  if (user.id) console.log(user.id);
+  // editar password
+  if (password.value)
+  return saveUser("http://localhost:3000/user/password", {id, password: password.value}); 
+};
 
+function saveUser(url, user) {
   fetch(url,
     { 
-      method: httpm, body: JSON.stringify(user), 
+      method: "POST", body: JSON.stringify(user), 
       headers: { "Content-type": "application/json" } 
     })
   .then((response)=>{
@@ -51,14 +51,14 @@ saveBtn.onclick = function () {
       if (responseJson.message) alert(responseJson.message);
       else if (responseJson.error) alert(responseJson.error);
       clearForm();
-      form.classList.remove('active');
+      hiddenForm();
       getUsers();
     })
   })
   .catch(error => {
     console.log(error);
   })
-};
+}
 
 function getUsers(){
   fetch("http://localhost:3000/users")
@@ -67,14 +67,6 @@ function getUsers(){
     users = data.users;
     updateTable();
   })
-}
-
-
-function editUser(event) {
-  httpm = "PATCH";
-  clearForm();
-  form.classList.add("active");
-  id = event.target.parentElement.parentElement.id;
 }
 
 function deleteUser(event) {
@@ -93,6 +85,46 @@ function deleteUser(event) {
   })
 }
 
+function registerUser() {
+  clearForm();
+  showForm();
+  groupNickname.classList.add("active");
+  groupEmail.classList.add("active");
+  groupPassword.classList.add("active");
+}
+
+function editNickname(event) {
+  clearForm();
+  showForm();
+  groupNickname.classList.add("active");
+  id = event.target.parentElement.parentElement.id;
+}
+
+function editEmail(event) {
+  clearForm();
+  showForm();
+  groupEmail.classList.add("active");
+  id = event.target.parentElement.parentElement.id;
+}
+
+function editPassword(event) {
+  clearForm();
+  showForm();
+  groupPassword.classList.add("active");
+  id = event.target.parentElement.parentElement.id;
+}
+
+function showForm() {
+  form.classList.add("active");
+}
+
+function hiddenForm() {
+  form.classList.remove("active");
+  groupNickname.classList.remove("active");
+  groupEmail.classList.remove("active");
+  groupPassword.classList.remove("active");
+}
+
 function clearForm() {
   nickname.value = null;
   email.value = null;
@@ -103,11 +135,13 @@ function updateTable() {
   let data = "";
 
   for (i = 0; i < users.length; i++) {
-    data += `<tr id="${users[i]._id}">
+    data += `<tr id="${users[i]._id}" class="user">
                       <td>${users[i].nickname}</td>
                       <td>${users[i].email}</td>
                       <td>${users[i].wins}</td>
-                      <td><button class="btn btn-primary" onclick="editUser(event)">Editar</button></td>
+                      <td><button class="btn btn-primary" onclick="editNickname(event)">Editar Nick</button></td>
+                      <td><button class="btn btn-primary" onclick="editEmail(event)">Editar Email</button></td>
+                      <td><button class="btn btn-primary" onclick="editPassword(event)">Editar Senha</button></td>
                       <td><button class="btn btn-danger" onclick="deleteUser(event)">Deletar</button></td>   
                    </tr>`;
   }

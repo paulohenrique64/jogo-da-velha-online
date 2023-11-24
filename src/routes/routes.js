@@ -6,11 +6,12 @@ import {getHomepage} from "../controllers/home";
 import {getGamePage} from "../controllers/game";
 import {registerPage, loginPage, getSettingsPage, forgotPasswordPage, resetPasswordPage} from "../controllers/auth";
 import {loginUser, registerUser, logoutUser, deleteUser} from "../controllers/auth";
-import {editUser, getUser, getUsers, forgotPassword, resetPassword} from "../controllers/auth";
+import {getUser, getUsers, forgotPassword, resetPassword} from "../controllers/auth";
+import {editUserEmail, editUserNickname, editUserPassword} from "../controllers/auth";
 
 // páginas
 router.get("/", getHomepage);                                       // pagina principal
-router.get("/register", registerPage);                              // pagina de registro
+router.get("/register", onlyGuest, registerPage);                   // pagina de registro
 router.get("/login", onlyGuest, loginPage);                         // pagina de login
 router.get("/game", onlyAuth, getGamePage);                         // pagina do jogo
 router.get("/settings", onlyAuth, getSettingsPage);                 // pagina de configuracoes
@@ -22,12 +23,16 @@ router.post("/login", onlyGuest, loginUser);                        // fazer o l
 router.post("/register", registerUser);                             // registrar usuario
 router.get("/logout", onlyAuth, logoutUser);                        // logout do usuario
 
-// rotas de acesso e edição de usuários
+// rotas de acesso a usuarios
 router.get("/user", onlyAuth, getUser);                             // retorna um usuário em específico
 router.get("/users", onlyAdmin, getUsers);                          // retorna todos os usuários cadastrados
-router.delete("/user/:id", onlyAuth, deleteUser);                   // deletar usuario
-router.patch("/user", onlyAuth, editUser);                          // editar usuario
+
+// rotas de edição de usuarios
 router.post("/user/forgot-password", onlyGuest, forgotPassword);    // gerar token de forgot password
 router.post("/user/password/:token", onlyGuest, resetPassword);     // resetar senha com token de forgot password
+router.post("/user/nickname", onlyAuth, editUserNickname);          // editar o nickname de um usuario
+router.post("/user/email", onlyAuth, editUserEmail);                // editar o email de um usuario
+router.post("/user/password", onlyAuth, editUserPassword);          // editar a senha de um usuario
+router.delete("/user/:id", onlyAuth, deleteUser);                   // deletar usuario
 
 module.exports = router;

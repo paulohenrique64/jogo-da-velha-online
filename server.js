@@ -29,8 +29,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use( cors({ credentials: true, methods: 'GET, PUT, POST, OPTIONS, DELETE, PATCH' }) );
 app.use("/", routes);
-app.use((req, res) => {return res.status(404).redirect('/')});
-app.use((req, res) => {return res.status(404).redirect('/game')});
 
 // Conectar ao banco de dados
 mongooseConnection(); 

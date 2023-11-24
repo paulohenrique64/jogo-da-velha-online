@@ -40,8 +40,7 @@ header a:hover {
 .all {
   display: flex;
   justify-content: center;
-  align-items: top; 
-  height: 100vh;
+  height: 94vh;
 }
 
 .headers{
@@ -59,7 +58,8 @@ header a:hover {
 }
 
 .player-table{
-  max-width: 900px;
+  width: auto;
+  height: 212px;
   padding: 20px 25px;
   background-color: #fff;
   margin: 30px 0;
@@ -79,8 +79,8 @@ th{
 }
 
 .btn{
-  padding: 3px 20px;
-  min-width: 90px;
+  padding: 3px 0px;
+  width: 130px;
 }
 
 .btn-primary{
@@ -112,17 +112,20 @@ th{
   border-radius: 5px;
 }
 
-
 .form-control{
   width: 90%;
 }
 
-.group{
+.group-email, .group-password, .group-nickname {
+  display: none;
+}
+
+.group-email.active, .group-password.active, .group-nickname.active {
   display: flex;
   margin: 15px 0;
 }
 
-.group label{
+.group-email.active label, .group-password.active label, .group-nickname.active label {
   width: 130px;
   line-height: 40px;
   height: 40px;

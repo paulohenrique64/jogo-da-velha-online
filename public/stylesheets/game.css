@@ -84,8 +84,15 @@ header a:hover {
   align-items: center;
 }
 
+.header-block p {
+  font-size: 14px;
+  margin-top: 5%;
+  margin-bottom: 2%;
+  text-align: left;
+  width: 75%;
+}
+
 .header-block input {
-  margin-top: 10%;
   width: 73%;
   padding: 2.5%;
   font-size: 25px;
@@ -548,8 +555,12 @@ footer {
     letter-spacing: 2px;
   }
 
+  .header-block > p {
+    font-size: 12px;
+  }
+
   .header-block > input {
-    font-size: 16px;
+    font-size: 20px;
   } 
 
   .header-block > button {
@@ -639,6 +650,10 @@ footer {
   .online-players > h1, .block > h1 {
     font-size: 1.2rem;
     letter-spacing: 1px;
+  }
+
+  .header-block > p {
+    font-size: 10px;
   }
 
   .header-block > input {

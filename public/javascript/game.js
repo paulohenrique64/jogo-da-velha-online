@@ -30,6 +30,10 @@ socket.on('onlinePlayerList', activePlayers => {
   });
 })
 
+socket.on('inviteError', (response) => {
+  alert(response.message);
+})
+
 // atualiza o jogo no começo da partida
 socket.on('startGameStatus', (match, creatorPlayerData, guestPlayerData) => {
 
@@ -222,6 +226,7 @@ function main() {
   // adiciona funcao ao botao de start game do lobby
   startGameButton.addEventListener('click', () => {
     const friendName = inputFriendName.value;
+    inputFriendName.value = '';
     socket.emit('createParty', friendName)
     var historyBox = document.getElementById('history');
     historyBox.innerHTML = '';
