@@ -201,6 +201,9 @@ function main() {
           userData = responseJson.user;
           socket.emit('newOnlinePlayer', userData.nickname);
           document.querySelector(".nickname").innerHTML = `${userData.nickname}<br>▼`;
+
+          if (userData.isAdmin) 
+            document.querySelector("#settingsPageLink").setAttribute("href", "http://localhost:3000/adminSettings");  
         })
         .catch(error => {
           console.log(error);

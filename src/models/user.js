@@ -42,15 +42,17 @@ const userSchema = new mongoose.Schema({
 
 // a senha sera salva no banco de dados encriptografada
 userSchema.pre('save', function(next) {
-  bcrypt.hash(this.password, 10).then(hash => {
-    this.password = hash;
-    next();
-  }).catch(error => {
-    console.error('Error hashing password', error);
-  })
+  bcrypt.hash(this.password, 10)
+    .then(hash => {
+      this.password = hash;
+      next();
+    })
+    .catch(error => {
+      console.error('Error hashing password', error);
+    })
 })
 
-const User = mongoose.model('User', userSchema)
+const User = mongoose.model('User', userSchema);
 
 module.exports = User
 

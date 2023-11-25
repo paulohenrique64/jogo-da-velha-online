@@ -1,6 +1,9 @@
+const path = require("path");
+
 // exibe a tela de home
 const getHomepage = (req, res) => {
-  return res.render('home');
+  const filePath = path.join(__dirname, "../views/home");
+  return res.render("home");
 } 
 
 module.exports = {

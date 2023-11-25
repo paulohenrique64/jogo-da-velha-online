@@ -3,18 +3,16 @@ import crypto from "crypto";
 import mailer from "../models/mailer";
 import jwt from "jsonwebtoken";
 import {response} from "express";
-import authConfig from '../config/auth';
-import { decode } from "punycode";
+
+require("dotenv").config();
 
 const User = require("../models/user");
 const path = require("path");
 
 // gera um token de autenticação 
 const generateAuthToken = (params) => {
-  return jwt.sign(params, authConfig.secret, {
-    expiresIn: 86400,
-  });
-};
+  return jwt.sign(params, process.env.JWT_SECRET, {expiresIn: 86400});
+}
 
 // gera um token para resetar a senha
 const generateResetPasswordToken = () => {
@@ -24,63 +22,41 @@ const generateResetPasswordToken = () => {
 // renderiza a pagina de login
 const loginPage = (req, res) => {
   const filePath = path.join(__dirname, "../views/login");
-  return res.status(200).render(filePath, { error: req.error });
-};
+  return res.render(filePath);
+}
 
 // renderiza a pagina de registro
 const registerPage = (req, res) => {
   const filePath = path.join(__dirname, "../views/signup");
-  return res.status(200).render(filePath);
-};
+  return res.render(filePath);
+}
 
 // renderiza a pagina de esqueceu a senha
 const forgotPasswordPage = (req, res) => {
   const filePath = path.join(__dirname, "../views/forgotPassword");
-  return res.status(200).render(filePath);
+  return res.render(filePath);
 }
 
-// renderiza a pagina para troca se senha
+// renderiza a pagina para troca de senha
 const resetPasswordPage = (req, res) => {
   const resetPasswordToken = req.params.token;
-  
   if (!resetPasswordToken) return res.redirect("/");
 
   const filePath = path.join(__dirname, "../views/resetPassword");
   return res.render(filePath, {resetPasswordToken});
 }
 
-// renderiza a pagina de configurações 
+// renderiza a pagina de settings para admins
+const getAdminSettingsPage = (req, res) => {
+  const filePath = path.join(__dirname, "../views/adminSettings");
+  return res.render(filePath); 
+}
+
+// renderiza a pagina de settings para usuarios normais
 const getSettingsPage = (req, res) => {
-  const token = req.cookies.token;
-
-  if (!token) return res.status(401).send({ error: "acess denied" });
-
-  jwt.verify(token, authConfig.secret, (err, decoded) => {
-      if (err) {
-        return res.status(500).send({ error: "internal server error" });
-      } else {
-        User.findById(decoded.uid)
-          .then((user) => {
-            if (user) {
-              if (user.isAdmin) {
-                const filePath = path.join(__dirname, "../views/admin_settings");
-                return res.render(filePath); // renderizo a pagina de settings para admins
-              } else {
-                const filePath = path.join(__dirname, "../views/user_settings");
-                return res.render(filePath); // renderizo a pagina de settings para users normais
-              }
-            } else {
-              return res.status(401).send({ error: "acess denied" });
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-            return res.status(500).send({ error: "internal server error" });
-          });
-      }
-    }
-  );
-};
+  const filePath = path.join(__dirname, "../views/settings");
+  return res.render(filePath); 
+}
 
 // retorna todos os usuarios do banco de dados
 const getUsers = (req, res) => {
@@ -90,43 +66,41 @@ const getUsers = (req, res) => {
     })
     .catch(error => {
       console.log(error);
-      return res.status(500).send({ error: "internal server error" });
-    })
+      return res.status(500).send({error: "Erro do servidor interno"});
+    });
 }
 
 // recebe um token de autenticação e retorna os dados do dono do token
 const getUser = (req, res) => {
   const token = req.cookies.token;
 
-  if (!token) return res.status(401).send({error: "not authorized"});
-
-  jwt.verify(token, authConfig.secret, (err, decoded) => {
-    if (err) return res.status(500).send({error: "internal server error"});
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) return res.status(500).send({error: "Erro do servidor interno"});
+    if (!decoded) return res.status(401).send({error: "Não autorizado"});
 
     User.findById(decoded.uid)
       .then(user => {
         if (user) return res.status(200).send({user});
-        else return res.status(401).send({error: "not authorized"});
+        else return res.status(401).send({error: "Não autorizado"});
       })
       .catch(error => {
         console.log(error);
-        return res.status(500).send({error: "internal server error"});
+        return res.status(500).send({error: "Erro do servidor interno"});
       })
   })
-    
 }
 
 // faz o login de um usuario
 const loginUser = (req, res) => {
   const { email, password } = req.body;
 
-  if (!email || !password) return res.status(401).send({error: "You must be inform a email and password for login"})
+  if (!email || !password) return res.status(401).send({error: "Você precisa informar um email e uma senha para realizar o login"});
 
-  User.findOne({ email })
+  User.findOne({email})
     .select("+password")
     .then((user) => {
 
-      if (!user) return res.status(401).send({error: "Invalid email"});
+      if (!user) return res.status(401).send({error: "Email inválido"});
 
       bcrypt.compare(password, user.password).then((result) => {
         if (!result) return res.status(401).send({error: "Invalid password"});
@@ -142,7 +116,7 @@ const loginUser = (req, res) => {
         });
 
         // retorna status 201
-        return res.status(201).send();
+        return res.status(201).send({message: "Login sucess"});
       })
       .catch(error => {
         console.log(error);
@@ -247,7 +221,7 @@ const forgotPassword = (req, res) => {
                 from: "jogodavelhaonline@express.com",
                 template: "auth/forgotPassword",
                 subject: "Recuperação de senha",
-                context: {token}
+                context: {url: process.env.MAILER_MAIL_URL, token}
               })
               .then(() => {
                 // email enviado
@@ -314,31 +288,52 @@ const resetPassword = (req, res) => {
     });
 };
 
-// rota para deletar um usuario
+/* deletar um usuario
+Descriptografa o token de autenticacao e so permite a remoção se
+o descripted.id for o id de um admin ou se for igual ao id do usuario a ser deletado */
 const deleteUser = (req, res) => {
-  const { id } = req.params;
+  const {id} = req.params;
+  const token = req.cookies.token;
 
   if (!id) return res.status(400).send({ error: "you must be inform a id" });
 
-  User.findByIdAndDelete(id)
-    .then((user) => {
-      if (user)
-        return res.status(201).send({ message: `user deleted` });
-      else return res.status(400).send({ error: `invalid id` });
-    })
-    .catch((error) => {
-      console.log(error);
-      return res.status(500).send({ error: "internal server error" });
-    });
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+
+    if (err || !decoded) return res.status(401).send({error: "Invalid token"});
+
+    User.findById(decoded.uid)
+      .then(user => {
+
+        if (user.isAdmin || decoded.uid === id) {
+
+          User.findByIdAndDelete(id)
+            .then((user) => {
+              if (user) {
+                if (decoded.uid === id) res.clearCookie("token");
+                return res.status(201).send({message: "User deleted"});
+              } else {
+                return res.status(400).send({ error: "Invalid id" });
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+              return res.status(500).send({ error: "internal server error" });
+            });
+          
+        } else {
+          return res.status(401).send({error: "Not authorired"});
+        }
+
+      })
+      .catch(error => {
+        return res.status(500).send({error: "Internal server error"});
+      })
+  })
 };
-
-
-// verificar se o nickanme nao existe ainda
 
 /* editar o nickname de um usuario
 Descriptografa o token de autenticacao e so permite a edicao se
-o descripted.id for o id de um admin ou se for igual ao id do usuario a ser editado.
-Essas validações irão trazer segurança para esta função */
+o descripted.id for o id de um admin ou se for igual ao id do usuario a ser editado */
 const editUserNickname = (req, res) => {
   const {id, nickname} = req.body;
   const token = req.cookies.token;
@@ -349,42 +344,33 @@ const editUserNickname = (req, res) => {
   if (nickname.length < 3 || nickname.length > 15) 
     return res.status(401).send({error: "Your nickname must be higher than 3 caracters and less 15 caracters"});
 
-  if (!token) 
-    return res.status(401).send({error: "Not authorired"});
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
 
-  jwt.verify(token, authConfig.secret, (err, decoded) => {
+    if (err || !decoded) return res.status(401).send({error: "Invalid token"});
 
-    if (err) return res.status(401).send({error: "Invalid token"});
+    User.findById(decoded.uid)
+      .then(user => {
 
-    if (decoded) {
+        if (user.isAdmin || decoded.uid === id) {
+          User.findByIdAndUpdate(id, { $set: {nickname: nickname}})
+            .then(updatedUser => {
+              if (updatedUser) return res.status(200).send({message: "Nickname editado com sucesso"});
+              else return res.status(401).send({error: "Invalid id"});
+            })
+            .catch(error => {
+              console.log(error);
+              return res.status(500).send({error: "Internal server error"});
+            });
+        } else {
+          return res.status(401).send({error: "Not authorired"});
+        }
 
-      // verificar se o id presente no token é de um admin
-      User.findById(decoded.uid)
-        .then(user => {
-          if (user.isAdmin || decoded.uid === id) {
-            User.findByIdAndUpdate(id, { $set: {nickname: nickname}})
-              .then(updatedUser => {
-                if (updatedUser) return res.status(200).send({message: "Nickname editado com sucesso"});
-                else return res.status(400).send({error: "Invalid id"});
-              })
-              .catch(error => {
-                console.log(error);
-                return res.status(500).send({error: "Internal server error"});
-              });
-          } else {
-            return res.status(401).send({error: "Not authorired"});
-          }
-        })
-        .catch(error => {
-          return res.status(500).send({error: "Internal server error"});
-        })
-    } else {
-      return res.status(500).send({error: "Internal server error"});
-    }
+      })
+      .catch(error => {
+        return res.status(500).send({error: "Internal server error"});
+      })
   })
 }
-
-// verificar se o email nao existe ainda
 
 /*  editar o email de um usuario
 Segue a mesma logica da funcao de editar o nickname */
@@ -399,40 +385,35 @@ const editUserEmail = (req, res) => {
   // if (nickname.length < 8 || nickname.length > 15) 
   //   return res.status(401).send({error: "Your nickname must be higher than 3 caracters and less 15 caracters"});
 
-  if (!token) 
-    return res.status(401).send({error: "Not authorired"});
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
 
-  jwt.verify(token, authConfig.secret, (err, decoded) => {
+    if (err || !decoded) return res.status(401).send({error: "Invalid token"});
 
-    if (err) return res.status(401).send({error: "Invalid token"});
+    User.findById(decoded.uid)
+      .then(user => {
 
-    if (decoded) {
-      // verificar se o id presente no token é de um admin
-      User.findById(decoded.uid)
-        .then(user => {
-          if (user.isAdmin || decoded.uid === id) {
-            User.findByIdAndUpdate(id, { $set: {email: email}})
-              .then(updatedUser => {
-                if (updatedUser) return res.status(200).send({message: "Email editado com sucesso"});
-                else return res.status(400).send({error: "Invalid id"});
-              })
-              .catch(() => {
-                return res.status(500).send({error: "Internal server error"});
-              })
-          } else {
-            return res.status(401).send({error: "Not authorired"});
-          }
-        })
-        .catch(error => {
-          return res.status(500).send({error: "Internal server error"});
-        })
-    } else {
-      return res.status(500).send({error: "Internal server error"});
-    }
+        if (user.isAdmin || decoded.uid === id) {
+          User.findByIdAndUpdate(id, { $set: {email: email}})
+            .then(updatedUser => {
+              if (updatedUser) return res.status(200).send({message: "Email editado com sucesso"});
+              else return res.status(401).send({error: "Invalid id"});
+            })
+            .catch(() => {
+              return res.status(500).send({error: "Internal server error"});
+            })
+
+        } else {
+          return res.status(401).send({error: "Not authorired"});
+        }
+      })
+      .catch(error => {
+        return res.status(500).send({error: "Internal server error"});
+      })
   })
 }
 
-// editar a senha do usuario
+/*  editar a senha de um usuario
+Segue a mesma logica da funcao de editar o nickname */
 const editUserPassword = (req, res) => {
   const {id, password} = req.body;
   const token = req.cookies.token;
@@ -443,55 +424,47 @@ const editUserPassword = (req, res) => {
   if (password.length < 8) 
     return res.status(401).send({error: "Your password must be higher than 8 caracters"});
 
-  if (!token) 
-    return res.status(401).send({error: "Not authorired"});
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
 
-  jwt.verify(token, authConfig.secret, (err, decoded) => {
+    if (err || !decoded) return res.status(401).send({error: "Invalid token"});
 
-    if (err) return res.status(401).send({error: "Invalid token"});
+    // verificar se o id presente no token é de um admin
+    User.findById(decoded.uid)
+      .then(user => {
+        if (user.isAdmin || decoded.uid === id) {
+          
+          // buscar usuario pelo id e editar a senha com o metodo save()
+          User.findById(id)
+            .then(user => {
 
-    if (decoded) {
+              if (user) {
+                user.password = password;
+              
+                user.save()
+                  .then(() => {
+                    return res.status(200).send({message: "Senha editada com sucesso"});
+                  })
+                  .catch(error => {
+                    console.log(error);
+                    return res.status(500).send({ error: "Internal server error" });
+                  })
+              } else {
+                return res.status(400).send({error: "Invalid id"});
+              }
 
-      // verificar se o id presente no token é de um admin
-      User.findById(decoded.uid)
-        .then(user => {
-          if (user.isAdmin || decoded.uid === id) {
-            
-            // buscar usuario pelo id e editar a senha com o metodo save()
-            User.findById(id)
-              .then(user => {
+            })
+            .catch(error => {
+              console.log(error);
+              return res.status(500).send({ error: "Internal server error" });
+            })
 
-                if (user) {
-                  user.password = password;
-                
-                  user.save()
-                    .then(() => {
-                      return res.status(200).send({message: "Senha editada com sucesso"});
-                    })
-                    .catch(error => {
-                      console.log(error);
-                      return res.status(500).send({ error: "Internal server error" });
-                    })
-                } else {
-                  return res.status(400).send({error: "Invalid id"});
-                }
-
-              })
-              .catch(error => {
-                console.log(error);
-                return res.status(500).send({ error: "Internal server error" });
-              })
-
-          } else {
-            return res.status(401).send({error: "Not authorired"});
-          }
-        })
-        .catch(error => {
-          return res.status(500).send({error: "Internal server error"});
-        })
-    } else {
-      return res.status(500).send({error: "Internal server error"});
-    }
+        } else {
+          return res.status(401).send({error: "Not authorired"});
+        }
+      })
+      .catch(error => {
+        return res.status(500).send({error: "Internal server error"});
+      })
   })
 }
 
@@ -499,6 +472,7 @@ module.exports = {
   loginPage,
   registerPage,
   getSettingsPage,
+  getAdminSettingsPage,
   forgotPasswordPage,
   resetPasswordPage,
   loginUser,

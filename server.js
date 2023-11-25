@@ -11,6 +11,8 @@ import routes from "./src/routes/routes"
 import http from "http";
 import chat from "./src/models/chat";
 
+require("dotenv").config();
+
 const cookieParser = require('cookie-parser');
 const User = require('./src/models/user');
 const path = require('path')
@@ -18,7 +20,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
 const cors = require('cors');
-const port = 3000;
+const port = process.env.PORT;
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser())
@@ -27,8 +29,10 @@ app.set('views', path.join(__dirname, 'src', 'views'));
 app.set("view engine", "ejs");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use( cors({ credentials: true, methods: 'GET, PUT, POST, OPTIONS, DELETE, PATCH' }) );
+app.use( cors({credentials: true, methods: 'GET, POST, OPTIONS, DELETE'}));
 app.use("/", routes);
+app.use((req, res) => {return res.status(404).redirect('/')});
+app.use((req, res) => {return res.status(404).redirect('/game')});
 
 // Conectar ao banco de dados
 mongooseConnection(); 

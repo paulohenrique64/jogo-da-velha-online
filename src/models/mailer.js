@@ -1,12 +1,15 @@
 import nodemailer from 'nodemailer';
 import hbs from 'nodemailer-express-handlebars';
 import path from 'path';
-import mailConfig from '../config/mail';
+
+require("dotenv").config();
 
 const transport = nodemailer.createTransport({
-  host: mailConfig.host,
-  port: mailConfig.port,
-  auth: mailConfig.auth,
+  host: process.env.MAILER_HOST,
+  port: process.env.MAILER_PORT,
+  auth: {user: process.env.MAILER_AUTH_USER, 
+    pass: process.env.MAILER_AUTH_PASS
+  }
 })
 
 transport.use(

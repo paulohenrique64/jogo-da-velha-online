@@ -71,13 +71,19 @@ function editUser(event) {
 function deleteUser(event) {
   let url = "http://localhost:3000/user";
   id = event.target.parentElement.parentElement.id;
-  fetch(url+"/"+id, {method:'DELETE'})
+  fetch(url+"/"+id, {method:"DELETE"})
   .then((response)=>{
-    response.json().then(responseJson => {
-      if (responseJson.message) alert(responseJson.message);
-      else if (responseJson.error) alert(responseJson.error);
-      getUsers();
-    })
+
+    if (response.status === 201) {
+      alert("Ops! Parece que você se deletou não é mesmo? hahaha! Acho que esqueci de adicionar aquela dupla verificação. Sua conta agora é igual ao resultado de uma divisão por zero! hahaha! Bom momento e até mais!");
+      location.reload(); 
+    } else {
+      response.json().then(responseJson => {
+        if (responseJson.error) alert(responseJson.error);
+        getUser();
+      })
+    }
+
   })
   .catch(error => {
     console.log(error);

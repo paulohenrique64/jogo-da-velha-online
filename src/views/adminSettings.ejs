@@ -8,34 +8,36 @@
     <title>Jogo da Velha Online</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
       integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous" />
-    <link rel="stylesheet" href="/stylesheets/user_settings.css" />
+    <link rel="stylesheet" href="/stylesheets/adminSettings.css" />
   </head>
 
   <body>
     <header>
-      <a href="http://localhost:3000/">Menu</a>
-      <a href="http://localhost:3000/game">Lobby</a>
-      <a href="http://localhost:3000/settings">Configurações</a>
-      <a href="http://localhost:3000/logout" id="logoutButton">Sair</a>
+      <a href="/">Menu</a>
+      <a href="game">Lobby</a>
+      <a href="settings">Configurações</a>
+      <a href="logout" id="logoutButton">Sair</a>
     </header>
 
     <div class="all">
+
       <div class="container player-table">
         <div class="headers">
-          <h2 class="table-title">Gerenciar conta</h2>
+          <h2 class="table-title">Gerenciar jogadores</h2>
+          <button class="btn add">Registrar novo jogador</button>
         </div>
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>Nickname</th>
-                <th>Email</th>
-                <th>Vitórias</th>
-                <th></th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody class="text-center"></tbody>
-          </table>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Nickname</th>
+              <th>Email</th>
+              <th>Vitórias</th>
+              <th></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody class="text-center"></tbody>
+        </table>
       </div>
 
       <div class="form-wrapper">
@@ -52,17 +54,20 @@
             <label for="password">Password</label>
             <input type="password" class="form-control" id="password" required min="8" />
           </div>
+
           <div class="action">
             <button class="btn btn-primary save">Salvar</button>
             <button class="btn btn-danger cancel">Cancelar</button>
           </div>
         </div>
       </div>
+
+      
     </div>
     <footer>
       <p>Criado por Paulo Henrique 💙💙💙</p>
     </footer>
-    <script src="/javascript/user_settings.js"></script>
+    <script src="/javascript/adminSettings.js"></script>
   </body>
 
 </html>

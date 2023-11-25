@@ -4,7 +4,7 @@ const router = express.Router();
 import {onlyAuth, onlyGuest, onlyAdmin} from "../middlewares/auth";
 import {getHomepage} from "../controllers/home";
 import {getGamePage} from "../controllers/game";
-import {registerPage, loginPage, getSettingsPage, forgotPasswordPage, resetPasswordPage} from "../controllers/auth";
+import {registerPage, loginPage, getSettingsPage, getAdminSettingsPage, forgotPasswordPage, resetPasswordPage} from "../controllers/auth";
 import {loginUser, registerUser, logoutUser, deleteUser} from "../controllers/auth";
 import {getUser, getUsers, forgotPassword, resetPassword} from "../controllers/auth";
 import {editUserEmail, editUserNickname, editUserPassword} from "../controllers/auth";
@@ -14,7 +14,8 @@ router.get("/", getHomepage);                                       // pagina pr
 router.get("/register", onlyGuest, registerPage);                   // pagina de registro
 router.get("/login", onlyGuest, loginPage);                         // pagina de login
 router.get("/game", onlyAuth, getGamePage);                         // pagina do jogo
-router.get("/settings", onlyAuth, getSettingsPage);                 // pagina de configuracoes
+router.get("/settings", onlyAuth, getSettingsPage);                 // pagina de configuracoes para usuarios normais
+router.get("/adminSettings", onlyAdmin, getAdminSettingsPage);      // pagina de configuracoes para admins
 router.get("/forgot-password", onlyGuest, forgotPasswordPage)       // pagina de forgot-password
 router.get("/reset-password/:token", onlyGuest, resetPasswordPage)  // pagina de reset-password 
 
