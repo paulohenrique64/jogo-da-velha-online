@@ -17,7 +17,7 @@ socket.on('onlinePlayerList', activePlayers => {
 
   activePlayers.forEach(player => {
 
-    if (player.id !== socket.id) {
+    if (player.nickname !== userData.nickname) {
       const playerBox = document.createElement('div');
       playerBox.className = "player-box";
       playerBox.innerHTML = `
@@ -49,7 +49,7 @@ socket.on('startGameStatus', (match, creatorPlayerData, guestPlayerData) => {
     var user = { nickname: match.creator.nickname, points: match.creator.points, point: match.creator.point, wins: creatorPlayerData.wins }
     var oponnent = { nickname: match.guest.nickname, points: match.guest.points, point: match.guest.point, wins: guestPlayerData.wins }
   } else {
-    var user = { nickname: match.creator.nickname, points: match.guest.points, point: match.guest.point, wins: guestPlayerData.wins }
+    var user = { nickname: match.guest.nickname, points: match.guest.points, point: match.guest.point, wins: guestPlayerData.wins }
     var oponnent = { nickname: match.creator.nickname, points: match.creator.points, point: match.creator.point, wins: creatorPlayerData.wins }
   }
 

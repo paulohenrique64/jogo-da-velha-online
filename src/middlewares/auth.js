@@ -36,20 +36,20 @@ que estejam autenticados e que sejam admins */
 const onlyAdmin = (req, res, next) => {
   const token = req.cookies.token;
 
-  if (!token) return res.status(401).send({error: "Não autorizado"});
+  if (!token) return res.status(401).send({error: "Not authorized"});
 
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     
-    if (err || !decoded) return res.status(401).send({error: "Não autorizado"});
+    if (err || !decoded) return res.status(401).send({error: "Not authorized"});
 
     User.findById(decoded.uid)
       .then((user) => {
         if (user && user.isAdmin) return next();
-        else return res.status(401).send({error: "Não autorizado"});
+        else return res.status(401).send({error: "Not authorized"});
       })
       .catch((error) => {
         console.log(error);
-        return res.status(500).send({error: "Erro do Servidor Interno"});
+        return res.status(500).send({error: "Internal server error"});
       });
   });
 }

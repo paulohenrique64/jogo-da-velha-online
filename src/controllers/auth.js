@@ -66,7 +66,7 @@ const getUsers = (req, res) => {
     })
     .catch(error => {
       console.log(error);
-      return res.status(500).send({error: "Erro do servidor interno"});
+      return res.status(500).send({error: "Internal server error"});
     });
 }
 
@@ -75,17 +75,17 @@ const getUser = (req, res) => {
   const token = req.cookies.token;
 
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-    if (err) return res.status(500).send({error: "Erro do servidor interno"});
-    if (!decoded) return res.status(401).send({error: "Não autorizado"});
+    if (err) return res.status(500).send({error: "Internal server error"});
+    if (!decoded) return res.status(401).send({error: "Not authorized"});
 
     User.findById(decoded.uid)
       .then(user => {
         if (user) return res.status(200).send({user});
-        else return res.status(401).send({error: "Não autorizado"});
+        else return res.status(401).send({error: "Not authorized"});
       })
       .catch(error => {
         console.log(error);
-        return res.status(500).send({error: "Erro do servidor interno"});
+        return res.status(500).send({error: "Internal server error"});
       })
   })
 }
@@ -94,13 +94,13 @@ const getUser = (req, res) => {
 const loginUser = (req, res) => {
   const { email, password } = req.body;
 
-  if (!email || !password) return res.status(401).send({error: "Você precisa informar um email e uma senha para realizar o login"});
+  if (!email || !password) return res.status(401).send({error: "You need to provide an email and password to log in"});
 
   User.findOne({email})
     .select("+password")
     .then((user) => {
 
-      if (!user) return res.status(401).send({error: "Email inválido"});
+      if (!user) return res.status(401).send({error: "Invalid email"});
 
       bcrypt.compare(password, user.password).then((result) => {
         if (!result) return res.status(401).send({error: "Invalid password"});
@@ -116,7 +116,7 @@ const loginUser = (req, res) => {
         });
 
         // retorna status 201
-        return res.status(201).send({message: "Login sucess"});
+        return res.status(201).send({message: "Logged in successfully"});
       })
       .catch(error => {
         console.log(error);
@@ -141,53 +141,51 @@ const logoutUser = (req, res) => {
 const registerUser = (req, res) => {
   const { nickname, email, password } = req.body;
 
-  if (!nickname || !email || !password) return res.status(401).send({ error: "You must be inform nickname, email and password for register" });
+  if (!nickname || !email || !password) return res.status(401).send({ error: "You need to enter a nickname, email and password to register" });
 
   if (nickname.length < 3 || nickname.length > 15) {
     return res.status(401).send({
-      error: "Your nickname must be higher than 3 caracters and less 15 caracters",
+      error: "Your nickname must be more than 3 characters and less than 15 characters",
     });
   }
 
   if (password.length < 8) {
     return res.status(401).send({
-      error: "Your password must be higher or equal than 8 caracters",
+      error: "Your password must be greater than or equal to 8 characters",
     });
   }
 
   User.findOne({ email })
     .then((userFoundByEmail) => {
       if (userFoundByEmail) {
-        return res.status(401).send({ error: "Email already registred" });
+        return res.status(401).send({ error: "Email already registered" });
       } else {
         User.findOne({ nickname })
           .then((userFoundByNickname) => {
             if (userFoundByNickname) {
               return res
                 .status(401)
-                .send({ error: "Nickname already registred" });
+                .send({ error: "Nickname already registered" });
             } else {
-              User.create({ nickname, email, password })
-                .then((userCreated) => {
-                  return res
-                    .status(201)
-                    .send({ message: "Usuário registrado com sucesso" });
+              User.create({nickname, email, password})
+                .then(() => {
+                  return res.status(201).send({message: "User registered successfully"});
                 })
                 .catch((error) => {
-                  console.error("Erro ao salvar usuario: ", error);
-                  return res.status(401).send({ error: "Registration failed" });
+                  console.error(error);
+                  return res.status(401).send({error: "Registration failed"});
                 });
             }
           })
           .catch((error) => {
-            console.error("Erro ao consultar o banco de dados", error);
-            return res.status(500).send({ error: "Registration failed" });
+            console.error(error);
+            return res.status(500).send({error: "Internal server error"});
           });
       }
     })
     .catch((error) => {
-      console.error("Erro ao consultar o banco de dados", error);
-      return res.status(500).send({ error: "Registration failed" });
+      console.error(error);
+      return res.status(500).send({error: "Internal server error"});
     });
 };
 
@@ -195,7 +193,7 @@ const registerUser = (req, res) => {
 const forgotPassword = (req, res) => {
   const {email} = req.body;
 
-  if (!email) return res.status(401).send({error: "you must be inform a email"});
+  if (!email) return res.status(401).send({error: "You need to provide an email for recover password"});
 
   // procurar usuario com o email no banco de dados
   User.findOne({ email })
@@ -225,26 +223,26 @@ const forgotPassword = (req, res) => {
               })
               .then(() => {
                 // email enviado
-                return res.status(200).send({ message: "verify your email box" });
+                return res.status(200).send({message: "Verify your email box"});
               })
               .catch((error) => {
                 // email nao enviado
                 console.log(error);
-                return res.status(400).send({ error: "sent mail error" });
+                return res.status(400).send({error: "Sent mail error"});
               });
           })
           .catch((error) => {
-            return res.status(500).send({ error: "Internal server error" });
+            return res.status(500).send({error: "Internal server error"});
           });
       } else {
         // usuario com o email recebido nao existe na base de dados
-        return res.status(400).send({ error: "Invalid email" });
+        return res.status(400).send({error: "Invalid email"});
       }
     })
     .catch((error) => {
       // erro na consulta ao banco de dados
       console.log(error);
-      return response.status(500).send({ error: "Internal server error" });
+      return response.status(500).send({error: "Internal server error"});
     });
 };
 
@@ -253,38 +251,36 @@ const resetPassword = (req, res) => {
   const token = req.params.token;
   const newPassword = req.body.password;
 
-  if (!token || !newPassword) return res.status(401).send({error: "you must be inform a token and password"})
+  if (!token || !newPassword) return res.status(401).send({error: "You must provide a token and password for reset password"})
 
   User.findOne({ passwordResetToken: token })
     .select("+passwordResetToken passwordResetTokenExpiration")
     .then((user) => {
       if (user) {
         if (new Date().now > user.passwordResetTokenExpiration) {
-          return res.status(400).send({ error: "Invalid token" });
+          return res.status(400).send({error: "Invalid token"});
         } else {
           user.passwordResetToken = undefined;
           user.passwordResetTokenExpiration = undefined;
           user.password = newPassword;
 
-          user
-            .save()
+          user.save()
             .then(() => {
-              res.status(200).send({ message: "Senha trocada com sucesso" });
+              res.status(200).send({message: "Password changed successfully"});
             })
             .catch((error) => {
-              return res
-                .status(500)
-                .send({ error: "erro ao salvar senha do usuario" });
+              console.log(error);
+              return res.status(500).send({error: "Internal server error"});
             });
         }
       } else {
-        return res.status(400).send({ error: "Invalid token" });
+        return res.status(400).send({error: "Invalid token"});
       }
     })
     .catch((error) => {
       // erro na consulta ao banco de dados
       console.log(error);
-      return response.status(500).send({ error: "Internal server error" });
+      return response.status(500).send({error: "Internal server error"});
     });
 };
 
@@ -295,7 +291,7 @@ const deleteUser = (req, res) => {
   const {id} = req.params;
   const token = req.cookies.token;
 
-  if (!id) return res.status(400).send({ error: "you must be inform a id" });
+  if (!id) return res.status(400).send({error: "You must provide an id for delete user"});
 
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
 
@@ -312,16 +308,16 @@ const deleteUser = (req, res) => {
                 if (decoded.uid === id) res.clearCookie("token");
                 return res.status(201).send({message: "User deleted"});
               } else {
-                return res.status(400).send({ error: "Invalid id" });
+                return res.status(400).send({error: "Invalid id"});
               }
             })
             .catch((error) => {
               console.log(error);
-              return res.status(500).send({ error: "internal server error" });
+              return res.status(500).send({error: "Internal server error"});
             });
           
         } else {
-          return res.status(401).send({error: "Not authorired"});
+          return res.status(401).send({error: "Not authorized"});
         }
 
       })
@@ -339,7 +335,7 @@ const editUserNickname = (req, res) => {
   const token = req.cookies.token;
 
   if (!id || !nickname) 
-    return res.status(401).send({error: "Your must be inform a id and nickname"});
+    return res.status(401).send({error: "Your must provide an id and nickname for edit nickname"});
 
   if (nickname.length < 3 || nickname.length > 15) 
     return res.status(401).send({error: "Your nickname must be higher than 3 caracters and less 15 caracters"});
@@ -354,7 +350,7 @@ const editUserNickname = (req, res) => {
         if (user.isAdmin || decoded.uid === id) {
           User.findByIdAndUpdate(id, { $set: {nickname: nickname}})
             .then(updatedUser => {
-              if (updatedUser) return res.status(200).send({message: "Nickname editado com sucesso"});
+              if (updatedUser) return res.status(200).send({message: "Nickname edited successfully"});
               else return res.status(401).send({error: "Invalid id"});
             })
             .catch(error => {
@@ -362,7 +358,7 @@ const editUserNickname = (req, res) => {
               return res.status(500).send({error: "Internal server error"});
             });
         } else {
-          return res.status(401).send({error: "Not authorired"});
+          return res.status(401).send({error: "Not authorized"});
         }
 
       })
@@ -379,7 +375,7 @@ const editUserEmail = (req, res) => {
   const token = req.cookies.token;
 
   if (!id || !email) 
-    return res.status(401).send({error: "Your must be inform a id and email"});
+    return res.status(401).send({error: "Your must provide an id and email for edit email"});
 
   // validar o email
   // if (nickname.length < 8 || nickname.length > 15) 
@@ -395,7 +391,7 @@ const editUserEmail = (req, res) => {
         if (user.isAdmin || decoded.uid === id) {
           User.findByIdAndUpdate(id, { $set: {email: email}})
             .then(updatedUser => {
-              if (updatedUser) return res.status(200).send({message: "Email editado com sucesso"});
+              if (updatedUser) return res.status(200).send({message: "Email edited successfully"});
               else return res.status(401).send({error: "Invalid id"});
             })
             .catch(() => {
@@ -403,7 +399,7 @@ const editUserEmail = (req, res) => {
             })
 
         } else {
-          return res.status(401).send({error: "Not authorired"});
+          return res.status(401).send({error: "Not authorized"});
         }
       })
       .catch(error => {
@@ -419,10 +415,10 @@ const editUserPassword = (req, res) => {
   const token = req.cookies.token;
 
   if (!id || !password) 
-    return res.status(401).send({error: "Your must be inform a id and password"});
+    return res.status(401).send({error: "Your must provide an id and password for edit password"});
 
   if (password.length < 8) 
-    return res.status(401).send({error: "Your password must be higher than 8 caracters"});
+    return res.status(401).send({error: "Your password must be higher than or equals 8 caracters"});
 
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
 
@@ -442,7 +438,7 @@ const editUserPassword = (req, res) => {
               
                 user.save()
                   .then(() => {
-                    return res.status(200).send({message: "Senha editada com sucesso"});
+                    return res.status(200).send({message: "Password edited successfully"});
                   })
                   .catch(error => {
                     console.log(error);
@@ -459,7 +455,7 @@ const editUserPassword = (req, res) => {
             })
 
         } else {
-          return res.status(401).send({error: "Not authorired"});
+          return res.status(401).send({error: "Not authorized"});
         }
       })
       .catch(error => {
