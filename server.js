@@ -50,7 +50,7 @@ io.on("connection", (socket) => {
 
       if (!player) {
         activePlayers.push({nickname: nickname, id: socket.id});
-        console.log(`Jogador [${nickname}] entrou no lobby.`);
+        console.log(`Player ${nickname} entered the lobby`);
         io.emit('onlinePlayerList', activePlayers);
       }
     }
@@ -75,10 +75,10 @@ io.on("connection", (socket) => {
             sendStartGameStage(creator.id, guest.id, game)
 
           } else {
-            io.to(socket.id).emit("inviteError", {message: "player already playing"});
+            io.to(socket.id).emit("inviteError", {message: "Player already playing"});
           }
         } else {
-          io.to(socket.id).emit("inviteError", {message: "impossible invite yourself"});
+          io.to(socket.id).emit("inviteError", {message: "Impossible invite yourself"});
         }
       } else {
         io.to(socket.id).emit("inviteError", {message: "Guest player aren't online yet"});
@@ -131,12 +131,12 @@ io.on("connection", (socket) => {
 
     if (chatIndex !== -1) {
       const disconnectedChat = activeChats.splice(chatIndex, 1)[0];
-      console.log('chat encerrado entre: ' + disconnectedChat.creator.nickname + ' e ' + disconnectedChat.guest.nickname);
+      console.log('Chat closed between:  ' + disconnectedChat.creator.nickname + ' and ' + disconnectedChat.guest.nickname);
     }
 
     if (gameIndex !== -1) {
       const disconnectedGame = activeGames.splice(gameIndex, 1)[0];
-      console.log('Jogo encerrado entre: ' + disconnectedGame.creator.nickname + ' e ' + disconnectedGame.guest.nickname);
+      console.log('Game ended between:  ' + disconnectedGame.creator.nickname + ' and ' + disconnectedGame.guest.nickname);
       io.to(disconnectedGame.creator.id).to(disconnectedGame.guest.id).emit("backToLobby");
     }
   })
@@ -187,21 +187,21 @@ io.on("connection", (socket) => {
 
     if (playerIndex !== -1) {
       const disconnectedPlayer = activePlayers.splice(playerIndex, 1)[0];
-      console.log('Jogador desconectado: ' + disconnectedPlayer.nickname);
+      console.log(`Player ${disconnectedPlayer.nickname} left the lobby`);
     }
 
     // encerra o chat associado a desconexao
     const chatIndex = activeChats.findIndex(chat => chat.creator.id === socket.id || chat.guest.id === socket.id);
     if (chatIndex !== -1) {
       const disconnectedChat = activeChats.splice(chatIndex, 1)[0];
-      console.log('chat encerrado entre: ' + disconnectedChat.creator.nickname + ' e ' + disconnectedChat.guest.nickname);
+      console.log('Chat closed between: ' + disconnectedChat.creator.nickname + ' and ' + disconnectedChat.guest.nickname);
     }
-  
+
     // encerra o jogo associado à desconexão
     const gameIndex = activeGames.findIndex(game => game.creator.id === socket.id || game.guest.id === socket.id);
     if (gameIndex !== -1) {
       const disconnectedGame = activeGames.splice(gameIndex, 1)[0];
-      console.log('Jogo encerrado entre: ' + disconnectedGame.creator.nickname + ' e ' + disconnectedGame.guest.nickname);
+      console.log('Game ended between: ' + disconnectedGame.creator.nickname + ' and ' + disconnectedGame.guest.nickname);
       io.to(disconnectedGame.creator.id).to(disconnectedGame.guest.id).emit("backToLobby");
     }
 
@@ -211,5 +211,5 @@ io.on("connection", (socket) => {
 });
 
 server.listen(port, () => {
-  console.log(`Servidor rodando no link http://localhost:${port}`);
+  console.log(`Server running on link http://localhost:${port}`);
 });
