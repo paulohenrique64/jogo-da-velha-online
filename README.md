@@ -4,6 +4,7 @@
 
 Jogo de velha online feito utilizando a biblioteca Socket.IO
 
+- Projeto final da capacitação back-end do processo seletivo da empresa júnior Comp Júnior
 - Além do Socket.io, também foram utilizadas outras tecnologias como Node.js, Express, CSS, HTML e Java Script
 - Suporta múltiplas partidas ao mesmo tempo
 - Simples e rápido de se iniciar um novo jogo
