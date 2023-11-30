@@ -151,3 +151,16 @@ footer {
   font-size: 17px;
   letter-spacing: 2px;
 }
+
+body::-webkit-scrollbar {
+  width: 12px;               
+}
+
+body::-webkit-scrollbar-track {
+  background: #bed5f9;       
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: #091133;      
+  border: 0; 
+}

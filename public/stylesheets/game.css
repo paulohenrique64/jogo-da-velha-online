@@ -99,7 +99,7 @@ header a:hover {
   text-align: center;
   border-radius: 10px;
   background: #bed5f9;
-  box-shadow: 0px 10px 40px -12px #00ff8052;
+  box-shadow: 0px 10px 40px -12px #0284ff;
   letter-spacing: 2.5px;
   font-family: 'Noto Sans', sans-serif;
   font-weight: 800;
@@ -528,6 +528,19 @@ footer {
   background-color: #091133;
   font-size: 17px;
   letter-spacing: 2px;
+}
+
+body::-webkit-scrollbar {
+  width: 12px;               
+}
+
+body::-webkit-scrollbar-track {
+  background: #bed5f9;       
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: #091133;      
+  border: 0; 
 }
 
 /* responsividade */
