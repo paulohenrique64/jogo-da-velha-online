@@ -1,12 +1,17 @@
+### Site do jogo: <a href="https://jogodavelhaonline.azurewebsites.net/">https://jogodavelhaonline.azurewebsites.net</a>
+
 ![1](https://github.com/paulohenrique64/jogo-da-velha-online-js/blob/main/public/images/game-gif.gif)
 
 # Jogo da Velha Online
 
-Jogo de velha online feito utilizando a biblioteca Socket.IO
+Projeto final da capacitação back-end do processo seletivo da empresa júnior Comp Júnior
 
-- Projeto final da capacitação back-end do processo seletivo da empresa júnior Comp Júnior
-- Além do Socket.io, também foram utilizadas outras tecnologias como Node.js, Express, CSS, HTML e Java Script
-- Suporta múltiplas partidas ao mesmo tempo
+- Jogo de velha online feito utilizando a biblioteca Socket.IO
+- Front-end feito utilizando somente HTML, CSS e Javascript
+- Back-end com nodejs, express, socket.io e mongodb para o banco de dados
+- Jsonwebtoken e bcrypt foram utilizados para criptografar senhas e tokens de usuários
+- O mailer foi utilizado para envio de emails para recuperação de senha
+- O jogo suporta múltiplas partidas ao mesmo tempo
 - Simples e rápido de se iniciar um novo jogo
 
 # Como rodar localmente
@@ -18,14 +23,14 @@ Jogo de velha online feito utilizando a biblioteca Socket.IO
 - Certifique-se de criar o arquivo ".env" na raiz do repositorio
   - Utilize o ".env.example" como exemplo e insira os dados do seu banco de dados (mongodb) e utilize os dados do seu <a href="https://mailtrap.io">Mailer</a>
 - Após isso execute os seguintes comandos:
-  - <strong>npm install</strong>
-  - <strong>npm start</strong>
+  - <strong> ```npm install ```</strong>
+  - <strong>```npm start```</strong>
 
 E pronto! Mantenha o terminal aberto e clique <a href="http://localhost:3000" target="_blank">aqui</a> para abrir o projeto no seu navegador.
 
 # Usuários admins
 
-- Para definir um usuário como <strong>admin</strong>, é necessário alterar manualmente o campo "isAdmin" no banco de dados, setando o campo como true. Usuários admins tem acesso a uma página de configurações diferente da página exibida para jogadores não admins.
+- Para definir um usuário como <strong>admin</strong>, é necessário alterar manualmente o campo ```isAdmin``` no banco de dados, setando o campo como true. Usuários admins tem acesso a uma página de configurações diferente da página exibida para jogadores não admins.
 
 # Screenshots
 
