@@ -63,13 +63,26 @@ function validarEmail() {
 }
 
 function validarSenha() {
-  if(campos[2].value.length < 8) {
+  // verificar se a senha digitada no primeiro campo tem mais de 8 caracteres
+  if (campos[2].value.length < 8) {
     setError(2);
     return false;
   } else {
     removeError(2);
-    return true;
   }
+
+  // verificar se as senhas coicidem
+  if (campos[3].value !== campos[2].value) {
+    console.log('1')
+    setError(3);
+    return false;
+  } else {
+    console.log('2')
+    removeError(3);
+  }
+
+  // passou por todas as verificações 
+  return true;
 }
 
 function setError(index){

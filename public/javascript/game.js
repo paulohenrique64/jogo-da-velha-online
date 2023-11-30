@@ -239,10 +239,4 @@ function main() {
   divGame.style.display = 'none';
 }
 
-main()
-
-
-
-
-
-
+main();

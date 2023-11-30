@@ -322,6 +322,7 @@ const deleteUser = (req, res) => {
 
       })
       .catch(error => {
+        console.log(error);
         return res.status(500).send({error: "Internal server error"});
       })
   })
@@ -363,6 +364,7 @@ const editUserNickname = (req, res) => {
 
       })
       .catch(error => {
+        console.log(error);
         return res.status(500).send({error: "Internal server error"});
       })
   })
@@ -376,10 +378,6 @@ const editUserEmail = (req, res) => {
 
   if (!id || !email) 
     return res.status(401).send({error: "Your must provide an id and email for edit email"});
-
-  // validar o email
-  // if (nickname.length < 8 || nickname.length > 15) 
-  //   return res.status(401).send({error: "Your nickname must be higher than 3 caracters and less 15 caracters"});
 
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
 
@@ -403,6 +401,7 @@ const editUserEmail = (req, res) => {
         }
       })
       .catch(error => {
+        console.log(error);
         return res.status(500).send({error: "Internal server error"});
       })
   })
@@ -459,6 +458,7 @@ const editUserPassword = (req, res) => {
         }
       })
       .catch(error => {
+        console.log(error);
         return res.status(500).send({error: "Internal server error"});
       })
   })
