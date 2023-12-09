@@ -1,5 +1,3 @@
-### Link do jogo: <a href="https://jogodavelhaonline.azurewebsites.net/">https://jogodavelhaonline.azurewebsites.net</a>
-
 ![1](https://github.com/paulohenrique64/jogo-da-velha-online-js/blob/main/public/images/game-gif.gif)
 
 # Jogo da Velha Online
