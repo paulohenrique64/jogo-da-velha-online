@@ -1,22 +1,20 @@
-### Site do jogo: <a href="https://jogodavelhaonline.azurewebsites.net/">https://jogodavelhaonline.azurewebsites.net</a>
+### Link do jogo: <a href="https://jogodavelhaonline.azurewebsites.net/">https://jogodavelhaonline.azurewebsites.net</a>
 
 ![1](https://github.com/paulohenrique64/jogo-da-velha-online-js/blob/main/public/images/game-gif.gif)
 
 # Jogo da Velha Online
 
-Projeto final da capacitação back-end do processo seletivo da empresa júnior Comp Júnior
+Projeto final de um processo seletivo para uma empresa júnior
 
 - Jogo de velha online feito utilizando a biblioteca Socket.IO
 - Front-end feito utilizando somente HTML, CSS e Javascript
 - Back-end com nodejs, express, socket.io e mongodb para o banco de dados
 - Jsonwebtoken e bcrypt foram utilizados para criptografar senhas e tokens de usuários
 - O mailer foi utilizado para envio de emails para recuperação de senha
-- O jogo suporta múltiplas partidas ao mesmo tempo
-- Simples e rápido de se iniciar um novo jogo
 
 # Como rodar localmente
 
-#### Requisitos: ter o Node e o NPM instalados
+Requisitos: ter o Node e o NPM instalados
 
 - Clone a branch main deste repositório para seu computador
 - Abra a pasta do projeto
@@ -28,31 +26,8 @@ Projeto final da capacitação back-end do processo seletivo da empresa júnior 
 
 E pronto! Mantenha o terminal aberto e clique <a href="http://localhost:3000" target="_blank">aqui</a> para abrir o projeto no seu navegador.
 
-# Usuários admins
-
-- Para definir um usuário como <strong>admin</strong>, é necessário alterar manualmente o campo ```isAdmin``` no banco de dados, setando o campo como true. Usuários admins tem acesso a uma página de configurações diferente da página exibida para jogadores não admins.
-
-# Screenshots
-
-📌Homepage:
-
-![Home Page](https://github.com/paulohenrique64/jogo-da-velha-online-js/blob/main/public/images/Screenshot-1.png)
-
-📌Lobby do jogo:
-
-![Game lobby](https://github.com/paulohenrique64/jogo-da-velha-online-js/blob/main/public/images/Screenshot-2.png)
-
-📌Jogo:
-
-![Game](https://github.com/paulohenrique64/jogo-da-velha-online-js/blob/main/public/images/Screenshot-3.png)
-
-📌Página de configurações para admins:
-
-![Game](https://github.com/paulohenrique64/jogo-da-velha-online-js/blob/main/public/images/Screenshot-4.png)
-
-📌Página de configurações para usuários normais:
-
-![Game](https://github.com/paulohenrique64/jogo-da-velha-online-js/blob/main/public/images/Screenshot-5.png)
+# Regra admin
+Para definir um usuário como <strong>admin</strong>, é necessário alterar manualmente o campo ```isAdmin``` no banco de dados, setando o campo como true. Usuários admins tem acesso a uma página de configurações diferente da página exibida para jogadores não admins.
 
 ## Meu email de contato
 
