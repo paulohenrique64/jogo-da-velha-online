@@ -1,10 +1,5 @@
-![1](https://github.com/paulohenrique64/jogo-da-velha-online-js/blob/main/public/images/game-gif.gif)
-
 # Jogo da Velha Online
 
-Projeto final de um processo seletivo para uma empresa júnior
-
-- Jogo de velha online feito utilizando a biblioteca Socket.IO
 - Front-end feito utilizando somente HTML, CSS e Javascript
 - Back-end com nodejs, express, socket.io e mongodb para o banco de dados
 - Jsonwebtoken e bcrypt foram utilizados para criptografar senhas e tokens de usuários
