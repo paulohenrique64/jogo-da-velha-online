@@ -1,5 +1,7 @@
 ## Online tic tac toe
 
+![1](https://github.com/paulohenrique64/jogo-da-velha-online/blob/main/public/images/game-gif.gif)
+
 A javascript tic tac toe online game
 
 ## Techs useds
