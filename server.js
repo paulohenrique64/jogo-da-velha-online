@@ -211,5 +211,5 @@ io.on("connection", (socket) => {
 });
 
 server.listen(port, () => {
-  console.log(`Server running on link http://localhost:${port}`);
+  console.log(`the game is running on http://localhost:${port}`);
 });

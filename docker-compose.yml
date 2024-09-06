@@ -1,0 +1,24 @@
+version: '3.2'
+
+services:
+  mongo_db:
+    image: mongo:5.0.2
+    container_name: mongodb_tictactoe
+    restart: unless-stopped
+    env_file: ".env"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=$MONGODB_USER
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGODB_PASSWORD
+    ports:
+      - $MONGODB_LOCAL_PORT:$MONGODB_DOCKER_PORT
+    volumes:
+      - ./data/db:/data/db
+      
+  app_backend:
+    container_name: tictactoe-backend
+    depends_on:
+      - mongo_db
+    build: .
+    ports:
+      - 3000:3000
+    command: npm start
