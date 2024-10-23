@@ -21,7 +21,7 @@ socket.on('onlinePlayerList', activePlayers => {
       const playerBox = document.createElement('div');
       playerBox.className = "player-box";
       playerBox.innerHTML = `
-        <img src="/images/comp-cat1.jpg" alt="Profile Photo">
+        <img src="/jogodavelhaonline/images/comp-cat1.jpg" alt="Profile Photo">
         <p>${player.nickname}</p>
       `;
       divOnlinePlayersList.appendChild(playerBox);
@@ -58,7 +58,7 @@ socket.on('startGameStatus', (match, creatorPlayerData, guestPlayerData) => {
   divPlacar.style.display = 'flex';
   divPlacar.innerHTML = `
   <div class="placar1">
-    <img src="/images/comp-cat1.jpg" alt="Profile Photo" class="placar-profile-img">
+    <img src="/jogodavelhaonline/images/comp-cat1.jpg" alt="Profile Photo" class="placar-profile-img">
     <div class="placar-data1">
       <h1>Jogador ${user.point}ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ</h1>
       <h1>${user.nickname}</h1>
@@ -73,7 +73,7 @@ socket.on('startGameStatus', (match, creatorPlayerData, guestPlayerData) => {
       <h1>Pontos: ${oponnent.points}</h1>
       <h1>Vitórias: ${oponnent.wins}</h1>
     </div>
-    <img src="/images/comp-cat2.jpg" alt="Profile Photo" class="placar-profile-img">
+    <img src="/jogodavelhaonline/images/comp-cat2.jpg" alt="Profile Photo" class="placar-profile-img">
   </div> `;
 })
 
