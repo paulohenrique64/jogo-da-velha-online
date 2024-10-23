@@ -19,15 +19,15 @@ cancelBtn.onclick = function () {
 saveBtn.onclick = function () {
   // editar nickname
   if (nickname.value)
-    return saveUser("http://159.65.171.29/jogodavelhaonline/user/nickname", {id, nickname: nickname.value}); 
+    return saveUser("/jogodavelhaonline/user/nickname", {id, nickname: nickname.value}); 
 
   // editar email
   if (email.value)
-    return saveUser("http://159.65.171.29/jogodavelhaonline/user/email", {id, email: email.value}); 
+    return saveUser("/jogodavelhaonline/user/email", {id, email: email.value}); 
 
   // editar password
   if (password.value)
-    return saveUser("http://159.65.171.29/jogodavelhaonline/user/password", {id, password: password.value}); 
+    return saveUser("/jogodavelhaonline/user/password", {id, password: password.value}); 
 };
 
 function saveUser(url, user) {
@@ -51,7 +51,7 @@ function saveUser(url, user) {
 }
 
 function getUser(){
-  fetch("http://159.65.171.29/jogodavelhaonline/user")
+  fetch("/jogodavelhaonline/user")
   .then(response=>response.json())
   .then(data=>{
     if (data.user) user = data.user;
@@ -69,7 +69,7 @@ function editUser(event) {
 }
 
 function deleteUser(event) {
-  let url = "http://159.65.171.29/jogodavelhaonline/user";
+  let url = "/jogodavelhaonline/user";
   id = event.target.parentElement.parentElement.id;
   fetch(url+"/"+id, {method:"DELETE"})
   .then((response)=>{

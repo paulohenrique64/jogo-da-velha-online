@@ -192,7 +192,7 @@ function addMessage(message, nick) {
 }
 
 function main() {
-  const url = "http://159.65.171.29/jogodavelhaonline/user";
+  const url = "/jogodavelhaonline/user";
 
   fetch(url)
     .then(response => {
@@ -203,7 +203,7 @@ function main() {
           document.querySelector(".nickname").innerHTML = `${userData.nickname}<br>▼`;
 
           if (userData.isAdmin) 
-            document.querySelector("#settingsPageLink").setAttribute("href", "http://159.65.171.29/jogodavelhaonline/adminSettings");  
+            document.querySelector("#settingsPageLink").setAttribute("href", "/jogodavelhaonline/adminSettings");  
         })
         .catch(error => {
           console.log(error);
