@@ -1,4 +1,4 @@
-const url = "/jogodavelhaonline/register";
+const url = "/jogodavelha/register";
 const form = document.getElementById('form');
 const spans  = document.querySelectorAll('.span-required');
 const campos = document.querySelectorAll('.required');

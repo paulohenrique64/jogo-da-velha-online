@@ -40,7 +40,7 @@ const forgotPasswordPage = (req, res) => {
 // renderiza a pagina para troca de senha
 const resetPasswordPage = (req, res) => {
   const resetPasswordToken = req.params.token;
-  if (!resetPasswordToken) return res.redirect("/jogodavelhaonline");
+  if (!resetPasswordToken) return res.redirect("/jogodavelha");
 
   const filePath = path.join(__dirname, "../views/resetPassword");
   return res.render(filePath, {resetPasswordToken});
@@ -135,7 +135,7 @@ const logoutUser = (req, res) => {
   /* limpa o campo token dos cookies do navegador do cliente
     e direciona o cliente para a homepage */
   res.clearCookie("token"); 
-  return res.redirect("/jogodavelhaonline");
+  return res.redirect("/jogodavelha");
 };
 
 // faz o registro de um usuario 
@@ -217,7 +217,7 @@ const forgotPassword = (req, res) => {
             // usuario quer trocar a senha
             mailer.sendMail({
                 to: email,
-                from: "jogodavelhaonline@express.com",
+                from: "jogodavelha@express.com",
                 template: "auth/forgotPassword",
                 subject: "Recuperação de senha",
                 context: {url: process.env.MAILER_MAIL_URL, token}

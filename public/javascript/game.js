@@ -1,4 +1,4 @@
-const socket = io({path: "/jogodavelhaonline/socket.io/socket.io.js"});
+const socket = io({path: "/jogodavelha/socket.io/socket.io.js"});
 const divLobby = document.querySelector('#lobby');
 const ul = document.querySelector('#player-list');
 const divOnlinePlayersList = document.querySelector('#players');
@@ -21,7 +21,7 @@ socket.on('onlinePlayerList', activePlayers => {
       const playerBox = document.createElement('div');
       playerBox.className = "player-box";
       playerBox.innerHTML = `
-        <img src="/jogodavelhaonline/images/comp-cat1.jpg" alt="Profile Photo">
+        <img src="/jogodavelha/images/comp-cat1.jpg" alt="Profile Photo">
         <p>${player.nickname}</p>
       `;
       divOnlinePlayersList.appendChild(playerBox);
@@ -58,7 +58,7 @@ socket.on('startGameStatus', (match, creatorPlayerData, guestPlayerData) => {
   divPlacar.style.display = 'flex';
   divPlacar.innerHTML = `
   <div class="placar1">
-    <img src="/jogodavelhaonline/images/comp-cat1.jpg" alt="Profile Photo" class="placar-profile-img">
+    <img src="/jogodavelha/images/comp-cat1.jpg" alt="Profile Photo" class="placar-profile-img">
     <div class="placar-data1">
       <h1>Jogador ${user.point}ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ</h1>
       <h1>${user.nickname}</h1>
@@ -73,7 +73,7 @@ socket.on('startGameStatus', (match, creatorPlayerData, guestPlayerData) => {
       <h1>Pontos: ${oponnent.points}</h1>
       <h1>Vitórias: ${oponnent.wins}</h1>
     </div>
-    <img src="/jogodavelhaonline/images/comp-cat2.jpg" alt="Profile Photo" class="placar-profile-img">
+    <img src="/jogodavelha/images/comp-cat2.jpg" alt="Profile Photo" class="placar-profile-img">
   </div> `;
 })
 
@@ -192,7 +192,7 @@ function addMessage(message, nick) {
 }
 
 function main() {
-  const url = "/jogodavelhaonline/user";
+  const url = "/jogodavelha/user";
 
   fetch(url)
     .then(response => {
@@ -203,7 +203,7 @@ function main() {
           document.querySelector(".nickname").innerHTML = `${userData.nickname}<br>▼`;
 
           if (userData.isAdmin) 
-            document.querySelector("#settingsPageLink").setAttribute("href", "/jogodavelhaonline/adminSettings");  
+            document.querySelector("#settingsPageLink").setAttribute("href", "/jogodavelha/adminSettings");  
         })
         .catch(error => {
           console.log(error);

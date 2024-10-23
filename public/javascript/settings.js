@@ -51,7 +51,7 @@ function saveUser(url, user) {
 }
 
 function getUser(){
-  fetch("/jogodavelhaonline/user")
+  fetch("/jogodavelha/user")
   .then(response=>response.json())
   .then(data=>{
     if (data.user) user = data.user;
