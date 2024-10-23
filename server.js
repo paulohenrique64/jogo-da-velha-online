@@ -22,6 +22,12 @@ const io = socketIO(server);
 const cors = require('cors');
 const port = process.env.PORT;
 
+app.use(cors({
+        origin: "*",
+        credentials: true, 
+        methods: 'GET, POST, OPTIONS, DELETE'   
+}));
+
 app.set("trust proxy", true);
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser())
@@ -30,11 +36,6 @@ app.set('views', path.join(__dirname, 'src', 'views'));
 app.set("view engine", "ejs");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors({
-	origin: "*",
-	credentials: true, 
-	methods: 'GET, POST, OPTIONS, DELETE'	
-}));
 app.use("/", routes);
 app.use((req, res) => {return res.status(404).redirect('/')});
 app.use((req, res) => {return res.status(404).redirect('/game')});
@@ -215,6 +216,8 @@ io.on("connection", (socket) => {
 
 });
 
-server.listen(port, () => {
-  console.log(`the game is running on http://localhost:${port}`);
-});
+
+server.listen(port, "0.0.0.0");
+//server.listen(port, "0.0.0.0", function() {
+//  console.log(`the game is running on http://localhost:${port}`);
+//});
