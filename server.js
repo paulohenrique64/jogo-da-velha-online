@@ -22,6 +22,7 @@ const io = socketIO(server);
 const cors = require('cors');
 const port = process.env.PORT;
 
+app.set("trust proxy", true);
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser())
 app.engine("ejs", require("ejs").renderFile);

@@ -113,6 +113,7 @@ const loginUser = (req, res) => {
           maxAge: 3600000,
           httpOnly: true,
           secure: false,
+	  sameSite: 'strict',
         });
 
         // retorna status 201

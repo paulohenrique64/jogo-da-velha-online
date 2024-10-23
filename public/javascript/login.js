@@ -1,4 +1,4 @@
-const urlLogin = "http://159.65.171.29:3000/login";
+const urlLogin = "http://159.65.171.29/jogodavelhaonline/login";
 const form = document.getElementById('form');
 const spans  = document.querySelectorAll('.span-required');
 const campos = document.querySelectorAll('.required');
@@ -30,7 +30,7 @@ form.addEventListener('submit', (event) => {
     .then(response => {
       if (response.status === 201) {
         // se o servidor retornar 201 --> login aprovado --> recarrega a pagina
-        location.reload();
+        //location.reload();
       } else {
         // se o servidor não retornar 201 --> login não aprovado --> exibe o erro na pagina atual
         response.json()
