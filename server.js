@@ -30,7 +30,11 @@ app.set('views', path.join(__dirname, 'src', 'views'));
 app.set("view engine", "ejs");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use( cors({credentials: true, methods: 'GET, POST, OPTIONS, DELETE'}));
+app.use(cors({
+	origin: "*",
+	credentials: true, 
+	methods: 'GET, POST, OPTIONS, DELETE'	
+}));
 app.use("/", routes);
 app.use((req, res) => {return res.status(404).redirect('/')});
 app.use((req, res) => {return res.status(404).redirect('/game')});

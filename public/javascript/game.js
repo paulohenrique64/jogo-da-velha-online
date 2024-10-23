@@ -1,4 +1,4 @@
-const socket = io();
+const socket = io({path: "/jogodavelhaonline/socket.io/socket.io.js"});
 const divLobby = document.querySelector('#lobby');
 const ul = document.querySelector('#player-list');
 const divOnlinePlayersList = document.querySelector('#players');
