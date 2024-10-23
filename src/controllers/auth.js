@@ -40,7 +40,7 @@ const forgotPasswordPage = (req, res) => {
 // renderiza a pagina para troca de senha
 const resetPasswordPage = (req, res) => {
   const resetPasswordToken = req.params.token;
-  if (!resetPasswordToken) return res.redirect("/");
+  if (!resetPasswordToken) return res.redirect("/jogodavelhaonline");
 
   const filePath = path.join(__dirname, "../views/resetPassword");
   return res.render(filePath, {resetPasswordToken});
@@ -113,7 +113,7 @@ const loginUser = (req, res) => {
           maxAge: 3600000,
           httpOnly: true,
           secure: false,
-	  sameSite: 'strict',
+	        sameSite: 'strict',
         });
 
         // retorna status 201
@@ -135,7 +135,7 @@ const logoutUser = (req, res) => {
   /* limpa o campo token dos cookies do navegador do cliente
     e direciona o cliente para a homepage */
   res.clearCookie("token"); 
-  return res.redirect("/");
+  return res.redirect("/jogodavelhaonline");
 };
 
 // faz o registro de um usuario 

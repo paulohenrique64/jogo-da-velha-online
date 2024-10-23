@@ -7,7 +7,7 @@ form.addEventListener('submit', (event) => {
 
   if (validarSenha()) {
 
-    const url = `http://159.65.171.29:3000/user/password/${resetPasswordToken}`;
+    const url = `http://159.65.171.29/jogodavelhaonline/user/password/${resetPasswordToken}`;
     const user = { password: campos[0].value };
 
     // Opções da solicitação (método, cabeçalhos, corpo)
