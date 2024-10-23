@@ -1,4 +1,4 @@
-const url = "http://localhost:3000/register";
+const url = "http://159.65.171.29:3000/register";
 const form = document.getElementById('form');
 const spans  = document.querySelectorAll('.span-required');
 const campos = document.querySelectorAll('.required');

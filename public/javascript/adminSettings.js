@@ -25,19 +25,19 @@ cancelBtn.onclick = function () {
 saveBtn.onclick = function () {
   // registro
   if (nickname.value && email.value && password.value)
-    return saveUser("http://localhost:3000/register", {nickname: nickname.value, email: email.value, password: password.value}); 
+    return saveUser("http://159.65.171.29:3000/register", {nickname: nickname.value, email: email.value, password: password.value}); 
 
   // editar nickname
   if (nickname.value)
-    return saveUser("http://localhost:3000/user/nickname", {id, nickname: nickname.value}); 
+    return saveUser("http://159.65.171.29:3000/user/nickname", {id, nickname: nickname.value}); 
 
   // editar email
   if (email.value)
-  return saveUser("http://localhost:3000/user/email", {id, email: email.value}); 
+  return saveUser("http://159.65.171.29:3000/user/email", {id, email: email.value}); 
 
   // editar password
   if (password.value)
-  return saveUser("http://localhost:3000/user/password", {id, password: password.value}); 
+  return saveUser("http://159.65.171.29:3000/user/password", {id, password: password.value}); 
 };
 
 function saveUser(url, user) {
@@ -61,7 +61,7 @@ function saveUser(url, user) {
 }
 
 function getUsers(){
-  fetch("http://localhost:3000/users")
+  fetch("http://159.65.171.29:3000/users")
   .then(response=>response.json())
   .then(data=>{
     users = data.users;
@@ -70,7 +70,7 @@ function getUsers(){
 }
 
 function deleteUser(event) {
-  let url = "http://localhost:3000/user";
+  let url = "http://159.65.171.29:3000/user";
   id= event.target.parentElement.parentElement.id;
   fetch(url+"/"+id, {method:'DELETE'})
   .then((response)=>{

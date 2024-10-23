@@ -30,7 +30,7 @@ function removeError(){
 form.addEventListener('submit', (event) => {
   event.preventDefault();
 
-  const url = "http://localhost:3000/user/forgot-password";
+  const url = "http://159.65.171.29:3000/user/forgot-password";
   const user = { email: campo.value };
   
   if (validarEmail()) {
