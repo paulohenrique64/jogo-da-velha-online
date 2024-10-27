@@ -37,8 +37,8 @@ app.set("view engine", "ejs");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/", routes);
-app.use((req, res) => {return res.status(404).redirect('/')});
-app.use((req, res) => {return res.status(404).redirect('/game')});
+app.use((req, res) => {return res.status(404).redirect('')});
+app.use((req, res) => {return res.status(404).redirect('game')});
 
 // Conectar ao banco de dados
 mongooseConnection(); 
