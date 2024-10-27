@@ -313,9 +313,16 @@ body::-webkit-scrollbar-thumb {
 
   .buttons > a {
     margin-bottom: 5%;
-    width: 150px;
-    padding: 10px;
-    font-size: 12pt;
+    width: 180px;
+    padding: 15px;
+    font-size: 10pt;
+  }
+
+  .buttons > input {
+    margin-bottom: 5%;
+    width: 180px;
+    padding: 15px;
+    font-size: 10pt;
   }
 
   .text-content {
