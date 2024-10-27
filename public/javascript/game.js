@@ -1,4 +1,4 @@
-const socket = io({path: "/socket.io/socket.io.js"});
+const socket = io({path: "socket.io/socket.io.js"});
 const divLobby = document.querySelector('#lobby');
 const ul = document.querySelector('#player-list');
 const divOnlinePlayersList = document.querySelector('#players');
@@ -192,7 +192,7 @@ function addMessage(message, nick) {
 }
 
 function main() {
-  const url = "/user";
+  const url = "user";
 
   fetch(url)
     .then(response => {

@@ -1,4 +1,4 @@
-const url = "/register";
+const url = "register";
 const form = document.getElementById('form');
 const spans  = document.querySelectorAll('.span-required');
 const campos = document.querySelectorAll('.required');
@@ -94,9 +94,3 @@ function removeError(index){
   campos[index].style.border = '';
   spans[index].style.display = 'none';
 }
-
-
-
-
-
-
