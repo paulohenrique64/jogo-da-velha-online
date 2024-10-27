@@ -8,10 +8,10 @@ estejam autenticados */
 const onlyAuth = (req, res, next) => {
   const token = req.cookies.token;
 
-  if (!token) return res.redirect('/');
+  if (!token) return res.redirect(process.env.BASE_URL_PATH);
 
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-    if (err || !decoded) return res.redirect('/');
+    if (err || !decoded) return res.redirect(process.env.BASE_URL_PATH);
     else return next();
   });
 }
@@ -29,7 +29,7 @@ const onlyGuest = (req, res, next) => {
     if (err || !decoded) 
       return next();
     else 
-      return res.redirect('/game');
+      return res.redirect(process.env.BASE_URL_PATH + '/game');
   });
 }
 

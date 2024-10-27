@@ -40,7 +40,7 @@ const forgotPasswordPage = (req, res) => {
 // renderiza a pagina para troca de senha
 const resetPasswordPage = (req, res) => {
   const resetPasswordToken = req.params.token;
-  if (!resetPasswordToken) return res.redirect("/");
+  if (!resetPasswordToken) return res.redirect(process.env.BASE_URL_PATH);
 
   const filePath = path.join(__dirname, "../views/resetPassword");
   return res.render(filePath, {resetPasswordToken, baseUrl: process.env.BASE_URL });
@@ -158,7 +158,7 @@ const logoutUser = (req, res) => {
     e direciona o cliente para a homepage */
   res.clearCookie("token"); 
   
-  return res.redirect('/');
+  return res.redirect(process.env.BASE_URL_PATH);
 };
 
 // faz o registro de um usuario 
