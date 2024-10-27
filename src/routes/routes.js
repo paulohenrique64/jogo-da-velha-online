@@ -10,7 +10,7 @@ import {getUser, getUsers, forgotPassword, resetPassword} from "../controllers/a
 import {editUserEmail, editUserNickname, editUserPassword} from "../controllers/auth";
 
 // páginas
-router.get("/", getHomepage);                                       // pagina principal
+router.get("/", onlyGuest, getHomepage);                                       // pagina principal
 // router.get("/register", onlyGuest, registerPage);                   // pagina de registro
 // router.get("/login", onlyGuest, loginPage);                         // pagina de login
 router.get("/game", onlyAuth, getGamePage);                         // pagina do jogo

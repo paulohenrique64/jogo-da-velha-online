@@ -26,8 +26,10 @@ const onlyGuest = (req, res, next) => {
   /* se já estiver autenticado
   o cliente é redirecionado para página do jogo */
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-    if (err || !decoded) return next();
-    else return res.redirect('/game');
+    if (err || !decoded) 
+      return next();
+    else 
+      return res.redirect('/game');
   });
 }
 

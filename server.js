@@ -36,8 +36,8 @@ app.set('views', path.join(__dirname, 'src', 'views'));
 app.set("view engine", "ejs");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use("/", routes);
-app.use((req, res) => {return res.status(404).redirect('/')});
+app.use(process.env.BASE_URL_PATH, routes);
+app.use((req, res) => {return res.status(404).redirect(process.env.BASE_URL_PATH)});
 
 // Conectar ao banco de dados
 mongooseConnection(); 
