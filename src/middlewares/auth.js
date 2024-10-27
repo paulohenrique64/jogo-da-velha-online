@@ -29,7 +29,7 @@ const onlyGuest = (req, res, next) => {
     if (err || !decoded) 
       return next();
     else 
-      return res.redirect(process.env.BASE_URL_PATH + '/game');
+      return res.redirect(process.env.BASE_URL_PATH + 'game');
   });
 }
 

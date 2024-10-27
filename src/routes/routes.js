@@ -10,22 +10,22 @@ import {getUser, getUsers, forgotPassword, resetPassword} from "../controllers/a
 import {editUserEmail, editUserNickname, editUserPassword} from "../controllers/auth";
 
 // páginas
-router.get("/", onlyGuest, getHomepage);                                       // pagina principal
+router.get("/", onlyGuest, getHomepage);                               // pagina principal
 // router.get("/register", onlyGuest, registerPage);                   // pagina de registro
 // router.get("/login", onlyGuest, loginPage);                         // pagina de login
-router.get("/game", onlyAuth, getGamePage);                         // pagina do jogo
+router.get("/game", onlyAuth, getGamePage);                            // pagina do jogo
 // router.get("/settings", onlyAuth, getSettingsPage);                 // pagina de configuracoes para usuarios normais
 // router.get("/adminSettings", onlyAdmin, getAdminSettingsPage);      // pagina de configuracoes para admins
 // router.get("/forgot-password", onlyGuest, forgotPasswordPage)       // pagina de forgot-password
 // router.get("/reset-password/:token", onlyGuest, resetPasswordPage)  // pagina de reset-password 
 
 // rotas para autenticação
-router.post("/login", loginUser);                        // fazer o login de um usuario
+router.post("/login", loginUser);                                      // fazer o login de um usuario
 // router.post("/register", registerUser);                             // registrar usuario
-router.get("/logout", onlyAuth, logoutUser);                        // logout do usuario
+router.get("/logout", onlyAuth, logoutUser);                           // logout do usuario
 
 // rotas de acesso a usuarios
-router.get("/user", onlyAuth, getUser);                             // retorna um usuário em específico
+router.get("/user", onlyAuth, getUser);                                // retorna um usuário em específico
 // router.get("/users", onlyAdmin, getUsers);                          // retorna todos os usuários cadastrados
 
 // rotas de edição de usuarios
