@@ -1,4 +1,4 @@
-const urlLogin = "/jogodavelha/login";
+const urlLogin = "/login";
 const form = document.getElementById('form');
 const spans  = document.querySelectorAll('.span-required');
 const campos = document.querySelectorAll('.required');

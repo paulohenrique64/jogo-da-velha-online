@@ -22,40 +22,40 @@ const generateResetPasswordToken = () => {
 // renderiza a pagina de login
 const loginPage = (req, res) => {
   const filePath = path.join(__dirname, "../views/login");
-  return res.render(filePath);
+  return res.render(filePath, { baseUrl: process.env.BASE_URL });
 }
 
 // renderiza a pagina de registro
 const registerPage = (req, res) => {
   const filePath = path.join(__dirname, "../views/signup");
-  return res.render(filePath);
+  return res.render(filePath, { baseUrl: process.env.BASE_URL });
 }
 
 // renderiza a pagina de esqueceu a senha
 const forgotPasswordPage = (req, res) => {
   const filePath = path.join(__dirname, "../views/forgotPassword");
-  return res.render(filePath);
+  return res.render(filePath, { baseUrl: process.env.BASE_URL });
 }
 
 // renderiza a pagina para troca de senha
 const resetPasswordPage = (req, res) => {
   const resetPasswordToken = req.params.token;
-  if (!resetPasswordToken) return res.redirect("/jogodavelha");
+  if (!resetPasswordToken) return res.redirect("/");
 
   const filePath = path.join(__dirname, "../views/resetPassword");
-  return res.render(filePath, {resetPasswordToken});
+  return res.render(filePath, {resetPasswordToken, baseUrl: process.env.BASE_URL });
 }
 
 // renderiza a pagina de settings para admins
 const getAdminSettingsPage = (req, res) => {
   const filePath = path.join(__dirname, "../views/adminSettings");
-  return res.render(filePath); 
+  return res.render(filePath, { baseUrl: process.env.BASE_URL }); 
 }
 
 // renderiza a pagina de settings para usuarios normais
 const getSettingsPage = (req, res) => {
   const filePath = path.join(__dirname, "../views/settings");
-  return res.render(filePath); 
+  return res.render(filePath, { baseUrl: process.env.BASE_URL }); 
 }
 
 // retorna todos os usuarios do banco de dados
@@ -135,7 +135,7 @@ const logoutUser = (req, res) => {
   /* limpa o campo token dos cookies do navegador do cliente
     e direciona o cliente para a homepage */
   res.clearCookie("token"); 
-  return res.redirect("/jogodavelha");
+  return res.redirect("/");
 };
 
 // faz o registro de um usuario 

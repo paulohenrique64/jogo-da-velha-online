@@ -8,10 +8,10 @@ estejam autenticados */
 const onlyAuth = (req, res, next) => {
   const token = req.cookies.token;
 
-  if (!token) return res.redirect('/jogodavelha');
+  if (!token) return res.redirect('/');
 
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-    if (err || !decoded) return res.redirect('/jogodavelha');
+    if (err || !decoded) return res.redirect('/');
     else return next();
   });
 }
@@ -27,7 +27,7 @@ const onlyGuest = (req, res, next) => {
   o cliente é redirecionado para página do jogo */
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err || !decoded) return next();
-    else return res.redirect('/jogodavelha/game');
+    else return res.redirect('/game');
   });
 }
 

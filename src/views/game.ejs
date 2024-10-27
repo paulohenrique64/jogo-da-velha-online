@@ -4,15 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jogo da Velha Online</title>
-    <link rel="shortcut icon" href="/jogodavelha/images/logo.png">
-    <script src="/jogodavelha/socket.io/socket.io.js"></script>
-    <link rel="stylesheet" href="/jogodavelha/stylesheets/game.css">
+    <base href="<%= baseUrl %>"/>
+    <link rel="shortcut icon" href="images/logo.png">
+    <script src="socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="stylesheets/game.css">
 </head>
 <body>
   <div class="all">
     <div>
       <header>
-        <a href="/jogodavelha">Menu</a>
+        <a href="">Menu</a>
         <a href="game">Lobby</a>
         <a href="settings" id="settingsPageLink">Configurações</a>
         <a href="logout" id="logoutButton">Sair</a>
@@ -76,6 +77,6 @@
   <footer>
     <p>Criado por Paulo Henrique</p>
   </footer>
-  <script src="/jogodavelha/javascript/game.js"></script>
+  <script src="javascript/game.js"></script>
 </body>
 </html>

@@ -30,7 +30,7 @@ function removeError(){
 form.addEventListener('submit', (event) => {
   event.preventDefault();
 
-  const url = "/jogodavelha/user/forgot-password";
+  const url = "/user/forgot-password";
   const user = { email: campo.value };
   
   if (validarEmail()) {
