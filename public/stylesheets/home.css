@@ -61,7 +61,11 @@ header > a:hover {
 }
 
 .buttons {
+  display: flex;
   margin-top: 5%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .buttons > a {
@@ -70,7 +74,7 @@ header > a:hover {
   text-decoration: none;
   color: #fff;
   font-weight: bold;
-  width: 160px;
+  width: 250px;
   padding: 20px;
   border-radius: 15px;
   outline: none;
@@ -80,6 +84,27 @@ header > a:hover {
   cursor: pointer;
   box-shadow: 0px 10px 40px -12px #0284ff;
   letter-spacing: 2px;
+}
+
+.buttons > input {
+  display: inline-block;
+  margin: 0 10px;
+  margin-bottom: 20px;
+  text-decoration: none;
+  font-weight: bold;
+  width: 250px;
+  padding: 20px;
+  border-radius: 15px;
+  outline: none;
+  /* text-transform: uppercase; */
+  font-size: 15pt;
+  background: #ffffff;
+  box-shadow: 0px 10px 40px -12px #0284ff;
+  letter-spacing: 2px;
+}
+
+.buttons > input::placeholder{
+  color: #091133;
 }
 
 .buttons > a:hover {
@@ -232,6 +257,17 @@ body::-webkit-scrollbar-track {
 body::-webkit-scrollbar-thumb {
   background-color: #040714;        
   border: 0; 
+}
+
+.span-required{
+  font-size: 20px;
+  margin: 0;
+  color: var(--color-red);
+  display: none;
+}
+
+.span-required-error {
+  color: red; /* Ou qualquer outra cor desejada */
 }
 
 /* responsividade  */

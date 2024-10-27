@@ -23,9 +23,9 @@ const cors = require('cors');
 const port = process.env.PORT;
 
 app.use(cors({
-        origin: "*",
-        credentials: true, 
-        methods: 'GET, POST, OPTIONS, DELETE'   
+  origin: "*",
+  credentials: true, 
+  methods: 'GET, POST, OPTIONS, DELETE'   
 }));
 
 app.set("trust proxy", true);
@@ -37,8 +37,7 @@ app.set("view engine", "ejs");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/", routes);
-app.use((req, res) => {return res.status(404).redirect(process.env.BASE_URL)});
-app.use((req, res) => {return res.status(404).redirect('game')});
+app.use((req, res) => {return res.status(404).redirect('/')});
 
 // Conectar ao banco de dados
 mongooseConnection(); 

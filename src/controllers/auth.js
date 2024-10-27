@@ -40,7 +40,7 @@ const forgotPasswordPage = (req, res) => {
 // renderiza a pagina para troca de senha
 const resetPasswordPage = (req, res) => {
   const resetPasswordToken = req.params.token;
-  if (!resetPasswordToken) return res.redirect(process.env.BASE_URL);
+  if (!resetPasswordToken) return res.redirect("/");
 
   const filePath = path.join(__dirname, "../views/resetPassword");
   return res.render(filePath, {resetPasswordToken, baseUrl: process.env.BASE_URL });
@@ -75,13 +75,18 @@ const getUser = (req, res) => {
   const token = req.cookies.token;
 
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-    if (err) return res.status(500).send({error: "Internal server error"});
-    if (!decoded) return res.status(401).send({error: "Not authorized"});
+    if (err) 
+      return res.status(500).send({error: "Internal server error"});
+
+    if (!decoded) 
+      return res.status(401).send({error: "Not authorized"});
 
     User.findById(decoded.uid)
       .then(user => {
-        if (user) return res.status(200).send({user});
-        else return res.status(401).send({error: "Not authorized"});
+        if (user) 
+          return res.status(200).send({user});
+        else 
+          return res.status(401).send({error: "Not authorized"});
       })
       .catch(error => {
         console.log(error);
@@ -92,42 +97,59 @@ const getUser = (req, res) => {
 
 // faz o login de um usuario
 const loginUser = (req, res) => {
-  const { email, password } = req.body;
+  let { nickname } = req.body;
+  let token = undefined;
 
-  if (!email || !password) return res.status(401).send({error: "You need to provide an email and password to log in"});
+  nickname = nickname.toLowerCase();
 
-  User.findOne({email})
-    .select("+password")
+  if (nickname.length < 3 || nickname.length > 20) 
+    return res.status(401).send({error: "The nickname must be between 3 and 20 characters"});
+
+  User.findOne({nickname})
     .then((user) => {
 
-      if (!user) return res.status(401).send({error: "Invalid email"});
+      if (!user) {     
+        // create a new user
+        User.create({nickname})
+          .then((userCreated) => {
+            console.log(`Created new user with nickname ${nickname} and id ${userCreated.id}`);
 
-      bcrypt.compare(password, user.password).then((result) => {
-        if (!result) return res.status(401).send({error: "Invalid password"});
+            token = generateAuthToken({ uid: userCreated.id });
 
-        // se usuario for logado: gera um token de autenticação
-        const token = generateAuthToken({ uid: user.id });
+            // envia o token como cookie para nao precisar fazer login depois
+            res.cookie("token", token, {
+              maxAge: 3600000,
+              httpOnly: true,
+              secure: false,
+              sameSite: 'strict',
+            });
+
+            // retorna status 201
+            return res.status(201).send({message: "Logged in successfully"});
+          })
+          .catch((error) => {         
+            console.log(error);
+            return res.status(500).send({error: "Internal server error"});
+          })  
+      } else {
+        token = generateAuthToken({ uid: user.id });
 
         // envia o token como cookie para nao precisar fazer login depois
         res.cookie("token", token, {
           maxAge: 3600000,
           httpOnly: true,
           secure: false,
-	        sameSite: 'strict',
+          sameSite: 'strict',
         });
-
+        
         // retorna status 201
         return res.status(201).send({message: "Logged in successfully"});
-      })
-      .catch(error => {
-        console.log(error);
-        return res.status(500).send({error: "Internal server error"});
-      })
+      }
     })
     .catch((error) => {
       console.log(error);
       return res.status(500).send({error: "Internal server error"});
-    });
+    })
 };
 
 // realiza o logout do usuario
@@ -135,7 +157,8 @@ const logoutUser = (req, res) => {
   /* limpa o campo token dos cookies do navegador do cliente
     e direciona o cliente para a homepage */
   res.clearCookie("token"); 
-  return res.redirect(process.env.BASE_URL);
+  
+  return res.redirect('/');
 };
 
 // faz o registro de um usuario 

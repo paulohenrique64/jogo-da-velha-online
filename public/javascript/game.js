@@ -1,4 +1,4 @@
-const socket = io({path: "socket.io/socket.io.js"});
+const socket = io({path: "/socket.io/socket.io.js"});
 const divLobby = document.querySelector('#lobby');
 const ul = document.querySelector('#player-list');
 const divOnlinePlayersList = document.querySelector('#players');
@@ -62,16 +62,16 @@ socket.on('startGameStatus', (match, creatorPlayerData, guestPlayerData) => {
     <div class="placar-data1">
       <h1>Jogador ${user.point}ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ</h1>
       <h1>${user.nickname}</h1>
-      <h1>Pontos: ${user.points}</h1>
-      <h1>Vitórias: ${user.wins}</h1>
+      <h1>Score na partida: ${user.points}</h1>
+      <h1>Jogos vencidos: ${user.wins}</h1>
     </div>
   </div>
   <div class="placar2">
     <div class="placar-data2">
       <h1>ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤJogador ${oponnent.point}</h1>
       <h1>${oponnent.nickname}</h1>
-      <h1>Pontos: ${oponnent.points}</h1>
-      <h1>Vitórias: ${oponnent.wins}</h1>
+      <h1>Score na partida: ${oponnent.points}</h1>
+      <h1>Jogos vencidos: ${oponnent.wins}</h1>
     </div>
     <img src="images/comp-cat2.jpg" alt="Profile Photo" class="placar-profile-img">
   </div> `;
@@ -199,6 +199,7 @@ function main() {
       response.json()
         .then(responseJson => {
           userData = responseJson.user;
+
           socket.emit('newOnlinePlayer', userData.nickname);
           document.querySelector(".nickname").innerHTML = `${userData.nickname}<br>▼`;
 
@@ -230,7 +231,7 @@ function main() {
   startGameButton.addEventListener('click', () => {
     const friendName = inputFriendName.value;
     inputFriendName.value = '';
-    socket.emit('createParty', friendName)
+    socket.emit('createParty', friendName.toLowerCase())
     var historyBox = document.getElementById('history');
     historyBox.innerHTML = '';
   })
