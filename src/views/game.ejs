@@ -75,6 +75,13 @@
   <footer>
     <p>Criado por Paulo Henrique</p>
   </footer>
+  <% if (baseUrlPath) { %>
+    <script>
+       var baseUrlPath = '<%= baseUrlPath %>';   
+       if (baseUrlPath === "/")
+        baseUrlPath = "";
+    </script>
+  <% } %>
   <script src="javascript/game.js"></script>
 </body>
 </html>

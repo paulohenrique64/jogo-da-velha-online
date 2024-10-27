@@ -1,4 +1,5 @@
-const socket = io({path: "socket.io/socket.io.js"});
+const wsPath = baseUrlPath + "/socket.io/socket.io.js";
+const socket = io({path: wsPath});
 const divLobby = document.querySelector('#lobby');
 const ul = document.querySelector('#player-list');
 const divOnlinePlayersList = document.querySelector('#players');
@@ -10,6 +11,9 @@ const inputFriendName = document.getElementById('inputFriendName');
 const buttons = [];
 
 var userData;
+
+// logs
+console.log(`wsPath -> ${wsPath}`);
 
 // atualiza a lista de jogadores onlines do lobby
 socket.on('onlinePlayerList', activePlayers => {
