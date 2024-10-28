@@ -1,9 +1,10 @@
 @import url('//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 body {
   margin: 0;
   height: 100%;
-  font-family: 'Noto Sans', sans-serif;
+  font-family: 'Press Start 2P';
   background-color: #091133;
   color: #fff;
 }
@@ -51,13 +52,14 @@ header > a:hover {
 }
 
 .logo {
-  font-size: 50px;
+  font-size: 40px;
   color: #fff;
 }
 
 .logo h1 {
   margin: 0;
   letter-spacing: 3px;
+  line-height: 1.5;
 }
 
 .buttons {
@@ -74,12 +76,12 @@ header > a:hover {
   text-decoration: none;
   color: #fff;
   font-weight: bold;
-  width: 250px;
+  width: 320px;
   padding: 20px;
   border-radius: 15px;
   outline: none;
   text-transform: uppercase;
-  font-size: 15pt;
+  font-size: 12pt;
   background: #0284ff;
   cursor: pointer;
   box-shadow: 0px 10px 40px -12px #0284ff;
@@ -92,19 +94,20 @@ header > a:hover {
   margin-bottom: 20px;
   text-decoration: none;
   font-weight: bold;
-  width: 250px;
+  width: 320px;
   padding: 20px;
   border-radius: 15px;
   outline: none;
   /* text-transform: uppercase; */
-  font-size: 15pt;
+  font-size: 12pt;
   background: #ffffff;
   box-shadow: 0px 10px 40px -12px #0284ff;
   letter-spacing: 2px;
+  font-family: 'Press Start 2P';
 }
 
 .buttons > input::placeholder{
-  color: #091133;
+  color:#5c679b;
 }
 
 .buttons > a:hover {
@@ -242,7 +245,7 @@ footer {
   width: 100%;
   height: 100px;
   background-color: #040714;
-  font-size: 17px;
+  font-size: 13px;
   letter-spacing: 2px;
 }
 
@@ -297,11 +300,62 @@ body::-webkit-scrollbar-thumb {
   .icons {
     display: none;
   }
+
+  .logo {
+    font-size: 35px;
+    color: #fff;
+  }
+  
+  .logo h1 {
+    margin: 0;
+    letter-spacing: 3px;
+    line-height: 1.5;
+  }
 }
 
-@media screen and (max-width: 450px)  {
+@media screen and (max-width: 700px)  {
   .logo {
     font-size: 30px;
+  }
+
+  .buttons > a {
+    margin-bottom: 5%;
+    width: 250px;
+    padding: 15px;
+    font-size: 9pt;
+  }
+
+  .buttons > input {
+    margin-bottom: 5%;
+    width: 250px;
+    padding: 15px;
+    font-size: 9pt;
+  }
+}
+
+@media screen and (max-width: 570px)  {
+  .logo {
+    font-size: 25px;
+  }
+
+  .buttons > a {
+    margin-bottom: 5%;
+    width: 250px;
+    padding: 15px;
+    font-size: 9pt;
+  }
+
+  .buttons > input {
+    margin-bottom: 5%;
+    width: 250px;
+    padding: 15px;
+    font-size: 9pt;
+  }
+}
+
+@media screen and (max-width: 470px)  {
+  .logo {
+    font-size: 25px;
   }
 
   .buttons {
@@ -309,20 +363,21 @@ body::-webkit-scrollbar-thumb {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    margin-bottom: 10%;
   }
 
   .buttons > a {
     margin-bottom: 5%;
-    width: 180px;
+    width: 230px;
     padding: 15px;
-    font-size: 10pt;
+    font-size: 8pt;
   }
 
   .buttons > input {
     margin-bottom: 5%;
-    width: 180px;
+    width: 230px;
     padding: 15px;
-    font-size: 10pt;
+    font-size: 8pt;
   }
 
   .text-content {

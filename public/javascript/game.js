@@ -25,7 +25,7 @@ socket.on('onlinePlayerList', activePlayers => {
       const playerBox = document.createElement('div');
       playerBox.className = "player-box";
       playerBox.innerHTML = `
-        <img src="images/comp-cat1.jpg" alt="Profile Photo">
+        <img src="https://robohash.org/${player.nickname}.png" alt="Profile Photo">
         <p>${player.nickname}</p>
       `;
       divOnlinePlayersList.appendChild(playerBox);
@@ -62,7 +62,7 @@ socket.on('startGameStatus', (match, creatorPlayerData, guestPlayerData) => {
   divPlacar.style.display = 'flex';
   divPlacar.innerHTML = `
   <div class="placar1">
-    <img src="images/comp-cat1.jpg" alt="Profile Photo" class="placar-profile-img">
+    <img src="https://robohash.org/${userData.nickname}.png" class="placar-profile-img" alt="Profile Photo">
     <div class="placar-data1">
       <h1>Jogador ${user.point}ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ</h1>
       <h1>${user.nickname}</h1>
@@ -77,7 +77,7 @@ socket.on('startGameStatus', (match, creatorPlayerData, guestPlayerData) => {
       <h1>Score na partida: ${oponnent.points}</h1>
       <h1>Jogos vencidos: ${oponnent.wins}</h1>
     </div>
-    <img src="images/comp-cat2.jpg" alt="Profile Photo" class="placar-profile-img">
+    <img src="https://robohash.org/${oponnent.nickname}.png" class="placar-profile-img" alt="Profile Photo">
   </div> `;
 })
 
@@ -105,13 +105,15 @@ socket.on('gameStatus', (match) => {
       placarData2.style.color = '#cccccc'
       let messageTurnDiv = document.querySelector(".message-turn-div");
       messageTurnDiv.innerHTML = `<h1 class="message-turn">Agora é a sua vez de jogar</h1>`;
+      messageTurnDiv.style.color = "#091133";
     } else {
       placar1.style.backgroundColor = '#091133'; // azul escuro
       placar2.style.backgroundColor = '#0284ff'; 
       placarData1.style.color = '#cccccc'
       placarData2.style.color = '#201b2c'
       let messageTurnDiv = document.querySelector(".message-turn-div");
-      messageTurnDiv.innerHTML = `<h1 class="message-turn">ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ</h1>`;
+      messageTurnDiv.innerHTML = `<h1 class="message-turn">Agora o oponente joga</h1>`;
+      messageTurnDiv.style.color = "#718bff";
     }
   } else {
     console.log('placar error')
@@ -134,8 +136,10 @@ socket.on('endGameStage', (match) => {
    
       if (match.winner.nickname === userData.nickname) {
         messageTurnDiv.innerHTML = `<h1 class="message-turn">Você venceu :)</h1>`;
+        messageTurnDiv.style.color = "#091133";
       } else {
         messageTurnDiv.innerHTML = `<h1 class="message-turn">Você perdeu :(</h1>`;
+        messageTurnDiv.style.color = "#718bff";
       }
   } else {
     // jogo empatou
@@ -216,6 +220,8 @@ function main() {
         .then(responseJson => {
           userData = responseJson.user;
 
+          updateLobbyImage(userData.nickname);
+
           socket.emit('newOnlinePlayer', userData.nickname);
           document.querySelector(".nickname").innerHTML = `${userData.nickname}<br>▼`;
 
@@ -259,10 +265,15 @@ function main() {
   divGame.style.display = 'none';
 }
 
+function updateLobbyImage(userNickname) {
+  // adiciona imagem do avatar gerado com base no nickname no lobby
+  let divImage = document.querySelector(".image-lobby");
+  divImage.innerHTML = `<img src="https://robohash.org/${userNickname}.png" alt="Profile Photo">`;
+}
+
 function onVisibilityChange(entries) {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
-      console.log('A div está visível!');
       let messageTurnDiv = document.querySelector(".message-turn-div");
       messageTurnDiv.innerHTML = `<h1 class="message-turn">ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ</h1>`;
     }

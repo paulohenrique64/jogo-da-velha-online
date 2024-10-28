@@ -3,7 +3,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Delicious+Handrawn&display=swap');
 
 body {
-  font-family: 'Noto Sans', sans-serif;
+  font-family: 'Press Start 2P';
   margin: 0;
   padding: 0;
   max-width: 100%;
@@ -64,16 +64,30 @@ header a:hover {
 
 .block h1 {
   margin: 0;
-  margin-top: 20px;
+  margin-top: 28px;
   position: absolute;
-  letter-spacing: 2.5px;
-  font-family: 'Noto Sans', sans-serif;
-  font-weight: 800;
+  letter-spacing: 0px;
+  font-family: 'Press Start 2P';
+  font-weight: 200;
+  font-size: 1.5rem;
+  overflow: hidden;
+  text-align: center;
   color: #fff;
 }
 
+.image-lobby {
+  margin: 0;
+  margin-top: 16%;
+}
+
+.image-lobby > img {
+  width: 270px;
+  height: auto;
+}
+
 .header-block {
-  margin-top: 80%;
+  margin-top: 0;
+  margin-bottom: 58%;
   color: var(--white);
   border-radius: 0 0 0 0;
   font-size: 0.8rem;
@@ -84,23 +98,25 @@ header a:hover {
 }
 
 .header-block p {
-  font-size: 14px;
+  font-size: 16px;
   margin-top: 5%;
-  margin-bottom: 2%;
+  margin-bottom: 3%;
+  letter-spacing: 2px;
   text-align: left;
-  width: 75%;
+  width: 87%;
+  line-height: 1.3;
 }
 
 .header-block input {
-  width: 73%;
+  width: 83%;
   padding: 2.5%;
-  font-size: 25px;
+  font-size: 20px;
   text-align: center;
-  border-radius: 10px;
+  border-radius: 7px;
   background: #bed5f9;
   box-shadow: 0px 10px 40px -12px #0284ff;
   letter-spacing: 2.5px;
-  font-family: 'Noto Sans', sans-serif;
+  font-family: 'Press Start 2P';
   font-weight: 800;
   border: none;
 }
@@ -110,19 +126,20 @@ header a:hover {
 }
 
 .header-block button {
-  margin-top: 10%;
-  width: 80%;
+  margin-top: 5%;
+  width: 88%;
   padding: 2%;
   outline: none;
   font-size: 30px;
   font-weight: 800;
-  border-radius: 10px;
-  font-family: 'Noto Sans', sans-serif;
+  border-radius: 7px;
+  font-family: 'Press Start 2P';
   color: #fff;
   box-shadow: 0px 10px 40px -12px #00ff8052;
   cursor: pointer;
   background: #0284ff;
   letter-spacing: 3px;
+  line-height: 1.5;
   text-transform: uppercase;
   border: none;
 }
@@ -153,13 +170,15 @@ header a:hover {
   color: var(--white);
   font-size: 1.9rem;
   letter-spacing: 3px;
-  margin-bottom: 3%;
+  margin-bottom: 0;
+  line-height: 1.5;
+  font-weight: 400;
 }
 
 .online-players > h2 {
   color: var(--white);
   letter-spacing: 3px;
-  margin-bottom: 3%;
+  margin-bottom: 0;
 }
 
 #players {
@@ -170,6 +189,7 @@ header a:hover {
   flex-direction: column;
   gap: 1rem;
   height: 85%;
+  margin-top: 0;
 }
 
 #players::-webkit-scrollbar {
@@ -190,15 +210,15 @@ header a:hover {
 }
 
 .player-box {
-  font-family: 'Noto Sans', sans-serif;
+  font-family: 'Press Start 2P';
   border-radius: 10px;
   width: 100%;
   height: 10%;
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   display: flex;
   justify-content: left;
   align-items: center;
-  letter-spacing: 3px;
+  font-weight: 400;
   color: #fff;
   background-color: #0284ff;
 }
@@ -435,7 +455,7 @@ header a:hover {
 .chat {
   margin-top: 1.2%;
   background-color: var(--white);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Press Start 2P';
   color: var(--white);
   display: flex;
   justify-content: center;
@@ -470,12 +490,14 @@ header a:hover {
 }
 
 .message-input {
-  width: 80%;
+  width: 66.8%;
   border: none;
   outline: none;
   padding: 10px;
   border-radius: 5px;
   font-size: 1rem;
+  font-family: 'Press Start 2P';
+  background-color: #dfe5ff;
 }
 
 .btn-submit {
@@ -484,7 +506,8 @@ header a:hover {
   border-radius: 5px;
   padding: 10px;
   font-size: 1rem;
-  background-color: #0284ff;
+  background-color: #718bff;
+  font-family: 'Press Start 2P';
 }
 
 .btn-submit:hover {
@@ -558,7 +581,7 @@ footer {
   color: #fff;
   height: 100px;
   background-color: #091133;
-  font-size: 17px;
+  font-size: 13px;
   letter-spacing: 2px;
   margin-top: 10%;
 }
@@ -587,8 +610,18 @@ body::-webkit-scrollbar-thumb {
     width: 440px;
   }
 
+  .image-lobby {
+    margin: 0;
+    margin-top: 16%;
+  }
+  
+  .image-lobby > img {
+    width: 200px;
+    height: auto;
+  }
+
   .message-input {
-    width: 78%;
+    width: 62.8%;
   }
 
   .block, .online-players {
@@ -597,8 +630,7 @@ body::-webkit-scrollbar-thumb {
   }
 
   .online-players > h1, .block > h1 {
-    font-size: 1.5rem;
-    letter-spacing: 2px;
+    font-size: 1.1rem;
   }
 
   .header-block > p {
@@ -615,6 +647,10 @@ body::-webkit-scrollbar-thumb {
 
   .player-box {
     font-size: 1.2rem;
+  }
+
+  .player-box > p {
+    font-size: 0.9rem;
   }
 
   footer {
@@ -641,6 +677,10 @@ body::-webkit-scrollbar-thumb {
 
   .message-turn-div {
     font-size: 80%;
+  }
+
+  iframe {
+    display: none;
   }
 }
 
@@ -682,10 +722,6 @@ body::-webkit-scrollbar-thumb {
     width: 440px;
   }
 
-  .message-input {
-    width: 78%;
-  }
-
   .message-turn-div {
     font-size: 75%;
   }
@@ -706,6 +742,16 @@ body::-webkit-scrollbar-thumb {
     margin-bottom: 3%;
   }
 
+  .image-lobby {
+    margin: 0;
+    margin-top: 16%;
+  }
+  
+  .image-lobby > img {
+    width: 160px;
+    height: auto;
+  }
+
   .cell {
     width: 100px;
     height: 100px;
@@ -718,7 +764,12 @@ body::-webkit-scrollbar-thumb {
   }
 
   .message-input {
-    width: 65%;
+    font-size: 10px;
+    width: 55.8%;
+  }
+
+  .btn-submit {
+    font-size: 10px;
   }
 
   .block, .online-players {
@@ -726,25 +777,37 @@ body::-webkit-scrollbar-thumb {
     height: 384px;
   }
 
-  .online-players > h1, .block > h1 {
-    font-size: 1.2rem;
-    letter-spacing: 1px;
+  .block > h1 {
+    font-size: 0.9rem;
+    margin-top: 4%;
   }
 
+  .online-players > h1 {
+    margin-top: 7%;
+    font-size: 0.9rem;
+  }
+    
   .header-block > p {
     font-size: 10px;
   }
 
   .header-block > input {
     font-size: 12px;
+    border-radius: 5px;
   } 
 
   .header-block > button {
     font-size: 20px;
+    border-radius: 5px;
   }
 
   .player-box {
     font-size: 0.9rem;
+    border-radius: 5px;
+  }
+
+  .player-box > p {
+    font-size: 0.7rem;
   }
   
   .end-placar > h1 {
@@ -763,9 +826,22 @@ body::-webkit-scrollbar-thumb {
   .message-turn-div {
     font-size: 53%;
   }
+
+  header {
+    height: 15px;
+    font-size: 13px;
+  }
+
+  iframe {
+    display: none;
+  }
 }
 
 @media screen and (max-width: 450px) {
+  .block {
+    margin-top: 7%;
+  }
+
   #game-container {
     margin-top: 0;  
   }
@@ -803,6 +879,10 @@ body::-webkit-scrollbar-thumb {
     width: 170px;
     padding: 2px;
     font-size: 9pt;
+  }
+
+  footer {
+    font-size: 12px;
   }
 }
 
