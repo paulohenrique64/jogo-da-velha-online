@@ -266,7 +266,7 @@ header a:hover {
   height: 138px;
   margin: 1.8%;
   background-color: #bed5f9;
-  color: #091133;
+  color: #718bff;
   border: none;
   cursor: pointer;
   font-size: 120px;
@@ -277,6 +277,10 @@ header a:hover {
 
 .cell1, .cell2, .cell3 {
   margin-top: 0;
+}
+
+.cell-blue {
+  color: #091133;
 }
 
 .cell3, .cell6, .cell9 {
@@ -784,6 +788,21 @@ body::-webkit-scrollbar-thumb {
 
   .message-turn-div {
     font-size: 40%;
+  }
+
+  header {
+    height: 15px;
+    font-size: 15px;
+  }
+
+  iframe {
+    display: none;
+  }
+
+  .end-game-buttons > button {
+    width: 170px;
+    padding: 2px;
+    font-size: 9pt;
   }
 }
 

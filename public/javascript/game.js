@@ -81,7 +81,6 @@ socket.on('startGameStatus', (match, creatorPlayerData, guestPlayerData) => {
   </div> `;
 })
 
-// atualiza o jogo durante a partida
 socket.on('gameStatus', (match) => {
   for (let i = 0; i < 3; i++) {
     for (let j = 0; j < 3; j++) {
@@ -121,15 +120,23 @@ socket.on('gameStatus', (match) => {
 
 // atualiza o jogo ao chegar ao final da partida
 socket.on('endGameStage', (match) => {
+  let messageTurnDiv = document.querySelector(".message-turn-div");
+
   if (match.winner) {
-  // existe um ganhador
-  divPlacar.innerHTML = `
-    <div class="end-placar">
-      <h1>${match.winner.nickname} venceu o jogo!</h1>
-      <div class="end-game-buttons">
-        <button id="playAgain">Jogar novamente</button>
-        <button id="leaveParty">Sair da party</button>
-    </div>`;
+    // existe um ganhador
+    divPlacar.innerHTML = `
+      <div class="end-placar">
+        <h1>${match.winner.nickname} venceu o jogo!</h1>
+        <div class="end-game-buttons">
+          <button id="playAgain">Jogar novamente</button>
+          <button id="leaveParty">Sair da party</button>
+      </div>`;
+   
+      if (match.winner.nickname === userData.nickname) {
+        messageTurnDiv.innerHTML = `<h1 class="message-turn">Você venceu :)</h1>`;
+      } else {
+        messageTurnDiv.innerHTML = `<h1 class="message-turn">Você perdeu :(</h1>`;
+      }
   } else {
     // jogo empatou
     divPlacar.innerHTML = `
@@ -139,6 +146,8 @@ socket.on('endGameStage', (match) => {
         <button id="playAgain">Jogar novamente</button>
         <button id="leaveParty">Sair da party</button>
     </div>`;
+
+    messageTurnDiv.innerHTML = `<h1 class="message-turn">Empate '_'</h1>`;
   }
 
   const playAgainButton = document.querySelector('#playAgain').addEventListener('click', ( () => {
@@ -229,7 +238,10 @@ function main() {
       const button = document.getElementById(buttonId);
       buttons[i].push(button);
       button.addEventListener('click', () => {
-        socket.emit('point', i, j); 
+        if (buttons[i][j].innerHTML === "") {
+          buttons[i][j].classList.add("cell-blue");
+          socket.emit('point', i, j); 
+        }
       });
     }
   }
@@ -246,5 +258,18 @@ function main() {
   playAgainButton.textContent = 'Play Again'; 
   divGame.style.display = 'none';
 }
+
+function onVisibilityChange(entries) {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      console.log('A div está visível!');
+      let messageTurnDiv = document.querySelector(".message-turn-div");
+      messageTurnDiv.innerHTML = `<h1 class="message-turn">ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ</h1>`;
+    }
+  });
+}
+
+const observer = new IntersectionObserver(onVisibilityChange);
+observer.observe(divLobby);
 
 main();
