@@ -142,9 +142,81 @@ header a:hover {
   line-height: 1.5;
   text-transform: uppercase;
   border: none;
+  cursor: pointer;
 }
 
-.header-block button:hover {
+.offline-button-div {
+  order: 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: left;
+  line-height: 1.5;
+}
+
+.offline-button-div p {
+  color: #fff;
+  width: 86%;
+  margin: 0;
+  margin-bottom: 3%;
+  line-height: 1.1;
+  font-weight: 400;
+}
+
+.offline-button-div button {
+  margin-bottom: 6.2%;
+  width: 88%;
+  padding: 2%;
+  outline: none;
+  font-size: 20px;
+  font-weight: 800;
+  border-radius: 7px;
+  font-family: 'Press Start 2P';
+  color: #fff;
+  box-shadow: 0px 10px 40px -12px #00ff8052;
+  cursor: pointer;
+  background: #0284ff;
+  letter-spacing: 3px;
+  line-height: 1.5;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+}
+
+.offline-button-robot {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 83%;
+  padding: 1.5%;
+  font-size: 18px;
+  text-align: center;
+  border-radius: 7px;
+  background: #ffc400;
+  box-shadow: 0px 10px 40px -4px #ffc400;
+  letter-spacing: 2.5px;
+  font-family: 'Press Start 2P';
+  font-weight: 800;
+  border: none;
+  margin-bottom: 5%;
+  text-transform: uppercase;
+}
+
+.offline-button-robot p {
+  margin: 0;
+  margin-left: 0%;
+  color: #091133;
+}
+
+.offline-button-robot img {
+  width: 30px;
+  height: auto;
+  margin: 0;
+}
+
+.header-block button:hover, .offline-button-div button:hover {
   background-color: #045ab0;
 }
 
@@ -167,6 +239,7 @@ header a:hover {
 }
 
 .online-players > h1 {
+  order: 1;
   color: var(--white);
   font-size: 1.9rem;
   letter-spacing: 3px;
@@ -182,6 +255,7 @@ header a:hover {
 }
 
 #players {
+  order: 2;
   width: 90%;
   padding: 1rem;
   overflow: auto;
@@ -211,9 +285,9 @@ header a:hover {
 
 .player-box {
   font-family: 'Press Start 2P';
-  border-radius: 10px;
+  border-radius: 7px;
   width: 100%;
-  height: 10%;
+  height: 20%;
   font-size: 1.1rem;
   display: flex;
   justify-content: left;
@@ -660,6 +734,22 @@ body::-webkit-scrollbar-thumb {
   .footer {
     width: 92.9%;
   }
+
+  .offline-button-div p {
+    font-size: 13px;
+  }
+
+  .offline-button-div button {
+    font-size: 17px;
+  }
+
+  .offline-button-robot {
+    font-size: 14px;
+  }
+
+  .offline-button-robot img {
+    width: 25px;
+  }
 }
 
 @media screen and (max-width: 960px) {
@@ -681,6 +771,36 @@ body::-webkit-scrollbar-thumb {
 
   iframe {
     display: none;
+  }
+
+  .online-players h1 {
+    order: 2;
+    font-size: 18px;
+  }
+
+  #players {
+    order: 3;
+  }
+
+  .offline-button-div {
+    order: 1;
+    margin-top: 6%;
+  }
+
+  .offline-button-div p {
+    font-size: 13px;
+  }
+
+  .offline-button-div button {
+    font-size: 15px;
+  }
+
+  .offline-button-robot {
+    font-size: 14px;
+  }
+
+  .offline-button-robot img {
+    width: 25px;
   }
 }
 
@@ -834,6 +954,36 @@ body::-webkit-scrollbar-thumb {
 
   iframe {
     display: none;
+  }
+
+  .online-players h1 {
+    order: 2;
+    font-size: 12px;
+  }
+
+  #players {
+    order: 3;
+  }
+
+  .offline-button-div {
+    order: 1;
+    margin-top: 6%;
+  }
+
+  .offline-button-div p {
+    font-size: 11px;
+  }
+
+  .offline-button-div button {
+    font-size: 12px;
+  }
+
+  .offline-button-robot p {
+    font-size: 11px;
+  }
+
+  .offline-button-robot img {
+    width: 18px;
   }
 }
 

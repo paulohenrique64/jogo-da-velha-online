@@ -8,7 +8,7 @@
 - Front-end feito utilizando somente HTML, CSS e Javascript
 - Back-end com nodejs, express, socket.io e mongodb para o banco de dados
 - Jsonwebtoken e bcrypt foram utilizados para criptografar tokens de usuários
-- <a href="https://robohash.org" target="_blank">RoboHash API</a> para geração dos avatares aleatórios com base no nickname
+- <a href="https://robohash.org" target="_blank">RoboHash API</a> 
 
 ## Como rodar o jogo
 
