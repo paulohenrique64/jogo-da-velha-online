@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Delicious+Handrawn&display=swap');
 
 body {
   font-family: 'Noto Sans', sans-serif;
@@ -237,28 +238,57 @@ header a:hover {
 
 #game-board {
   margin-top: 6%;
+  margin-right: 6%;
+  background-color: #091133;
 }
 
 .row {
   display: flex;
 }
 
-.cell {
-  flex: 1;
-  width: 150px;
-  height: 137px;
-  margin: 1.5%;
-  background-color: #091133;
-  color: #f0ffffde;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-  box-shadow: 0px -5px 15px 0px rgba(0, 0, 0, 0.5);
-  font-size: 120px;
+.message-turn-div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Press Start 2P';
+  font-weight: 500;
+  font-style: normal;
+  margin: 0;
 }
 
-.cell:hover {
-  background-color: #0284ff;
+.message-turn-div > h1 {
+  margin: 0;
+}
+
+.cell {
+  flex: 1;
+  width: 146px;
+  height: 138px;
+  margin: 1.8%;
+  background-color: #bed5f9;
+  color: #091133;
+  border: none;
+  cursor: pointer;
+  font-size: 120px;
+  font-family: "Delicious Handrawn", cursive;
+  font-weight: 640;
+  font-style: normal;
+}
+
+.cell1, .cell2, .cell3 {
+  margin-top: 0;
+}
+
+.cell3, .cell6, .cell9 {
+  margin-right: 0;
+}
+
+.cell1, .cell4, .cell7 {
+  margin-left: 0;
+}
+
+.cell7, .cell8, .cell9 {
+  margin-bottom: 0;
 }
 
 #logoutForm {
@@ -271,7 +301,7 @@ header a:hover {
   justify-content: center;
   max-width: 100%;
   margin: 0;
-  margin-bottom: 5%;
+  margin-bottom: 3%;
   text-transform: uppercase;
   letter-spacing: 2px;
 }
@@ -526,6 +556,7 @@ footer {
   background-color: #091133;
   font-size: 17px;
   letter-spacing: 2px;
+  margin-top: 10%;
 }
 
 body::-webkit-scrollbar {
@@ -603,6 +634,10 @@ body::-webkit-scrollbar-thumb {
   .placar-data1 > *, .placar-data2 > * {
     font-size: 13px;
   }
+
+  .message-turn-div {
+    font-size: 80%;
+  }
 }
 
 @media screen and (max-width: 850px) {
@@ -611,10 +646,6 @@ body::-webkit-scrollbar-thumb {
     width: 100%;
   }
   
-  .all {
-
-  }
-
   footer {
     max-width: auto;
   } 
@@ -649,6 +680,10 @@ body::-webkit-scrollbar-thumb {
 
   .message-input {
     width: 78%;
+  }
+
+  .message-turn-div {
+    font-size: 75%;
   }
 }
 
@@ -720,6 +755,10 @@ body::-webkit-scrollbar-thumb {
   .footer {
     width: 89%;
   }
+
+  .message-turn-div {
+    font-size: 53%;
+  }
 }
 
 @media screen and (max-width: 450px) {
@@ -741,6 +780,10 @@ body::-webkit-scrollbar-thumb {
     font-size: 5.4px;
     margin-top: 1%;
     margin-bottom: 2%;
+  }
+
+  .message-turn-div {
+    font-size: 40%;
   }
 }
 

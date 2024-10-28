@@ -104,12 +104,15 @@ socket.on('gameStatus', (match) => {
       placar2.style.backgroundColor = '#091133'; 
       placarData1.style.color = '#201b2c'
       placarData2.style.color = '#cccccc'
+      let messageTurnDiv = document.querySelector(".message-turn-div");
+      messageTurnDiv.innerHTML = `<h1 class="message-turn">Agora é a sua vez de jogar</h1>`;
     } else {
       placar1.style.backgroundColor = '#091133'; // azul escuro
       placar2.style.backgroundColor = '#0284ff'; 
-
       placarData1.style.color = '#cccccc'
       placarData2.style.color = '#201b2c'
+      let messageTurnDiv = document.querySelector(".message-turn-div");
+      messageTurnDiv.innerHTML = `<h1 class="message-turn">ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ</h1>`;
     }
   } else {
     console.log('placar error')
