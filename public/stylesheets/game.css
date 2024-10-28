@@ -11,17 +11,12 @@ body {
   background-color: #bed5f9;
 }
 
-.all {
-  max-height: 100%;
-  height: 100%;
-}
-
 header {
   max-width: 100%;
   background-color: rgba(9,17,51,255);
   padding: 15px;
   display: flex;
-  justify-content: left;
+  justify-content: space-between;
   align-items: center;
   transition: 0.5s;
   z-index: 1000;
