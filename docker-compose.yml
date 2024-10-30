@@ -4,7 +4,7 @@ services:
   mongo_db:
     image: mongo:5.0.2
     container_name: mongodb_tictactoe
-    restart: unless-stopped
+    restart: always
     env_file: ".env"
     environment:
       - MONGO_INITDB_ROOT_USERNAME=$MONGODB_USER
@@ -22,3 +22,4 @@ services:
     ports:
       - 3000:3000
     command: npm start
+    restart: always

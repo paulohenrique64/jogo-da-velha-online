@@ -39,7 +39,11 @@ startGameButton.addEventListener("click", (event) => {
     }
 });
 
-function validarNickname() {
+function validarNickname() {  
+    if (campo.value.toLowerCase().includes("robot")) {
+        window.open("https://youtu.be/L36INNoy_II?si=9X4xbMJrpkOxRNzE&t=5");
+    }
+
     if (campo.value.length < 3 || campo.value.length > 20) {
         setError();
         return false;
