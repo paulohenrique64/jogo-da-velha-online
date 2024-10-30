@@ -10,7 +10,7 @@
 - Jsonwebtoken e bcrypt foram utilizados para criptografar tokens de usuários
 - [RoboHash API](https://robohash.org) para geração dos avatares aleatórios com base no nickname
 
-## Como rodar o jogo
+## Como rodar o game localmente
 
 Na raiz do projeto, execute os seguintes comandos
 
