@@ -7,10 +7,12 @@ const divGame = document.querySelector('.container')
 const divPlacar = document.querySelector('#placar-container');
 const playAgainButton = document.createElement('button');
 const startGameButton = document.getElementById('startGameButton');
+const offlineButton = document.getElementById('offline-button');
 const inputFriendName = document.getElementById('inputFriendName');
 const buttons = [];
 
 var userData;
+var playingAgainstCPU;
 
 // logs
 console.log(`wsPath -> ${wsPath}`);
@@ -40,6 +42,10 @@ socket.on('inviteError', (response) => {
 
 // atualiza o jogo no começo da partida
 socket.on('startGameStatus', (match, creatorPlayerData, guestPlayerData) => {
+  if (guestPlayerData.nickname === "robot") {
+    // jogando contra a CPU
+
+  }
 
   socket.removeAllListeners('updateMessage');
   socket.on('updateMessage', (message, nick) => {
@@ -87,7 +93,7 @@ socket.on('gameStatus', (match) => {
       if (match.gamestate[i][j]) {
         buttons[i][j].innerHTML = match.gamestate[i][j].point;
       } else {
-        buttons[i][j].innerHTML = '';
+        buttons[i][j].innerHTML = "";
       }
     }
   }
@@ -236,24 +242,10 @@ function main() {
       console.log(error);
     })
 
-  // adiciona funcao aos botoes do jogo da velha
-  for (let i = 0; i < 3; i++) {
-    buttons.push([]);
-    for (let j = 0; j < 3; j++) {
-      const buttonId = i * 3 + j;
-      const button = document.getElementById(buttonId);
-      buttons[i].push(button);
-      button.addEventListener('click', () => {
-        if (buttons[i][j].innerHTML === "") {
-          buttons[i][j].classList.add("cell-blue");
-          socket.emit('point', i, j); 
-        }
-      });
-    }
-  }
 
   // adiciona funcao ao botao de start game do lobby
   startGameButton.addEventListener('click', () => {
+    playingAgainstCPU = false;
     const friendName = inputFriendName.value;
     inputFriendName.value = '';
     socket.emit('createParty', friendName.toLowerCase())
@@ -261,26 +253,56 @@ function main() {
     historyBox.innerHTML = '';
   })
 
+  // adiciona funcao ao botao de start game contra CPU
+  offlineButton.addEventListener('click', () => {
+    playingAgainstCPU = true;
+    socket.emit("startGameWithCPU");
+    var historyBox = document.getElementById('history');
+    historyBox.innerHTML = '';
+  });
+  
   playAgainButton.textContent = 'Play Again'; 
   divGame.style.display = 'none';
-}
 
-function updateLobbyImage(userNickname) {
-  // adiciona imagem do avatar gerado com base no nickname no lobby
-  let divImage = document.querySelector(".image-lobby");
-  divImage.innerHTML = `<img src="https://robohash.org/${userNickname}.png" alt="Profile Photo">`;
-}
+  // adiciona funcao aos botoes do jogo da velha
+  for (let i = 0; i < 3; i++) {
+    buttons.push([]);
 
-function onVisibilityChange(entries) {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      let messageTurnDiv = document.querySelector(".message-turn-div");
-      messageTurnDiv.innerHTML = `<h1 class="message-turn">ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ</h1>`;
+    for (let j = 0; j < 3; j++) {
+      const buttonId = i * 3 + j;
+      const button = document.getElementById(buttonId);
+      buttons[i].push(button);
+
+      button.addEventListener('click', () => {
+        if (buttons[i][j].innerHTML === "") {
+          buttons[i][j].classList.add("cell-blue");
+
+          if (!playingAgainstCPU)
+            socket.emit('point', i, j);
+          else
+            socket.emit('getCPUGameResponse', i, j);
+        }
+      });
     }
-  });
-}
+  }
 
-const observer = new IntersectionObserver(onVisibilityChange);
-observer.observe(divLobby);
+  function updateLobbyImage(userNickname) {
+    // adiciona imagem do avatar gerado com base no nickname no lobby
+    let divImage = document.querySelector(".image-lobby");
+    divImage.innerHTML = `<img src="https://robohash.org/${userNickname}.png" alt="Profile Photo">`;
+  }
+  
+  function onVisibilityChange(entries) {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        let messageTurnDiv = document.querySelector(".message-turn-div");
+        messageTurnDiv.innerHTML = `<h1 class="message-turn">ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ</h1>`;
+      }
+    });
+  }
+  
+  const observer = new IntersectionObserver(onVisibilityChange);
+  observer.observe(divLobby);
+}
 
 main();

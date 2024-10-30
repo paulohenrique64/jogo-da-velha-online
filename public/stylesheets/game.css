@@ -777,31 +777,6 @@ body::-webkit-scrollbar-thumb {
     order: 2;
     font-size: 18px;
   }
-
-  #players {
-    order: 3;
-  }
-
-  .offline-button-div {
-    order: 1;
-    margin-top: 6%;
-  }
-
-  .offline-button-div p {
-    font-size: 13px;
-  }
-
-  .offline-button-div button {
-    font-size: 15px;
-  }
-
-  .offline-button-robot {
-    font-size: 14px;
-  }
-
-  .offline-button-robot img {
-    width: 25px;
-  }
 }
 
 @media screen and (max-width: 850px) {
@@ -844,6 +819,31 @@ body::-webkit-scrollbar-thumb {
 
   .message-turn-div {
     font-size: 75%;
+  }
+
+  #players {
+    order: 3;
+  }
+
+  .offline-button-div {
+    order: 1;
+    margin-top: 6%;
+  }
+
+  .offline-button-div p {
+    font-size: 13px;
+  }
+
+  .offline-button-div button {
+    font-size: 15px;
+  }
+
+  .offline-button-robot {
+    font-size: 14px;
+  }
+
+  .offline-button-robot img {
+    width: 25px;
   }
 }
 
