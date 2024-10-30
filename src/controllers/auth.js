@@ -55,7 +55,7 @@ const loginUser = (req, res) => {
   nickname = nickname.toLowerCase();
 
   if (nickname.length < 3 || nickname.length > 15 || nickname === "robot") 
-    return res.status(401).send({error: "The nickname must be between 3 and 20 characters"});
+    return res.status(401).send({error: "The nickname must be between 3 and 15 characters"});
 
   User.findOne({nickname})
     .then((user) => {
