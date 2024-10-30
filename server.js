@@ -6,10 +6,11 @@ import mongooseConnection from "./src/database/mongodb";
 import jogoDaVelha from "./src/models/game";
 import bodyParser from "body-parser";
 import socketIO from "socket.io";
-import express from "express";
+import express, { response } from "express";
 import routes from "./src/routes/routes"
 import http from "http";
 import chat from "./src/models/chat";
+import { computer, miniMax, emptyCells, convertMatrixGameToArray} from "./src/util/miniMax";
 
 require("dotenv").config();
 
@@ -21,6 +22,7 @@ const server = http.createServer(app);
 const io = socketIO(server);
 const cors = require('cors');
 const port = process.env.PORT;
+let openai = undefined;
 
 app.use(cors({
   origin: "*",
@@ -72,13 +74,11 @@ io.on("connection", (socket) => {
         if (guest !== creator) {
           const game = activeGames.find(game => game.creator === guest || game.guest === guest);
           if (!game) {
-
             const game = new jogoDaVelha(creator, guest);
             const newChat = new chat(creator, guest); 
             activeGames.push(game);
             activeChats.push(newChat);
             sendStartGameStage(creator.id, guest.id, game)
-
           } else {
             io.to(socket.id).emit("inviteError", {message: "Player already playing"});
           }
@@ -91,13 +91,81 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("startGameWithCPU", () => {
+    const player = activePlayers.find(player => socket.id === player.id);
+    const game = new jogoDaVelha(player, returnRobotPlayer());
+    const newChat = new chat(player, returnRobotPlayer()); 
+    activeGames.push(game);
+    activeChats.push(newChat);
+
+    User.findOne({nickname: game.creator.nickname})
+      .then(creatorData => {
+        io.to(player.id).emit("startGameStatus", game, creatorData, returnRobotPlayer());
+        // game stage
+        io.to(game.creator.id).emit("gameStatus", game);
+      })
+      .catch(error => {
+        io.to(id1).to(id2).emit("backToLobby");
+      })
+  })
+
+  function returnRobotPlayer() {
+    return {nickname: "robot", id: -1, wins: "+99"};
+  }
+
+  socket.on("getCPUGameResponse", async (row, col) => {
+    const player = activePlayers.find(player => socket.id === player.id);
+    const game = activeGames.find(game => game.creator === player);
+
+    if (player && game && game.setPoint(player, row, col)) {
+      if (game.end()) {
+        // se o jogo terminar com o ponto do player
+        if (game.winner && game.winner.nickname === player.nickname) {
+          User.findOne({nickname: player.nickname})
+            .then(winnerData => {
+              if (winnerData.nickname === game.winner.nickname) {
+                User.findByIdAndUpdate(winnerData.id, {
+                  $set: {
+                    wins: winnerData.wins + 1,
+                  }
+                }).catch(error => {
+                  console.log(error)
+                })
+              }
+            })
+            .catch(error => {
+              console.log(error);
+            })
+        }
+
+        // manda state que o jogo terminou
+        io.to(game.creator.id).emit("endGameStage", game);
+      } else {
+        // setar o ponto da CPU 
+        // i = 0, j = 1
+        const point = computer(game, game.creator);
+        game.setPoint(game.guest, point[0], point[1]);
+
+        if (game.end()) {
+          // se o jogo terminar com o ponto da CPU
+          io.to(game.creator.id).emit("endGameStage", game);
+        }
+      }
+
+      // manda state com o ponto da ia
+      io.to(game.creator.id).emit("gameStatus", game);
+    }
+  });
+
   // marca um ponto no jogo da velha
   socket.on("point", (row, col) => {
     const player = activePlayers.find(player => socket.id === player.id);
     const game = activeGames.find(game => game.creator === player || game.guest === player);
+
     // se o player estiver em alguma partida
     if (player && game && game.setPoint(player, row, col)) {
       sendGamestage(game.creator.id, game.guest.id, game);
+
       if (game.end()) {
         if (game.winner) {
           User.findOne({nickname: game.winner.nickname}).then(winnerData => {
@@ -114,18 +182,35 @@ io.on("connection", (socket) => {
             console.log(error);
           })
         }
+
         sendEndGameStage(game.creator.id, game.guest.id, game);
       }
     }
+
+
   });
 
   // reiniciar uma partida entre 2 jogadores
   socket.on('playAgain', () => {
     const player = activePlayers.find(player => socket.id === player.id);
-    const gameIndex = activeGames.findIndex(game => game.creator.id === socket.id || game.guest.id === socket.id);
-    if (gameIndex !== -1) {
-      activeGames[gameIndex].resetGame(player);
-      sendStartGameStage(activeGames[gameIndex].creator.id, activeGames[gameIndex].guest.id, activeGames[gameIndex]);
+    const game = activeGames.find(game => game.creator.id === socket.id || game.guest.id === socket.id);
+
+    if (game) {
+      game.resetGame(player);
+
+      if (game.guest.id === -1) {
+        // jogando contra ia
+        User.findOne({nickname: game.creator.nickname})
+          .then(creatorData => {
+            io.to(player.id).emit("startGameStatus", game, creatorData, returnRobotPlayer());
+            io.to(player.id).emit("gameStatus", game);
+          }).catch(error => {
+            console.log(error);
+            io.to(player.id).emit("backToLobby");
+          })
+      } else {
+        sendStartGameStage(activeGames[gameIndex].creator.id, activeGames[gameIndex].guest.id, activeGames[gameIndex]);
+      }
     }
   })
 
@@ -164,7 +249,8 @@ io.on("connection", (socket) => {
 
   // atualizar o cliente do usuario com os dados do jogo
   function sendGamestage(id1, id2, game) {
-    if (id1 && id2 && game) io.to(id1).to(id2).emit("gameStatus", game);
+    if (id1 && id2 && game) 
+      io.to(id1).to(id2).emit("gameStatus", game);
   }
 
   // preparar o cliente do usuario para o termino do jogo

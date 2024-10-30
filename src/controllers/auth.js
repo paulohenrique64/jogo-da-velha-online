@@ -54,8 +54,11 @@ const loginUser = (req, res) => {
 
   nickname = nickname.toLowerCase();
 
-  if (nickname.length < 3 || nickname.length > 20) 
-    return res.status(401).send({error: "The nickname must be between 3 and 20 characters"});
+  if (nickname.length < 3 || nickname.length > 15) 
+    return res.status(401).send({error: "The nickname must be between 3 and 15 characters"});
+
+  if (nickname === "robot")
+    return res.redirect("https://youtu.be/L36INNoy_II?si=9X4xbMJrpkOxRNzE&t=5");
 
   User.findOne({nickname})
     .then((user) => {

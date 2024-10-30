@@ -70,8 +70,10 @@ export default class jogoDaVelha {
 
   // verifica se o jogo acabou
   end() {
-    if (this.winner || this.tie) return true;
-    else return false;
+    if (this.winner || this.tie) 
+      return true;
+    
+    return false;
   }
 
   // verifica se o jogo empatou
