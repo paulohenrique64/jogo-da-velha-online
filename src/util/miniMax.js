@@ -1,4 +1,4 @@
-const { default: jogoDaVelha } = require("../models/game");
+const { default: JogoDaVelha } = require("../models/game");
 
 const moviesMatrix = [
     [0, 0], [0, 1], [0, 2], // 0 index -> x
@@ -123,7 +123,7 @@ const miniMax = (gameCurrent, player, depth) => {
         move.index = empty[i];
 
         // Cria uma cópia do estado do jogo para simular o movimento
-        let newGame = new jogoDaVelha(gameCurrent.creator, gameCurrent.guest);
+        let newGame = new JogoDaVelha(gameCurrent.creator, gameCurrent.guest);
         newGame.gameStateArray = gameCurrent.gameStateArray.slice();
         newGame.gameStateArray[empty[i]] = player;
         newGame.gamestate = convertGameArrayToMatrix(newGame.gameStateArray);

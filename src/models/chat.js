@@ -1,4 +1,4 @@
-class chat {
+export default class Chat {
   constructor(creator, guest) {
     this.creator = creator;
     this.creator.messages = [];
@@ -6,5 +6,3 @@ class chat {
     this.guest.messages = [];
   }
 }
-
-export default chat;

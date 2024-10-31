@@ -1,12 +1,8 @@
-export default class jogoDaVelha {
+export default class JogoDaVelha {
   //construtor
   constructor(creator, guest) {
     this.creator = creator;
-    this.creator.point = 'X';
-    this.creator.points = 0;
     this.guest = guest;
-    this.guest.point = 'O';
-    this.guest.points = 0;
     this.resetGame(creator);
   }
 
@@ -65,7 +61,6 @@ export default class jogoDaVelha {
   // seta um novo ganhador ao jogo
   setWinner(winner) {
     this.winner = winner;
-    this.winner.points++;
   }
 
   // verifica se o jogo acabou

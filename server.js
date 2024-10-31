@@ -1,16 +1,18 @@
-/* 
-  Jogo da velha online com socket.io
-*/
+//
+//
+// express server configuration
+//
+//
 
 import mongooseConnection from "./src/database/mongodb";
-import jogoDaVelha from "./src/models/game";
+import JogoDaVelha from "./src/models/game";
+import Chat from "./src/models/chat";
 import bodyParser from "body-parser";
 import socketIO from "socket.io";
 import express, { response } from "express";
 import routes from "./src/routes/routes"
 import http from "http";
-import chat from "./src/models/chat";
-import { computer, miniMax, emptyCells, convertMatrixGameToArray} from "./src/util/miniMax";
+import { computer } from "./src/util/miniMax";
 
 require("dotenv").config();
 
@@ -22,7 +24,6 @@ const server = http.createServer(app);
 const io = socketIO(server);
 const cors = require('cors');
 const port = process.env.PORT;
-let openai = undefined;
 
 app.use(cors({
   origin: "*",
@@ -41,268 +42,327 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/", routes);
 app.use((req, res) => {return res.status(404).redirect(process.env.BASE_URL_PATH)});
 
-// Conectar ao banco de dados
-mongooseConnection(); 
 
-var activePlayers = []; 
-var activeGames = [];   
-var activeChats = [];   
+mongooseConnection();  // connect to database
+server.listen(port, "0.0.0.0"); // running the express server
 
-io.on("connection", (socket) => { 
+//
+//
+// socket.io websockets routes
+//
+//
 
-  // adiciona o novo jogador conectado na lista de jogadores onlines
-  socket.on('newOnlinePlayer', nickname => {
-    if (nickname) {
-      const player = activePlayers.find(player => player.nickname === nickname);
+var players = [];
+var rooms = [];
 
-      if (!player) {
-        activePlayers.push({nickname: nickname, id: socket.id});
-        console.log(`Player ${nickname} entered the lobby`);
-        io.emit('onlinePlayerList', activePlayers);
-      }
+// session middleware
+io.use((socket, next) => {
+  let incoming_user_nickname = socket.handshake.auth.nickname;
+  let incoming_user_id = socket.id;
+
+  for (let i = 0; i < players.length; i++) {
+    if (players[i].nickname === incoming_user_nickname && players[i].id !== incoming_user_id) {
+      let err = new Error("not authorized");
+      err.data = { content: "É permitido somente uma sessão por jogador, por favor saia do jogo!" }; 
+      return next(err);
     }
-  })
-
-  // convida um jogador para um novo jogo
-  socket.on("createParty", (guestNickname) => {
-    if (guestNickname) {
-
-      const guest = activePlayers.find(player => player.nickname == guestNickname);
-      const creator = activePlayers.find(player => player.id == socket.id)
-      
-      if (guest && creator) {
-        if (guest !== creator) {
-          const game = activeGames.find(game => game.creator === guest || game.guest === guest);
-          if (!game) {
-            const game = new jogoDaVelha(creator, guest);
-            const newChat = new chat(creator, guest); 
-            activeGames.push(game);
-            activeChats.push(newChat);
-            sendStartGameStage(creator.id, guest.id, game)
-          } else {
-            io.to(socket.id).emit("inviteError", {message: "Player already playing"});
-          }
-        } else {
-          io.to(socket.id).emit("inviteError", {message: "Impossible invite yourself"});
-        }
-      } else {
-        io.to(socket.id).emit("inviteError", {message: "Guest player aren't online yet"});
-      }
-    }
-  });
-
-  socket.on("startGameWithCPU", () => {
-    const player = activePlayers.find(player => socket.id === player.id);
-    const game = new jogoDaVelha(player, returnRobotPlayer());
-    const newChat = new chat(player, returnRobotPlayer()); 
-    activeGames.push(game);
-    activeChats.push(newChat);
-
-    User.findOne({nickname: game.creator.nickname})
-      .then(creatorData => {
-        io.to(player.id).emit("startGameStatus", game, creatorData, returnRobotPlayer());
-        // game stage
-        io.to(game.creator.id).emit("gameStatus", game);
-      })
-      .catch(error => {
-        io.to(id1).to(id2).emit("backToLobby");
-      })
-  })
-
-  function returnRobotPlayer() {
-    return {nickname: "robot", id: -1, wins: "+99"};
   }
 
-  socket.on("getCPUGameResponse", async (row, col) => {
-    const player = activePlayers.find(player => socket.id === player.id);
-    const game = activeGames.find(game => game.creator === player);
+  next();
+});
 
-    if (player && game && game.setPoint(player, row, col)) {
+io.on("connection", (socket) => { 
+  updateOnlinePlayers(socket);
+
+  // start game against cpu
+  socket.on("start-game-versus-cpu", () => {
+    let player = players.find(player => socket.id === player.id);
+    let cpu = getRobotPlayerData();
+
+    if (!player || !cpu) 
+      sendError(socket.id);
+
+    User.findOne({ nickname: player.nickname })
+      .then(playerData => {
+        // verify data integrity
+        if (!playerData || (playerData && playerData.nickname !== player.nickname))
+          sendError(socket.id);
+
+        // set players and game data
+        let game = new JogoDaVelha(player, cpu);
+        let chat = new Chat(player, cpu);
+
+        player.points = 0;
+        player.point = 'X';
+        player.wins = playerData.wins;
+
+        cpu.points = 0;
+        cpu.point = 'O';
+
+        // create room
+        let room = {
+          players: [player, cpu],
+          game: game,
+          chat: chat,
+        };
+
+        rooms.push(room)
+
+        // send game status to player
+        io.to(player.id).emit("start-game-status", room);
+      }).catch(error => {
+        console.log(error);
+        sendError(socket.id);
+      })
+  })
+
+  // start game against player
+  socket.on("start-game-versus-player", (friendName) => {
+    if (!friendName) 
+      return io.to(socket.id).emit("error-message", {message: "You must to inform a friend nickname to start a game versus player"});
+
+    let player = players.find(player => socket.id === player.id);
+    let oponnent = players.find(player => player.nickname === friendName);
+
+    if (!player) 
+      return sendError(socket.id);
+
+    if (!oponnent) 
+      return io.to(socket.id).emit("error-message", {message: "Guest player aren't online yet"});
+
+    if (friendName === player.nickname) 
+      return io.to(socket.id).emit("error-message", {message: "Impossible invite yourself"});
+
+    if (rooms.find(room => room.players[0].id === oponnent.id || room.players[1].id === oponnent.id)) 
+      return io.to(socket.id).emit("error-message", {message: "Player already playing"});
+
+    User.findOne({nickname: player.nickname})
+      .then(playerData => {
+        // verify data integrity
+        if (!playerData || (playerData && playerData.nickname !== player.nickname)) 
+          sendError(socket.id);
+
+        User.findOne({nickname: oponnent.nickname})
+          .then(oponnentData => {
+            // verify data integrity
+            if (!oponnentData || (oponnentData && oponnentData.nickname !== oponnent.nickname)) 
+              sendError(socket.id);
+
+            // set players and game data
+            let game = new JogoDaVelha(player, oponnent);
+            let chat = new Chat(player, oponnent);
+
+            player.wins = playerData.wins;
+            player.points = 0;
+            player.point = 'X';
+
+            oponnent.wins = oponnentData.wins;
+            oponnent.points = 0;
+            oponnent.point = 'O';
+
+            // create room
+            let room = {
+              players: [player, oponnent],
+              game: game,
+              chat: chat,
+            };
+
+            rooms.push(room)
+
+            // send game status to players
+            io.to(player.id).to(oponnent.id).emit("start-game-status", room);
+          }).catch(error => {
+            console.log(error);
+          })
+      }).catch(error => {
+        console.log(error);
+        sendError(socket.id);
+      })
+  })
+
+  // mark point against player
+  socket.on("point", (row, col) => {
+    let room = rooms.find(room => room.players[0].id === socket.id || room.players[1].id === socket.id);
+
+    if (!room)
+      return sendError(socket.id);
+
+    let game = room.game;
+    let player = room.players[0];
+    let oponnent = room.players[1];
+
+    if (player.id !== socket.id) {
+      player = room.players[1];
+      oponnent = room.players[0];
+    }
+
+    game.setPoint(player, row, col)
+
+    if (oponnent.nickname === getRobotPlayerData().nickname) {
+      // playing versus ia
+      io.to(player.id).emit("game-status", room);
+
       if (game.end()) {
         // se o jogo terminar com o ponto do player
         if (game.winner && game.winner.nickname === player.nickname) {
-          User.findOne({nickname: player.nickname})
-            .then(winnerData => {
-              if (winnerData.nickname === game.winner.nickname) {
-                User.findByIdAndUpdate(winnerData.id, {
-                  $set: {
-                    wins: winnerData.wins + 1,
-                  }
-                }).catch(error => {
-                  console.log(error)
-                })
-              }
-            })
-            .catch(error => {
-              console.log(error);
-            })
-        }
-
-        // manda state que o jogo terminou
-        io.to(game.creator.id).emit("endGameStage", game);
+          player.wins++;
+          player.points++;
+        } 
       } else {
-        // setar o ponto da CPU 
-        // i = 0, j = 1
-        const point = computer(game, game.creator);
-        game.setPoint(game.guest, point[0], point[1]);
+        const point = computer(game, player); // setar o ponto da CPU 
+        game.setPoint(oponnent, point[0], point[1]); // i = 0, j = 1
 
-        if (game.end()) {
+        if (game.end())
           // se o jogo terminar com o ponto da CPU
-          io.to(game.creator.id).emit("endGameStage", game);
-        }
+          if (game.winner) oponnent.points++;
       }
 
-      // manda state com o ponto da ia
-      io.to(game.creator.id).emit("gameStatus", game);
+      return io.to(player.id).emit("game-status", room);
+    } 
+
+    // playing versus player
+    if (game.end() && game.winner) {
+      if (game.winner.nickname === player.nickname) player.wins++;
+      else oponnent.wins++;
     }
+
+    return io.to(player.id).to(oponnent.id).emit("game-status", room);
   });
 
-  // marca um ponto no jogo da velha
-  socket.on("point", (row, col) => {
-    const player = activePlayers.find(player => socket.id === player.id);
-    const game = activeGames.find(game => game.creator === player || game.guest === player);
+  // reset a game between two players or player and cpu
+  socket.on('play-again', () => {
+    let room = rooms.find(room => room.players[0].id === socket.id || room.players[1].id === socket.id);
+  
+    if (!room)
+      return sendError(socket.id);
 
-    // se o player estiver em alguma partida
-    if (player && game && game.setPoint(player, row, col)) {
-      sendGamestage(game.creator.id, game.guest.id, game);
+    let player = room.players.find(player => player.id == socket.id);
+    let game = room.game;
 
-      if (game.end()) {
-        if (game.winner) {
-          User.findOne({nickname: game.winner.nickname}).then(winnerData => {
-            if (winnerData.nickname === game.winner.nickname) {
-              User.findByIdAndUpdate(winnerData.id, {
-                $set: {
-                  wins: winnerData.wins + 1,
-                }
-              }).catch(error => {
-                console.log(error)
-              })
-            }
-          }).catch(error => {
-            console.log(error);
-          })
+    if (!player)
+      return sendError(socket.id);
+
+    game.resetGame(player);
+
+    if (game.guest.nickname === getRobotPlayerData().nickname) 
+      // playing versus ia
+      io.to(socket.id).emit("start-game-status", room);
+    else 
+      // playing versus player
+      io.to(game.creator.id).to(game.guest.id).emit("start-game-status", room);
+  })
+
+  // delete game room
+  socket.on('end-game', () => {
+    let room = rooms.find(room => room.players[0].id === socket.id || room.players[1].id === socket.id);
+
+    if (!room)
+      return sendError(socket.id);
+
+    let player = room.players[0];
+    let oponnent = room.players[1];
+
+    if (player.id !== socket.id) {
+      player = room.players[1];
+      oponnent = room.players[0];
+    }
+
+    // update player wins on database
+    User.findOne({nickname: player.nickname})
+      .then(userData => {
+        if (userData || userData.nickname === player.nickname) {
+          userData.wins = player.wins;
+          userData.save();
         }
+      })
+      .catch(error => {
+        console.log(error);
+      })
 
-        sendEndGameStage(game.creator.id, game.guest.id, game);
-      }
-    }
-
-
-  });
-
-  // reiniciar uma partida entre 2 jogadores
-  socket.on('playAgain', () => {
-    const player = activePlayers.find(player => socket.id === player.id);
-    const game = activeGames.find(game => game.creator.id === socket.id || game.guest.id === socket.id);
-
-    if (game) {
-      game.resetGame(player);
-
-      if (game.guest.id === -1) {
-        // jogando contra ia
-        User.findOne({nickname: game.creator.nickname})
-          .then(creatorData => {
-            io.to(player.id).emit("startGameStatus", game, creatorData, returnRobotPlayer());
-            io.to(player.id).emit("gameStatus", game);
-          }).catch(error => {
-            console.log(error);
-            io.to(player.id).emit("backToLobby");
-          })
-      } else {
-        sendStartGameStage(activeGames[gameIndex].creator.id, activeGames[gameIndex].guest.id, activeGames[gameIndex]);
-      }
-    }
-  })
-
-  // encerra o jogo e o chat associado ao id do player que fez a solicitacao
-  socket.on('endGame', () => {
-    const chatIndex = activeChats.findIndex(chat => chat.creator.id === socket.id || chat.guest.id === socket.id);
-    const gameIndex = activeGames.findIndex(game => game.creator.id === socket.id || game.guest.id === socket.id);
-
-    if (chatIndex !== -1) {
-      const disconnectedChat = activeChats.splice(chatIndex, 1)[0];
-      console.log('Chat closed between:  ' + disconnectedChat.creator.nickname + ' and ' + disconnectedChat.guest.nickname);
-    }
-
-    if (gameIndex !== -1) {
-      const disconnectedGame = activeGames.splice(gameIndex, 1)[0];
-      console.log('Game ended between:  ' + disconnectedGame.creator.nickname + ' and ' + disconnectedGame.guest.nickname);
-      io.to(disconnectedGame.creator.id).to(disconnectedGame.guest.id).emit("backToLobby");
-    }
-  })
-
-  // preparar o cliente do usuario para o inicio do jogo
-  function sendStartGameStage(id1, id2, game) {
-    if (id1 && id2 && game) {
-      User.findOne({nickname: game.creator.nickname}).then(creatorData => {
-        User.findOne({nickname: game.guest.nickname}).then(guestData => {
-          if (creatorData.nickname === game.creator.nickname && guestData.nickname === game.guest.nickname) {
-            io.to(id1).to(id2).emit("startGameStatus", game, creatorData, guestData);
-            sendGamestage(id1, id2, game);
+    // update oponnent wins on database
+    if (oponnent.nickname !== getRobotPlayerData().nickname)  {
+      User.findOne({nickname: oponnent.nickname})
+        .then(userData => {
+          if (userData || userData.nickname === oponnent.nickname) {
+            userData.wins = oponnent.wins;
+            userData.save();
           }
         })
-      }).catch(error => {
-        io.to(id1).to(id2).emit("backToLobby");
-      })
+        .catch(error => {
+          console.log(error);
+        })
     }
-  }
 
-  // atualizar o cliente do usuario com os dados do jogo
-  function sendGamestage(id1, id2, game) {
-    if (id1 && id2 && game) 
-      io.to(id1).to(id2).emit("gameStatus", game);
-  }
-
-  // preparar o cliente do usuario para o termino do jogo
-  function sendEndGameStage(id1, id2, game) {
-    if (id1 && id2 && game) io.to(id1).to(id2).emit("endGameStage", game);
-  }
-
-  // exibir mensagem enviada por um dos players no chat entre eles
-  socket.on('message', message => {
-    const chatIndex = activeChats.findIndex(chat => chat.creator.id === socket.id || chat.guest.id === socket.id)
-    const player = activePlayers.find(player => player.id == socket.id)
-    if (chatIndex !== -1) {
-      if (player === activeChats[chatIndex].creator)
-        activeChats[chatIndex].creator.messages.push(message);
-      else 
-        activeChats[chatIndex].guest.messages.push(message);
-      io.to(activeChats[chatIndex].creator.id).to(activeChats[chatIndex].guest.id).emit('updateMessage', message, player.nickname);
-    }
+    deleteRoom(socket.id);
+    io.to(room.game.creator.id).to(room.game.guest.id).emit("back-to-lobby");
   })
 
-  // quando algum jogador é desconectado, sua partida e seu chat são encerrados caso existam
+  // delete game room
   socket.on("disconnect", () => {
-    // Remove o jogador desconectado
-    const playerIndex = activePlayers.findIndex(player => player.id === socket.id);
+    let room = rooms.find(room => room.players[0].id === socket.id || room.players[1].id === socket.id);
 
-    if (playerIndex !== -1) {
-      const disconnectedPlayer = activePlayers.splice(playerIndex, 1)[0];
-      console.log(`Player ${disconnectedPlayer.nickname} left the lobby`);
+    if (room) {
+      deleteRoom(socket.id);
+      io.to(room.game.creator.id).to(room.game.guest.id).emit("back-to-lobby");
     }
 
-    // encerra o chat associado a desconexao
-    const chatIndex = activeChats.findIndex(chat => chat.creator.id === socket.id || chat.guest.id === socket.id);
-    if (chatIndex !== -1) {
-      const disconnectedChat = activeChats.splice(chatIndex, 1)[0];
-      console.log('Chat closed between: ' + disconnectedChat.creator.nickname + ' and ' + disconnectedChat.guest.nickname);
-    }
-
-    // encerra o jogo associado à desconexão
-    const gameIndex = activeGames.findIndex(game => game.creator.id === socket.id || game.guest.id === socket.id);
-    if (gameIndex !== -1) {
-      const disconnectedGame = activeGames.splice(gameIndex, 1)[0];
-      console.log('Game ended between: ' + disconnectedGame.creator.nickname + ' and ' + disconnectedGame.guest.nickname);
-      io.to(disconnectedGame.creator.id).to(disconnectedGame.guest.id).emit("backToLobby");
-    }
-
-    io.emit('onlinePlayerList', activePlayers);
+    updateOnlinePlayers(socket);
   });
 
+  // messaging
+  socket.on('message', message => {
+    let room = rooms.find(room => room.players[0].id === socket.id || room.players[1].id === socket.id);
+    let player = players.find(player => player.id == socket.id);
+
+    if (!room || !player)
+      return sendError(socket.id);
+    
+    if (player.nickname === room.chat.creator.nickname) room.chat.creator.messages.push(message);
+    else room.chat.guest.messages.push(message);
+
+    io.to(room.players[0].id).to(room.players[1].id).emit('update-message', message, player.nickname);
+  })
 });
 
+function updateOnlinePlayers(originalSocket) {
+  let new_players = [];
 
-server.listen(port, "0.0.0.0");
-//server.listen(port, "0.0.0.0", function() {
-//  console.log(`the game is running on http://localhost:${port}`);
-//});
+  for (let [id, socket] of io.of("/").sockets) {
+    if (!socket) return sendError(originalSocket.id);
+
+    new_players.push({
+      id: id,
+      nickname: socket.handshake.auth.nickname,
+    });
+  }
+
+  players = new_players;
+
+  console.log(players);
+  io.emit("players", players);
+}
+
+function sendError(socketId) {
+  // if player is in a room, delete the room and send back to lobby
+  let endedRoom = deleteRoom(socketId);
+  endedRoom ? io.to(socketId).emit("back-to-lobby") : io.to(endedRoom.game.creator.id).to(endedRoom.game.guest.id).emit("back-to-lobby");
+  return io.to(socketId).emit("error-message", { message: "Internal server error, please try again" });
+}
+
+function deleteRoom(playerID) {
+  let roomIndex = rooms.findIndex(room => room.players[0].id === playerID || room.players[1].id === playerID);
+
+  if (roomIndex !== -1) {
+    let endedRoom = rooms.splice(roomIndex, 1)[0];
+    console.log('room closed between: ' + endedRoom.game.creator.nickname + ' and ' + endedRoom.game.guest.nickname);
+    return endedRoom;
+  }
+}
+
+function getRobotPlayerData() {
+  return {
+    id: -1,
+    nickname: "robot", 
+    wins: "+99",
+  };
+}
