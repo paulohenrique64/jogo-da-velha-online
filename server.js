@@ -202,9 +202,9 @@ io.on("connection", (socket) => {
       // playing versus ia
       io.to(player.id).emit("game-status", room);
 
-      if (game.end()) {
+      if (game.checkEnd()) {
         // se o jogo terminar com o ponto do player
-        if (game.winner && game.winner.nickname === player.nickname) {
+        if (game.checkWinner() && game.winner.nickname === player.nickname) {
           player.wins++;
           player.points++;
         } 
@@ -212,16 +212,16 @@ io.on("connection", (socket) => {
         const point = computer(game, player); // setar o ponto da CPU 
         game.setPoint(oponnent, point[0], point[1]); // i = 0, j = 1
 
-        if (game.end())
+        if (game.checkEnd())
           // se o jogo terminar com o ponto da CPU
-          if (game.winner) oponnent.points++;
+          if (game.checkWinner()) oponnent.points++;
       }
 
       return io.to(player.id).emit("game-status", room);
     } 
 
     // playing versus player
-    if (game.end() && game.winner) {
+    if (game.checkEnd() && game.checkWinner()) {    
       if (game.winner.nickname === player.nickname) player.wins++;
       else oponnent.wins++;
     }
