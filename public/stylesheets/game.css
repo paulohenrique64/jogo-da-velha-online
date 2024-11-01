@@ -328,12 +328,33 @@ header a:hover {
   justify-content: center;
   align-items: center;
   margin: 20px;
+  transform: scale(90%);
 }
 
-#game-board {
-  margin-top: 6%;
-  margin-right: 6%;
-  background-color: #091133;
+.game-board {
+  height: 500px;
+  width: 500px;
+  display: inline-block;
+}
+
+.game-board svg {
+  position: relative;
+  z-index: 9;
+}
+
+.board-cells {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 166px 166px 166px;
+  grid-template-rows: 166px 166px 166px;
+  z-index: 10;
+}
+
+.cell {
+  height: 166px;
+  width: 166px;
 }
 
 .row {
@@ -352,41 +373,6 @@ header a:hover {
 
 .message-turn-div > h1 {
   margin: 0;
-}
-
-.cell {
-  flex: 1;
-  width: 146px;
-  height: 138px;
-  margin: 1.8%;
-  background-color: #bed5f9;
-  color: #718bff;
-  border: none;
-  cursor: pointer;
-  font-size: 120px;
-  font-family: "Delicious Handrawn", cursive;
-  font-weight: 640;
-  font-style: normal;
-}
-
-.cell1, .cell2, .cell3 {
-  margin-top: 0;
-}
-
-.cell-blue {
-  color: #091133;
-}
-
-.cell3, .cell6, .cell9 {
-  margin-right: 0;
-}
-
-.cell1, .cell4, .cell7 {
-  margin-left: 0;
-}
-
-.cell7, .cell8, .cell9 {
-  margin-bottom: 0;
 }
 
 #logoutForm {
@@ -862,6 +848,15 @@ body::-webkit-scrollbar-thumb {
     margin-bottom: 3%;
   }
 
+  #game-container {
+    transform: scale(60%);
+    margin: 0;
+  }
+
+  .game-board {
+    margin: 0;
+  }
+
   .image-lobby {
     margin: 0;
     margin-top: 16%;
@@ -992,6 +987,10 @@ body::-webkit-scrollbar-thumb {
     margin-top: 7%;
   }
 
+  .end-placar {
+    height: 50px;
+  }
+
   #game-container {
     margin-top: 0;  
   }
@@ -1035,6 +1034,3 @@ body::-webkit-scrollbar-thumb {
     font-size: 12px;
   }
 }
-
-
-

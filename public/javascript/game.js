@@ -8,16 +8,87 @@ const playAgainButton = document.createElement('button');
 const startGameButton = document.getElementById('startGameButton');
 const offlineButton = document.getElementById('offline-button');
 const inputFriendName = document.getElementById('inputFriendName');
-const buttons = [];
+const gameBoardSvg = document.querySelector(".game-board-svg");
 
 var socket = undefined;
 var userData = undefined;
+
+const winningCombinations = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
 
 // enviar uma mensagem
 function sendMessage() {
   const inputMessage = document.querySelector('#message-input');
   socket.emit('message', inputMessage.value);
   inputMessage.value = '';
+}
+
+function comparePatterns(pattern1, pattern2) {
+  for (let i = 0; i < pattern1.length; i++) 
+    if (pattern1[i] !== pattern2[i]) return false;
+
+  return true;
+}
+
+// renderizar o padrao de vitoria no game
+function renderWinPattern(game, color) {
+  let winCombination = game.winCombination["combination"];
+
+  //
+  // 0 1 2
+  //
+  if (comparePatterns(winCombination, winningCombinations[0])) {
+    gameBoardSvg.insertAdjacentHTML('beforeend', `
+      <line x1="0" y1="83" x2="500" y2="83" stroke-width="16" stroke="${color}" />
+    `);
+  }
+
+  if (comparePatterns(winCombination, winningCombinations[1])) {
+    gameBoardSvg.insertAdjacentHTML('beforeend', `
+      <line x1="0" y1="249" x2="500" y2="249" stroke-width="16" stroke="${color}" />
+    `);
+  }
+
+  if (comparePatterns(winCombination, winningCombinations[2])) {
+    gameBoardSvg.insertAdjacentHTML('beforeend', `
+      <line x1="0" y1="415" x2="500" y2="415" stroke-width="16" stroke="${color}" />
+    `);
+  }
+
+  //
+  // 3 4 5
+  //
+  if (comparePatterns(winCombination, winningCombinations[3])) {
+    gameBoardSvg.insertAdjacentHTML('beforeend', `
+      <line x1="83" y1="0" x2="83" y2="500" stroke-width="16" stroke="${color}" />
+    `);
+  }
+
+  if (comparePatterns(winCombination, winningCombinations[4])) {
+    gameBoardSvg.insertAdjacentHTML('beforeend', `
+      <line x1="249" y1="0" x2="249" y2="500" stroke-width="16" stroke="${color}" />
+    `);
+  }
+
+  if (comparePatterns(winCombination, winningCombinations[5])) {
+    gameBoardSvg.insertAdjacentHTML('beforeend', `
+      <line x1="415" y1="0" x2="415" y2="500" stroke-width="16" stroke="${color}" />
+    `);
+  }
+
+  //
+  // 6 7 8
+  //
+  if (comparePatterns(winCombination, winningCombinations[6])) {
+    gameBoardSvg.insertAdjacentHTML('beforeend', `
+      <line x1="10" y1="10" x2="490" y2="490" stroke-width="16" stroke="${color}" />
+    `);
+  }
+
+  if (comparePatterns(winCombination, winningCombinations[7])) {
+    gameBoardSvg.insertAdjacentHTML('beforeend', `
+      <line x1="490" y1="10" x2="10" y2="490" stroke-width="16" stroke="${color}" />
+    `);
+  }
 }
 
 // exibir a mensagem no chat
@@ -105,21 +176,12 @@ function main() {
   playAgainButton.textContent = 'Play Again'; 
   divGame.style.display = 'none';
 
-  // adiciona funcao aos botoes do jogo da velha
+  let count = 0;
   for (let i = 0; i < 3; i++) {
-    buttons.push([]);
-
     for (let j = 0; j < 3; j++) {
-      const buttonId = i * 3 + j;
-      const button = document.getElementById(buttonId);
-      buttons[i].push(button);
-
-      button.addEventListener('click', () => {
-        if (buttons[i][j].innerHTML === "") {
-          buttons[i][j].classList.add("cell-blue");
-          socket.emit("point", i, j);
-        }
-      });
+      const cell = document.querySelector(`#cell-${count}`);
+      cell.addEventListener('click', () => { socket.emit("point", i, j) });
+      count++;
     }
   }
 
@@ -141,14 +203,32 @@ function onVisibilityChange(entries) {
   });
 }
 
-function updateGame(game) {
+function updateGame(room) {
+  let game = room.game;
+  let self = room.players[1];
+  let colorX = "#091133";
+  let colorO = "#66b2ff";
+
+  if (room.players[0].nickname === userData.nickname) 
+    self = room.players[0];
+
+  if (self.point !== 'X') {
+    colorX = "#66b2ff";
+    colorO = "#091133";
+  } 
+
   for (let i = 0; i < 3; i++) {
     for (let j = 0; j < 3; j++) {
       if (game.gamestate[i][j]) {
-        buttons[i][j].innerHTML = game.gamestate[i][j].point;
-      } else {
-        buttons[i][j].innerHTML = "";
-      }
+        if (game.gamestate[i][j].point === 'X') {
+          gameBoardSvg.insertAdjacentHTML('afterbegin', `
+            <line x1="${35 + (166 * j)}" y1="${35 + (166 * i)}" x2="${131 + (166 * j)}" y2="${131 + (166 * i)}" stroke-width="15" stroke="${colorX}" />
+            <line x1="${131 + (166 * j)}" y1="${35 + (166 * i)}" x2="${35 + (166 * j)}" y2="${131 + (166 * i)}" stroke-width="15" stroke="${colorX}" />
+          `);
+        } else {
+          gameBoardSvg.insertAdjacentHTML('afterbegin', `<circle cx="${83 * (2 * j + 1)}" cy="${83 * (2 * i + 1)}" r="50"stroke="${colorO}" stroke-width="15" fill="transparent" />`);
+        }
+      } 
     }
   }
 
@@ -161,7 +241,7 @@ function updateGame(game) {
     if  (userData.nickname === game.currentPlayer.nickname) {
       placar1.style.backgroundColor = '#0284ff'; // azul claro
       placar2.style.backgroundColor = '#091133'; 
-      placarData1.style.color = '#201b2c'
+      placarData1.style.color = '#091133'
       placarData2.style.color = '#cccccc'
       let messageTurnDiv = document.querySelector(".message-turn-div");
       messageTurnDiv.innerHTML = `<h1 class="message-turn">Agora é a sua vez de jogar</h1>`;
@@ -170,10 +250,10 @@ function updateGame(game) {
       placar1.style.backgroundColor = '#091133'; // azul escuro
       placar2.style.backgroundColor = '#0284ff'; 
       placarData1.style.color = '#cccccc'
-      placarData2.style.color = '#201b2c'
+      placarData2.style.color = '#091133' 
       let messageTurnDiv = document.querySelector(".message-turn-div");
-      messageTurnDiv.innerHTML = `<h1 class="message-turn">Agora o oponnente joga</h1>`;
-      messageTurnDiv.style.color = "#718bff";
+      messageTurnDiv.innerHTML = `<h1 class="message-turn">ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ</h1>`;
+      messageTurnDiv.style.color = "#0284ff";
     }
   } else {
     console.log('placar error')
@@ -216,6 +296,12 @@ function createWebSocketRoutes() {
     console.log(room)
 
     socket.removeAllListeners('update-message');
+    gameBoardSvg.innerHTML = `
+      <line x1="166" y1="500" x2="166" y2="0" stroke-width="13" stroke="#091133" />
+      <line x1="332" y1="500" x2="332" y2="0" stroke-width="13" stroke="#091133" />
+      <line x1="0" y1="166" x2="500" y2="166" stroke-width="13" stroke="#091133" />
+      <line x1="0" y1="332" x2="500" y2="332" stroke-width="13" stroke="#091133" />
+    `;
 
     socket.on('update-message', (message, nickname) => {
       addMessage(message, nickname);
@@ -244,7 +330,7 @@ function createWebSocketRoutes() {
       <img src="https://robohash.org/${oponnent.nickname}.png" class="placar-profile-img" alt="Profile Photo">
     </div> `;
 
-    updateGame(room.game);
+    updateGame(room);
   })
 
   socket.on("connect_error", (err) => {
@@ -258,7 +344,9 @@ function createWebSocketRoutes() {
   socket.on('game-status', (room) => {
     let game = room.game;
 
-    updateGame(game);
+    console.log(room);
+  
+    updateGame(room);
 
     if (game.winner || game.tie === true) {
       let messageTurnDiv = document.querySelector(".message-turn-div");
@@ -267,7 +355,6 @@ function createWebSocketRoutes() {
         // existe um ganhador
         divPlacar.innerHTML = `
           <div class="end-placar">
-            <h1>${game.winner.nickname} venceu o jogo!</h1>
             <div class="end-game-buttons">
               <button id="playAgain">Jogar novamente</button>
               <button id="leaveParty">Sair da party</button>
@@ -276,10 +363,14 @@ function createWebSocketRoutes() {
           if (game.winner.nickname === userData.nickname) {
             messageTurnDiv.innerHTML = `<h1 class="message-turn">Você venceu :)</h1>`;
             messageTurnDiv.style.color = "#091133";
+            renderWinPattern(game, "#0284ff");
           } else {
             messageTurnDiv.innerHTML = `<h1 class="message-turn">Você perdeu :(</h1>`;
-            messageTurnDiv.style.color = "#718bff";
+            messageTurnDiv.style.color = "#0284ff";
+            renderWinPattern(game, "red");
           }
+
+        
       } else {
         // jogo empatou
         divPlacar.innerHTML = `
