@@ -12,10 +12,17 @@ const gameBoardSvg = document.querySelector(".game-board-svg");
 
 var socket = undefined;
 var userData = undefined;
+var currentRoom = undefined;
 
 const winningCombinations = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
 
-// enviar uma mensagem
+//
+//
+// game functions
+//
+//
+
+// send message to oponnent
 function sendMessage() {
   const inputMessage = document.querySelector('#message-input');
   socket.emit('message', inputMessage.value);
@@ -29,13 +36,20 @@ function comparePatterns(pattern1, pattern2) {
   return true;
 }
 
-// renderizar o padrao de vitoria no game
+function resetGameBoard() {
+  gameBoardSvg.innerHTML = `
+    <line x1="166" y1="500" x2="166" y2="0" stroke-width="13" stroke="#091133" />
+    <line x1="332" y1="500" x2="332" y2="0" stroke-width="13" stroke="#091133" />
+    <line x1="0" y1="166" x2="500" y2="166" stroke-width="13" stroke="#091133" />
+    <line x1="0" y1="332" x2="500" y2="332" stroke-width="13" stroke="#091133" />
+  `;
+}
+
+// render win pattern on game board
 function renderWinPattern(game, color) {
   let winCombination = game.winCombination["combination"];
 
-  //
   // 0 1 2
-  //
   if (comparePatterns(winCombination, winningCombinations[0])) {
     gameBoardSvg.insertAdjacentHTML('beforeend', `
       <line x1="0" y1="83" x2="500" y2="83" stroke-width="16" stroke="${color}" />
@@ -54,9 +68,7 @@ function renderWinPattern(game, color) {
     `);
   }
 
-  //
   // 3 4 5
-  //
   if (comparePatterns(winCombination, winningCombinations[3])) {
     gameBoardSvg.insertAdjacentHTML('beforeend', `
       <line x1="83" y1="0" x2="83" y2="500" stroke-width="16" stroke="${color}" />
@@ -75,9 +87,7 @@ function renderWinPattern(game, color) {
     `);
   }
 
-  //
   // 6 7 8
-  //
   if (comparePatterns(winCombination, winningCombinations[6])) {
     gameBoardSvg.insertAdjacentHTML('beforeend', `
       <line x1="10" y1="10" x2="490" y2="490" stroke-width="16" stroke="${color}" />
@@ -91,11 +101,11 @@ function renderWinPattern(game, color) {
   }
 }
 
-// exibir a mensagem no chat
+// show message on game chat
 function addMessage(message, nick) {
   var historyBox = document.getElementById('history')
 
-  // mensagem do usuario atual
+  // current user message
   if (userData.nickname === nick) {
     var boxMyMessage = document.createElement('div')
     boxMyMessage.className = 'box-my-message'
@@ -108,7 +118,7 @@ function addMessage(message, nick) {
 
     historyBox.appendChild(boxMyMessage)
   } else {
-    // mensagem do oponnente
+    // oponnent message
     var boxResponseMessage = document.createElement('div')
     boxResponseMessage.className = 'box-response-message'
 
@@ -121,72 +131,7 @@ function addMessage(message, nick) {
     historyBox.appendChild(boxResponseMessage)
   }
 
-  // levar scroll para o final
   historyBox.scrollTop = historyBox.scrollHeight
-}
-
-function main() {
-  // get user route
-  fetch("user")
-    .then(response => {
-      response.json()
-        .then(responseJson => {
-          userData = responseJson.user;
-
-          // initialize socket
-          socket = io({
-            path: wsPath,
-            auth: {
-              nickname: userData.nickname
-            },
-            transports: ['websocket'], 
-            upgrade: false,
-          });
-
-          updateLobbyImage(userData.nickname);
-          document.querySelector(".nickname").innerHTML = `${userData.nickname}<br>▼`;
-
-          createWebSocketRoutes();
-        })
-        .catch(error => {
-          console.log(error);
-        })
-    })
-    .catch(error => {
-      console.log(error);
-    })
-
-
-  // adiciona funcao ao botao de start game do lobby
-  startGameButton.addEventListener('click', () => {
-    let friendName = inputFriendName.value;
-    let historyBox = document.getElementById('history');
-    inputFriendName.value = '';
-    historyBox.innerHTML = '';
-    socket.emit('start-game-versus-player', friendName.toLowerCase());
-  })
-
-  // adiciona funcao ao botao de start game contra CPU
-  offlineButton.addEventListener('click', () => {
-    let historyBox = document.getElementById('history');
-    historyBox.innerHTML = '';
-    socket.emit("start-game-versus-cpu");
-  });
-  
-  playAgainButton.textContent = 'Play Again'; 
-  divGame.style.display = 'none';
-
-  let count = 0;
-  for (let i = 0; i < 3; i++) {
-    for (let j = 0; j < 3; j++) {
-      const cell = document.querySelector(`#cell-${count}`);
-      cell.addEventListener('click', () => { socket.emit("point", i, j) });
-      count++;
-    }
-  }
-
-  const observer = new IntersectionObserver(onVisibilityChange);
-  observer.observe(divLobby);
 }
 
 function updateLobbyImage(userNickname) {
@@ -203,7 +148,7 @@ function onVisibilityChange(entries) {
   });
 }
 
-function updateGame(room) {
+function updateGameBoard(room) {
   let game = room.game;
   let self = room.players[1];
   let colorX = "#091133";
@@ -216,6 +161,8 @@ function updateGame(room) {
     colorX = "#66b2ff";
     colorO = "#091133";
   } 
+
+  resetGameBoard();
 
   for (let i = 0; i < 3; i++) {
     for (let j = 0; j < 3; j++) {
@@ -278,11 +225,7 @@ function createWebSocketRoutes() {
     });
   })
 
-  socket.on('error-message', (response) => {
-    alert(response.message);
-  })
-
-  // atualiza o jogo no começo da partida
+  // update game status on game start
   socket.on('start-game-status', (room) => {
     let players = room.players;
     let self = players[1];
@@ -293,95 +236,81 @@ function createWebSocketRoutes() {
       oponnent = players[1];
     } 
 
+    currentRoom = room;
+    // socket.removeAllListeners('update-message');
     console.log(room)
 
-    socket.removeAllListeners('update-message');
-    gameBoardSvg.innerHTML = `
-      <line x1="166" y1="500" x2="166" y2="0" stroke-width="13" stroke="#091133" />
-      <line x1="332" y1="500" x2="332" y2="0" stroke-width="13" stroke="#091133" />
-      <line x1="0" y1="166" x2="500" y2="166" stroke-width="13" stroke="#091133" />
-      <line x1="0" y1="332" x2="500" y2="332" stroke-width="13" stroke="#091133" />
-    `;
-
-    socket.on('update-message', (message, nickname) => {
-      addMessage(message, nickname);
-    })
-
+    let historyBox = document.getElementById('history');
+    historyBox.innerHTML = '';
     divLobby.style.display = 'none';
     divGame.style.display = 'flex';
     divPlacar.style.display = 'flex';
     divPlacar.innerHTML = `
-    <div class="placar1">
-      <img src="https://robohash.org/${self.nickname}.png" class="placar-profile-img" alt="Profile Photo">
-      <div class="placar-data1">
-        <h1>Jogador ${self.point}ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ</h1>
-        <h1>${self.nickname}</h1>
-        <h1>Score na partida: ${self.points}</h1>
-        <h1>Jogos vencidos: ${self.wins}</h1>
+      <div class="placar1">
+        <img src="https://robohash.org/${self.nickname}.png" class="placar-profile-img" alt="Profile Photo">
+        <div class="placar-data1">
+          <h1>Jogador ${self.point}ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ</h1>
+          <h1>${self.nickname}</h1>
+          <h1>Score na partida: ${self.points}</h1>
+          <h1>Jogos vencidos: ${self.wins}</h1>
+        </div>
       </div>
-    </div>
-    <div class="placar2">
-      <div class="placar-data2">
-        <h1>ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤJogador ${oponnent.point}</h1>
-        <h1>${oponnent.nickname}</h1>
-        <h1>Score na partida: ${oponnent.points}</h1>
-        <h1>Jogos vencidos: ${oponnent.wins}</h1>
-      </div>
-      <img src="https://robohash.org/${oponnent.nickname}.png" class="placar-profile-img" alt="Profile Photo">
-    </div> `;
+      <div class="placar2">
+        <div class="placar-data2">
+          <h1>ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤJogador ${oponnent.point}</h1>
+          <h1>${oponnent.nickname}</h1>
+          <h1>Score na partida: ${oponnent.points}</h1>
+          <h1>Jogos vencidos: ${oponnent.wins}</h1>
+        </div>
+        <img src="https://robohash.org/${oponnent.nickname}.png" class="placar-profile-img" alt="Profile Photo">
+      </div> 
+    `;
 
-    updateGame(room);
+    updateGameBoard(room);
   })
 
-  socket.on("connect_error", (err) => {
-    let messageTurnDiv = document.querySelector(".message-turn-div");
-
-    console.log(err.data.content);
-    divLobby.style.display = 'none';
-    messageTurnDiv.innerHTML = `<h1 class="message-turn">${err.data.content}</h1>`;
-  });
-
+  // update game status
   socket.on('game-status', (room) => {
     let game = room.game;
-
+    currentRoom = room;
     console.log(room);
-  
-    updateGame(room);
+
+    updateGameBoard(room);
 
     if (game.winner || game.tie === true) {
       let messageTurnDiv = document.querySelector(".message-turn-div");
 
       if (game.winner) {
-        // existe um ganhador
+        // game ended with winner
         divPlacar.innerHTML = `
           <div class="end-placar">
             <div class="end-game-buttons">
               <button id="playAgain">Jogar novamente</button>
-              <button id="leaveParty">Sair da party</button>
-          </div>`;
+              <button id="leaveParty">Voltar ao lobby</button>
+            </div>
+          </div>
+        `;
       
-          if (game.winner.nickname === userData.nickname) {
-            messageTurnDiv.innerHTML = `<h1 class="message-turn">Você venceu :)</h1>`;
-            messageTurnDiv.style.color = "#091133";
-            renderWinPattern(game, "#0284ff");
-          } else {
-            messageTurnDiv.innerHTML = `<h1 class="message-turn">Você perdeu :(</h1>`;
-            messageTurnDiv.style.color = "#0284ff";
-            renderWinPattern(game, "red");
-          }
-
-        
+        if (game.winner.nickname === userData.nickname) {
+          messageTurnDiv.innerHTML = `<h1 class="message-turn">Você venceu :)</h1>`;
+          messageTurnDiv.style.color = "#091133";
+          renderWinPattern(game, "#0284ff");
+        } else {
+          messageTurnDiv.innerHTML = `<h1 class="message-turn">Você perdeu :(</h1>`;
+          messageTurnDiv.style.color = "#0284ff";
+          renderWinPattern(game, "red");
+        }
       } else {
-        // jogo empatou
+        // game ended with tie
         divPlacar.innerHTML = `
-        <div class="end-placar">
-          <h1>O Jogo empatou!</h1>
-          <div class="end-game-buttons">
-            <button id="playAgain">Jogar novamente</button>
-            <button id="leaveParty">Sair da party</button>
-        </div>`;
+          <div class="end-placar">
+            <div class="end-game-buttons">
+              <button id="playAgain">Jogar novamente</button>
+              <button id="leaveParty">Voltar ao lobby</button>
+          </div>
+        `;
   
-        messageTurnDiv.innerHTML = `<h1 class="message-turn">Empate '_'</h1>`;
+        messageTurnDiv.innerHTML = `<h1 class="message-turn">Empate</h1>`;
       }
   
       const playAgainButton = document.querySelector('#playAgain').addEventListener('click', ( () => {
@@ -394,12 +323,105 @@ function createWebSocketRoutes() {
     }
   });
 
-  // esconde o jogo e exibe o lobby
+  // in case of occur error with websocket connection
+  socket.on("connect_error", (err) => {
+    let messageTurnDiv = document.querySelector(".message-turn-div");
+    console.log(err.data.content);
+    divLobby.style.display = 'none';
+    messageTurnDiv.innerHTML = `<h1 class="message-turn">${err.data.content}</h1>`;
+  });
+
+  socket.on("error-message", (response) => {
+    alert(response.message);
+  });
+
+  socket.on("update-message", (message, nickname) => { 
+    addMessage(message, nickname);
+  });
+
+  // hide game and show lobby
   socket.on('back-to-lobby', () => {
     divLobby.style.display = 'flex';
     divGame.style.display = 'none';
     divPlacar.style.display = 'none';
   })
+}
+
+//
+//
+// main function
+//
+//
+function main() {
+  fetch("user")
+    .then(response => {
+      response.json()
+        .then(responseJson => {
+          userData = responseJson.user;
+
+          // initialize socket
+          socket = io({
+            path: wsPath,
+            auth: {
+              nickname: userData.nickname
+            },
+            transports: ['websocket'], 
+            upgrade: false,
+          });
+
+          updateLobbyImage(userData.nickname);
+          createWebSocketRoutes();
+
+          document.querySelector(".nickname").innerHTML = `${userData.nickname}<br>▼`;
+        })
+        .catch(error => {
+          console.log(error);
+        })
+    })
+    .catch(error => {
+      console.log(error);
+    })
+
+  // add function to start game versus player button
+  startGameButton.addEventListener('click', () => {    
+    socket.emit('start-game-versus-player', inputFriendName.value.toLowerCase());
+    inputFriendName.value = '';
+  })
+
+  // add function to start game versus cpu button
+  offlineButton.addEventListener('click', () => {
+    socket.emit("start-game-versus-cpu");
+  });
+  
+  // add function to game board cells
+  let count = 0;
+
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 3; j++) {
+      const cell = document.querySelector(`#cell-${count}`);
+
+      cell.addEventListener('click', () => { 
+        if (currentRoom.game.currentPlayer.nickname === userData.nickname && currentRoom.game.tie === false && !currentRoom.game.winner) {
+          let self = currentRoom.players[1];
+
+          if (currentRoom.players[0].nickname === userData.nickname) {
+            self = currentRoom.players[0];
+          }
+
+          currentRoom.game.gamestate[i][j] = self;
+          updateGameBoard(currentRoom); 
+          socket.emit("point", i, j) 
+        }
+      })
+
+      count++;
+    }
+  }
+
+  playAgainButton.textContent = 'Jogar novamente'; 
+  divGame.style.display = 'none';
+  const observer = new IntersectionObserver(onVisibilityChange);
+  observer.observe(divLobby);
 }
 
 main();

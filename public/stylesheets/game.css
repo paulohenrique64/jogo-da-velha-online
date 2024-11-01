@@ -57,7 +57,7 @@ header a:hover {
   height: 600px;
   border-radius: 10px;
   text-align: center;
-  box-shadow: 0px -5px 15px 0px rgba(0, 0, 0, 0.5);
+  /* box-shadow: 0px -5px 15px 0px rgba(0, 0, 0, 0.5); */
   margin-left: 2%;
   align-items: center;
 }
@@ -233,7 +233,7 @@ header a:hover {
   height: 600px;
   border-radius: 10px;
   text-align: center;
-  box-shadow: 0px -5px 15px 0px rgba(0, 0, 0, 0.5);
+  /* box-shadow: 0px -5px 15px 0px rgba(0, 0, 0, 0.5); */
   margin-left: 2%;
   align-items: center;
 }
@@ -317,9 +317,11 @@ header a:hover {
 
 .container {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  max-width: auto;
+  max-height: auto;
 }
 
 #game-container {
@@ -327,8 +329,10 @@ header a:hover {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 20px;
   transform: scale(90%);
+  max-width: 100%;
+  max-height: 100%;
+  margin-bottom: 3%;
 }
 
 .game-board {
@@ -355,6 +359,7 @@ header a:hover {
 .cell {
   height: 166px;
   width: 166px;
+  cursor: pointer;
 }
 
 .row {
@@ -369,6 +374,7 @@ header a:hover {
   font-weight: 500;
   font-style: normal;
   margin: 0;
+  height: 30px;
 }
 
 .message-turn-div > h1 {
@@ -384,10 +390,18 @@ header a:hover {
   align-items: center;
   justify-content: center;
   max-width: 100%;
+  height: 10%;
   margin: 0;
   margin-bottom: 3%;
   text-transform: uppercase;
   letter-spacing: 2px;
+}
+
+.placar1, .placar2 {
+  -webkit-transition: background-color 0.3s ease-out;
+  -moz-transition: background-color 0.3s ease-out;
+  -o-transition: background-color 0.3s ease-out;
+  transition: background-color 0.3s ease-out;
 }
 
 .placar1 {
@@ -399,7 +413,6 @@ header a:hover {
   background-color: #091133;
   align-items: center;
   justify-content: right;
-  box-shadow: 0px -5px 15px 0px rgba(0, 0, 0, 0.5);
   font-family: 'Press Start 2P';
 }
 
@@ -412,8 +425,6 @@ header a:hover {
   background-color: #091133;
   align-items: center;
   justify-content: left;
-  box-shadow: 0px -5px 15px 0px rgba(0, 0, 0, 0.5);
-  font-family: 'Press Start 2P';
 }
 
 .placar-data1 { 
@@ -456,11 +467,11 @@ header a:hover {
   flex-direction: column;
   width: 100%;
   height: 90px;
-  background-color: #091133;
+  background-color:#091133;
   justify-content: center; 
   align-items: center;
   color: #cccccc;
-  box-shadow: 0px -5px 15px 0px rgba(0, 0, 0, 0.5);
+  border: none;
 }
 
 .end-game-buttons {
@@ -485,15 +496,16 @@ header a:hover {
   text-decoration: none;
   color: #fff;
   font-weight: 500;
-  width: 270px;
-  padding: 7px;
-  border-radius: 15px;
+  width: 300px;
+  padding: 14px;
+  border-radius: 5px;
   outline: none;
+  border: none;
   text-transform: uppercase;
-  font-size: 10pt;
+  font-size: 12pt;
   background: #0284ff;
   cursor: pointer;
-  box-shadow: 0px 10px 40px -12px #00ff8052;
+  /* box-shadow: 0px 10px 40px -12px #00ff8052; */
   font-family: 'Press Start 2P';
   letter-spacing: 2px;
 }
@@ -532,7 +544,7 @@ header a:hover {
   width: 490px;
   border-radius: 10px;
   text-align: center;
-  box-shadow: 0px -5px 15px 0px rgba(0, 0, 0, 0.5);
+  /* box-shadow: 0px -5px 15px 0px rgba(0, 0, 0, 0.5); */
 }
 
 .header-chat{
@@ -566,7 +578,7 @@ header a:hover {
   border-radius: 5px;
   padding: 10px;
   font-size: 1rem;
-  background-color: #718bff;
+  background-color:#0284ff;
   font-family: 'Press Start 2P';
 }
 
@@ -607,30 +619,33 @@ header a:hover {
 .box-my-message{
   display: flex;
   justify-content: flex-end;
+  word-wrap: break-word
 }
 
 .box-response-message{
   display: flex;
   justify-content: flex-start;
+  word-wrap: break-word
 }
 
-.my-message,
-.response-message{
-  padding: 1rem;
-  border-radius: 10px;
+.my-message, .response-message {
+  font-size: 11px;
+  padding: 9px;
+  border-radius: 5px;
   color: white;
   margin: 0;
   white-space: pre-wrap; 
+  overflow: hidden;
 }
 
 .my-message{
   text-align: right;
-  background-color: var(--gray);
+  background-color: #045ab0;
 }
 
 .response-message{
   text-align: left;
-  background-color: var(--gray2);
+  background-color: #545b72;
 }
 
 footer {
@@ -664,6 +679,10 @@ body::-webkit-scrollbar-thumb {
 @media screen and (max-width: 1366px) {
   .container {
     flex-direction: column;
+  }
+
+  #game-container {
+    margin-bottom: 3%;  
   }
 
   .box-questions {
@@ -741,6 +760,12 @@ body::-webkit-scrollbar-thumb {
 @media screen and (max-width: 960px) {
   header {
     justify-content: center;
+  }
+
+  .my-message, .response-message {
+    font-size: 11px;
+    padding: 9px;
+    border-radius: 5px;
   }
 
   header a {
@@ -849,11 +874,11 @@ body::-webkit-scrollbar-thumb {
   }
 
   #game-container {
-    transform: scale(60%);
     margin: 0;
   }
 
   .game-board {
+    transform: scale(60%);
     margin: 0;
   }
 
@@ -867,13 +892,6 @@ body::-webkit-scrollbar-thumb {
     height: auto;
   }
 
-  .cell {
-    width: 100px;
-    height: 100px;
-    font-size: 90px;
-    font: optional;
-  }
-
   .box-questions {
     width: 295px;
   }
@@ -881,6 +899,12 @@ body::-webkit-scrollbar-thumb {
   .message-input {
     font-size: 10px;
     width: 55.8%;
+  }
+
+  .my-message, .response-message {
+    font-size: 8px;
+    padding: 7px;
+    border-radius: 5px;
   }
 
   .btn-submit {
@@ -930,8 +954,8 @@ body::-webkit-scrollbar-thumb {
   }
   
   .end-game-buttons > button {
-    font-size: 6pt;
-    width: 210px;
+    font-size: 10pt;
+    width: 200px;
   }
 
   .footer {
@@ -992,7 +1016,7 @@ body::-webkit-scrollbar-thumb {
   }
 
   #game-container {
-    margin-top: 0;  
+    margin: 0;  
   }
   
   .placar-profile-img {
@@ -1016,8 +1040,8 @@ body::-webkit-scrollbar-thumb {
   }
 
   header {
-    height: 15px;
-    font-size: 15px;
+    height: 6px;
+    font-size: 10px;
   }
 
   iframe {
@@ -1026,11 +1050,21 @@ body::-webkit-scrollbar-thumb {
 
   .end-game-buttons > button {
     width: 170px;
-    padding: 2px;
-    font-size: 9pt;
+    padding: 8px;
+    font-size: 6pt;
+    border-radius: 3px;
   }
 
   footer {
     font-size: 12px;
+  }
+}
+
+@media screen and (max-width: 380px) {
+  .end-game-buttons > button {
+    width: 150px;
+    padding: 6px;
+    font-size: 6pt;
+    border-radius: 3px;
   }
 }

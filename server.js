@@ -203,30 +203,39 @@ io.on("connection", (socket) => {
       io.to(player.id).emit("game-status", room);
 
       if (game.checkEnd()) {
-        // se o jogo terminar com o ponto do player
+        // if game end with player point
         if (game.checkWinner() && game.winner.nickname === player.nickname) {
           player.wins++;
           player.points++;
         } 
-      } else {
-        const point = computer(game, player); // setar o ponto da CPU 
-        game.setPoint(oponnent, point[0], point[1]); // i = 0, j = 1
 
-        if (game.checkEnd())
-          // se o jogo terminar com o ponto da CPU
-          if (game.checkWinner()) oponnent.points++;
+        return io.to(player.id).emit("game-status", room);
+      } else {
+        setTimeout(() => {
+          const point = computer(game, player); // get cpu point -->  i = 0, j = 1
+          game.setPoint(oponnent, point[0], point[1]);
+
+          if (game.checkEnd())
+            // if game end with cpu point
+            if (game.checkWinner()) oponnent.points++;
+
+          return io.to(player.id).emit("game-status", room);
+        }, 500);
+      }
+    } else {
+      // playing versus player
+      if (game.checkEnd() && game.checkWinner()) {    
+        if (game.winner.nickname === player.nickname) {
+          player.wins++;
+          player.points++;
+        } else {
+          oponnent.wins++;
+          oponnent.points++;
+        }
       }
 
-      return io.to(player.id).emit("game-status", room);
-    } 
-
-    // playing versus player
-    if (game.checkEnd() && game.checkWinner()) {    
-      if (game.winner.nickname === player.nickname) player.wins++;
-      else oponnent.wins++;
+      return io.to(player.id).to(oponnent.id).emit("game-status", room);
     }
-
-    return io.to(player.id).to(oponnent.id).emit("game-status", room);
   });
 
   // reset a game between two players or player and cpu
@@ -320,7 +329,7 @@ io.on("connection", (socket) => {
     if (player.nickname === room.chat.creator.nickname) room.chat.creator.messages.push(message);
     else room.chat.guest.messages.push(message);
 
-    io.to(room.players[0].id).to(room.players[1].id).emit('update-message', message, player.nickname);
+    io.to(room.players[0].id).to(room.players[1].id).emit("update-message", message, player.nickname);
   })
 });
 
