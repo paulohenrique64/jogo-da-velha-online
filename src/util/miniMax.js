@@ -1,4 +1,4 @@
-const { default: jogoDaVelha } = require("../models/game");
+import JogoDaVelha from "../models/game";
 
 const moviesMatrix = [
     [0, 0], [0, 1], [0, 2], // 0 index -> x
@@ -20,7 +20,7 @@ const winningCombinations = [
 const checkWinner = (gameCurrent, player) => {
 	let pos = findPosition(gameCurrent.gameStateArray, player);
 	for (let i = 0; i < winningCombinations.length; i++) {
-		if (winningCombinations[i].combination.every(item => pos.includes(item))) {
+		if (winningCombinations[i].combination.every(item => pos.includes(item))) {        
 			return true;
 		}
 	}
@@ -123,7 +123,7 @@ const miniMax = (gameCurrent, player, depth) => {
         move.index = empty[i];
 
         // Cria uma cópia do estado do jogo para simular o movimento
-        let newGame = new jogoDaVelha(gameCurrent.creator, gameCurrent.guest);
+        let newGame = new JogoDaVelha(gameCurrent.creator, gameCurrent.guest);
         newGame.gameStateArray = gameCurrent.gameStateArray.slice();
         newGame.gameStateArray[empty[i]] = player;
         newGame.gamestate = convertGameArrayToMatrix(newGame.gameStateArray);
@@ -159,4 +159,5 @@ const miniMax = (gameCurrent, player, depth) => {
 
 module.exports = {
     computer,
+    winningCombinations
 };
