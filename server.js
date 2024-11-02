@@ -4,6 +4,7 @@
 //
 //
 
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 import mongooseConnection from "./src/database/mongodb";
 import JogoDaVelha from "./src/models/game";
 import Chat from "./src/models/chat";
@@ -45,6 +46,12 @@ app.use((req, res) => {return res.status(404).redirect(process.env.BASE_URL_PATH
 
 mongooseConnection();  // connect to database
 server.listen(port, "0.0.0.0"); // running the express server
+
+// generative ia API
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_FLASH_API_KEY);
+const model = genAI.getGenerativeModel({ 
+  model: "gemini-1.5-flash",
+});
 
 //
 //
@@ -319,17 +326,36 @@ io.on("connection", (socket) => {
   });
 
   // messaging
-  socket.on('message', message => {
-    let room = rooms.find(room => room.players[0].id === socket.id || room.players[1].id === socket.id);
-    let player = players.find(player => player.id == socket.id);
+  socket.on('message', async message => {
+    message = message.trim();
 
-    if (!room || !player)
+    if (message === "") return;
+
+    let room = rooms.find(room => room.players[0].id === socket.id || room.players[1].id === socket.id);
+
+    if (!room)
       return sendError(socket.id);
     
-    if (player.nickname === room.chat.creator.nickname) room.chat.creator.messages.push(message);
-    else room.chat.guest.messages.push(message);
+    let player = room.players[0];
+    let oponnent = room.players[1];
 
-    io.to(room.players[0].id).to(room.players[1].id).emit("update-message", message, player.nickname);
+    if (player.id !== socket.id) {
+      player = players[1];
+      oponnent = players[0];
+    }
+
+    if (oponnent.nickname === getRobotPlayerData().nickname) {
+      // playing versus ia
+      io.to(socket.id).emit("update-message", message, player.nickname);
+      const response = await getIaResponse(message, room.chat);
+      room.chat.guest.messages.push(response);
+      return io.to(socket.id).emit("update-message", response, oponnent.nickname);
+    } else {
+      // playing versus player
+      if (player.nickname === room.chat.creator.nickname) room.chat.creator.messages.push(message);
+      else room.chat.guest.messages.push(message);
+      return io.to(room.players[0].id).to(room.players[1].id).emit("update-message", message, player.nickname);
+    }
   })
 });
 
@@ -374,4 +400,19 @@ function getRobotPlayerData() {
     nickname: "robot", 
     wins: "+99",
   };
+}
+
+async function getIaResponse(prompt, chat) {
+  try {
+    prompt = "Responda em portugues. Seu nome eh Robot. "
+    + " Conversa casual. Ultimas coisas que voce me disse: {" + chat.guest.messages 
+    + "}. Ultimas coisas que eu te disse: {" + chat.creator.messages 
+    + "}. Agora responda: " + prompt;
+    const result = await model.generateContent(prompt);
+    console.log(result.response.text());
+    return result.response.text();
+  } catch (error) {
+    console.log(error);
+    return "Desculpe, não entendi, poderia repetir?";
+  }
 }

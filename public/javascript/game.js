@@ -25,7 +25,9 @@ const winningCombinations = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 
 // send message to oponnent
 function sendMessage() {
   const inputMessage = document.querySelector('#message-input');
-  socket.emit('message', inputMessage.value);
+  let message = inputMessage.value.trim();
+  if (message === "") return;
+  socket.emit('message', message);
   inputMessage.value = '';
 }
 
@@ -240,8 +242,6 @@ function createWebSocketRoutes() {
     // socket.removeAllListeners('update-message');
     console.log(room)
 
-    let historyBox = document.getElementById('history');
-    historyBox.innerHTML = '';
     divLobby.style.display = 'none';
     divGame.style.display = 'flex';
     divPlacar.style.display = 'flex';
@@ -386,11 +386,15 @@ function main() {
   startGameButton.addEventListener('click', () => {    
     socket.emit('start-game-versus-player', inputFriendName.value.toLowerCase());
     inputFriendName.value = '';
+    let historyBox = document.getElementById('history');
+    historyBox.innerHTML = '';
   })
 
   // add function to start game versus cpu button
   offlineButton.addEventListener('click', () => {
     socket.emit("start-game-versus-cpu");
+    let historyBox = document.getElementById('history');
+    historyBox.innerHTML = '';
   });
   
   // add function to game board cells
