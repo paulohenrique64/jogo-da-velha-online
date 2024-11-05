@@ -17,35 +17,37 @@ const winningCombinations = [
 	{ 'combination': [2, 4, 6]},
 ];
 
-const checkWinner = (gameCurrent, player) => {
-	let pos = findPosition(gameCurrent.gameStateArray, player);
-	for (let i = 0; i < winningCombinations.length; i++) {
-		if (winningCombinations[i].combination.every(item => pos.includes(item))) {        
-			return true;
-		}
-	}
-	return false;
-}
-
-const findPosition = (array, value) => {
-	const positions = [];
-	for (let i = 0; i < array.length; i++) {
-		if (array[i] === value) {
-			positions.push(i);
-		}
-	}
-	return positions;
-}
-
-const computer = (game, player) => {
+const computer = (game) => {
     game.gameStateArray = convertMatrixGameToArray(game.gamestate);
     let empty = emptyCells(game);
     
     if (empty.length > 0) {
-        let bestMove = miniMax(game, player, empty.length);
+        let bestMove = miniMax(game, game.guest, empty.length);
+        
         return moviesMatrix[bestMove.index];
     }
 };
+
+const checkWinner = (gameCurrent, player) => {
+    const arrayGamestate = convertMatrixGameToArray(gameCurrent.gamestate);
+
+    for (let k = 0; k < winningCombinations.length; k++) {
+        const winningPattern = winningCombinations[k]["combination"];
+
+        let count = 0;
+        for (let kk = 0; kk < 3; kk++) {
+           if (arrayGamestate[winningPattern[kk]] && arrayGamestate[winningPattern[kk]].nickname === player.nickname) {
+                count++;      
+           }
+                
+        }
+
+        if (count === 3) 
+            return true;
+    }
+
+	return false;
+}
 
 const emptyCells = (game) => {
     let empty = [];
@@ -81,9 +83,7 @@ const convertGameArrayToMatrix = (gameArray) => {
     for (let i = 0; i < 3; i++) {
         gameMatrix[i] = new Array(3);
         for (let j = 0; j < 3; j++) {
-            if (gameArray[index]) {
-                gameMatrix[i][j] = gameArray[index];
-            }
+            gameMatrix[i][j] = gameArray[index] || null;
             index++;
         }
     }
@@ -124,11 +124,23 @@ const miniMax = (gameCurrent, player, depth) => {
 
         // Cria uma cópia do estado do jogo para simular o movimento
         let newGame = new JogoDaVelha(gameCurrent.creator, gameCurrent.guest);
-        newGame.gameStateArray = gameCurrent.gameStateArray.slice();
-        newGame.gameStateArray[empty[i]] = player;
+
+
+        newGame.gameStateArray = new Array(9);
+
+        for (let i = 0; i < gameCurrent.gameStateArray.length; i++) {
+            if (gameCurrent.gameStateArray[i])
+                newGame.gameStateArray[i] = {
+                    nickname: gameCurrent.gameStateArray[i].nickname,
+                }
+        }
+
+        newGame.gameStateArray[empty[i]] = {
+            nickname: player.nickname,
+        };
         newGame.gamestate = convertGameArrayToMatrix(newGame.gameStateArray);
 
-        let result = miniMax(newGame,player.nickname === gameCurrent.guest.nickname ? gameCurrent.creator : gameCurrent.guest, depth);
+        let result = miniMax(newGame, player.nickname === gameCurrent.guest.nickname ? gameCurrent.creator : gameCurrent.guest, depth);
 
         move.score = result.score;
         movePossibles.push(move);
@@ -154,6 +166,7 @@ const miniMax = (gameCurrent, player, depth) => {
         }
     }
 
+    // console.log(movePossibles[bestMove]);
     return movePossibles[bestMove];
 };
 

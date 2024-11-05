@@ -194,6 +194,9 @@ io.on("connection", (socket) => {
     if (!room)
       return sendError(socket.id);
 
+    if (row === undefined || col === undefined) 
+      return sendError(socket.id);
+      
     let game = room.game;
     let player = room.players[0];
     let oponnent = room.players[1];
@@ -219,15 +222,20 @@ io.on("connection", (socket) => {
         return io.to(player.id).emit("game-status", room);
       } else {
         setTimeout(() => {
-          const point = computer(game, player); // get cpu point -->  i = 0, j = 1
+          const point = computer(game); // get cpu point -->  i = 0, j = 1
+
+          if (!point)
+            return sendError(socket.id);
+            
           game.setPoint(oponnent, point[0], point[1]);
 
           if (game.checkEnd())
             // if game end with cpu point
-            if (game.checkWinner()) oponnent.points++;
+            if (game.checkWinner()) 
+              oponnent.points++;
 
           return io.to(player.id).emit("game-status", room);
-        }, 500);
+        }, 300);
       }
     } else {
       // playing versus player
